@@ -1,0 +1,191 @@
+2015-05-15 Ryuichiro Nakato <rnakato@iam.u-tokyo.ac.jp>
+	Version 3.0.0 (Beta)
+	- refine the program and add new functions.
+	- Main improvements are:
+          -- improve the speed and memory consumed.
+          -- multiple input files are allowed for parse2wig.
+	  -- bedGraph and bigWig become available.
+	  -- allow peak-calling without Input sample.
+	  -- output various stats of input sample.
+	  -- several functions are newly added.
+        - See Manual for details of the functions.
+
+2015-01-06 Ryuichiro Nakato <rnakato@iam.u-tokyo.ac.jp>
+	Version 2.6.4
+	- Readd 'script' directory (it was mistakenly deleted)
+	- Fix the problem that the compliation error occurs in 32-bit OS.
+
+2014-12-19 Ryuichiro Nakato <rnakato@iam.u-tokyo.ac.jp>
+	Version 2.6.3
+	- parse2wig2: add 'FRiP', 'ngc_ave', 'ngc_med', 'ngc_var' score in stats.xls when -igpeak is specified.
+	- Replace option 'max4gc' to 'gcdepth' for GC normalization in parse2wig2
+	- Bug fix in GC normalization.
+	- Abolish -makengc option.
+
+2014-10-30 Ryuichiro Nakato <rnakato@iam.u-tokyo.ac.jp>
+	Version 2.6.2
+	- Fixed the problem for yeast that the genes are not shown in pdf when add -ars option.
+
+2014-10-29 Ryuichiro Nakato <rnakato@iam.u-tokyo.ac.jp>
+	Version 2.6.1
+	- bug fix in parse2wig2.
+	- add '-makengc' option to parse2wig2
+	- change defalt setting of -normgcov from 1 to 0 (in default, the genome coverage files are not created).
+	- add 'makegenometable.pl' in scripts directory.
+
+2014-09-29 Ryuichiro Nakato <rnakato@iam.u-tokyo.ac.jp>
+	Version 2.6.0
+	- parse2wig2: become to use background regions only when calculating genome coverage with '-igpeak' option
+	- remove '-normgc' option for parse2wig2 and add '-normgcov' option for drompa2, which normalizes the reads with the genome coverage for windows with fixed lengh
+	- parse2wig2 becomes to output genome coverage files 'Gcov' in the output directory
+
+2014-09-16 Ryuichiro Nakato <rnakato@iam.u-tokyo.ac.jp>
+	Version 2.5.3
+	- add new option 'max4gc' for GC normalization in parse2wig2
+	- add parse2wig2 initdump
+	- add statsdata for parse2wig2
+
+2014-09-05 Ryuichiro Nakato <rnakato@iam.u-tokyo.ac.jp>
+	Version 2.5.2
+	- refine the parameter for GC bias normalization.
+	- add 'GC content peak' in xls file
+
+2014-08-29 Ryuichiro Nakato <rnakato@iam.u-tokyo.ac.jp>
+	Version 2.5.1
+	- refine the parameter for GC bias normalization.
+	- bug fix in filtering PCR bias.
+
+2014-07-16 Ryuichiro Nakato <rnakato@iam.u-tokyo.ac.jp>
+	Version 2.5.0
+	- change the algorithm for GC bias normalization.
+	- add '-igpeak' option to ignore peakregions for -GC.
+	- parse2wig2 can allow BAM-format mapfile. (-bam option, require samtools)
+	- the default input format for parse2wig2 is -sam.
+
+2014-06-19 Ryuichiro Nakato <rnakato@iam.u-tokyo.ac.jp>
+	Version 2.4.1
+	- bug fix in -show_itag.
+	- add column of ChIP/Input enrichment in peaklist for PEAKCALL_E.
+
+2014-06-16 Ryuichiro Nakato <rnakato@iam.u-tokyo.ac.jp>
+	Version 2.4.0
+	- parse2wig2: add option '-GC' for normalization of read distribution based on GC contents of reference genome.
+	- parse2wig2: add option '-GCref' for normalization of read distribution based on GC contents of reference sample.
+	- bug fix in -sm option when using -if1 and -if2.
+	- bug fix in -showars for S.pombe.
+
+2014-05-29 Ryuichiro Nakato <rnakato@iam.u-tokyo.ac.jp>
+	Version 2.3.1
+	- change the default threshold of -pthre1 for PEAKCALL_P .
+	- change the stats genome coverage for 5 million reads to 10 million reads.
+	- add option '-normgc' for normalization of genome coverage.
+
+2014-05-23 Ryuichiro Nakato <rnakato@iam.u-tokyo.ac.jp>
+	Version 2.3.0
+	- change the default threshold for PEAKCALL_P.
+	- change the normalization of parse2wig to consider the genome coverage.
+	- add option '-normgc' to off the genome coverage normalization.
+	- add the stats of read complexity and genome coverage for 10 million mapped reads and 5 million reads after filtered.
+	- change the logscale visualization (-showratio2).
+
+2014-04-08 Ryuichiro Nakato <rnakato@iam.u-tokyo.ac.jp>
+	Version 2.2.5
+	- bug fix in -pair option
+
+2014-04-03 Ryuichiro Nakato <rnakato@iam.u-tokyo.ac.jp>
+	Version 2.2.4
+	- bug fix in -pair option
+
+2014-03-27 Ryuichiro Nakato <rnakato@iam.u-tokyo.ac.jp>
+	Version 2.2.3
+	- bug fix in CI command
+
+2014-03-11 Ryuichiro Nakato <rnakato@iam.u-tokyo.ac.jp>
+	Version 2.2.2
+	- bug fix in makewig.c.
+	- bug fix in -norm0 for drompa2.
+
+2014-03-10 Ryuichiro Nakato <rnakato@iam.u-tokyo.ac.jp>
+	Version 2.2.1
+	- bug fix in '-ptype4' of PROFILE command.
+
+2014-03-07 Ryuichiro Nakato <rnakato@iam.u-tokyo.ac.jp>
+	Version 2.2.0
+	- change default smoothing width for PEAKCALL_P
+	- bug fix in readmapfile.c
+	- change default p-value threshold for Binominal test
+
+2014-02-03 Ryuichiro Nakato <rnakato@iam.u-tokyo.ac.jp>
+	Version 2.1.1
+	- bug fix in stringp.c
+
+2014-01-30 Ryuichiro Nakato <rnakato@iam.u-tokyo.ac.jp>
+	Version 2.1.0
+	- add HEATMAP command
+	- add '-ntype' option for PROFILE command
+	- change default scale_ratio for GV command
+	- bug fix for COUNTTAG command
+	- bug fix in call.c
+
+2014-01-21 Ryuichiro Nakato <rnakato@iam.u-tokyo.ac.jp>
+	Version 2.0.3
+	- bug fix for parse2wig2
+
+2014-01-17 Ryuichiro Nakato <rnakato@iam.u-tokyo.ac.jp>
+	Version 2.0.2
+	- bug fix for paired-end sam format
+
+2014-01-16 Ryuichiro Nakato <rnakato@iam.u-tokyo.ac.jp>
+	Version 2.0.1
+	- change y-axis to logscale for '-ptype3' of PROFILE command
+	- bug fix in '-mp'
+
+2014-01-08 Ryuichiro Nakato <rnakato@iam.u-tokyo.ac.jp>
+	Version 2.0.0
+	- refine the program and add new functions.
+          See Manual (http://www.iam.u-tokyo.ac.jp/chromosomeinformatics/rnakato/drompa/manual2.html) for the functions.
+
+2013-09-25  Ryuichiro Nakato <rnakato@iam.u-tokyo.ac.jp>
+	Version 1.4.1
+	- bug fix in '-localmax'
+
+2013-08-08  Ryuichiro Nakato <rnakato@iam.u-tokyo.ac.jp>
+	Version 1.4.0
+	- add new option '-optype4' to make wig files of ChIP/control enrichment
+	- improve function in readdata.c
+
+2013-06-20  Ryuichiro Nakato <rnakato@iam.u-tokyo.ac.jp>
+	Version 1.3.2
+	- bug fix in '-ratio1'
+
+2013-06-19  Ryuichiro Nakato <rnakato@iam.u-tokyo.ac.jp>
+	Version 1.3.1
+	- bug fix in '-ratio1'
+
+2013-06-13  Ryuichiro Nakato <rnakato@iam.u-tokyo.ac.jp>
+	Version 1.3.0
+	- abolish ChIP/Input normalization for each chromosome when calculating ratio on 'drompa'
+	- add new option '-ratio1'
+
+2013-05-20  Ryuichiro Nakato <rnakato@iam.u-tokyo.ac.jp>
+	Version 1.2.1
+	- bug fix in showprofile.c
+
+2013-04-30  Ryuichiro Nakato <rnakato@iam.u-tokyo.ac.jp>
+	Version 1.2.0
+	- add new option '-notnorm' to DROMPA, which does not normalize the total number of ChIP reads against that of control reads for each chromosome
+
+2013-03-19  Ryuichiro Nakato <rnakato@iam.u-tokyo.ac.jp>
+	Version 1.1.1
+	- bug fix in parse2wig_func.c
+
+2013-02-27  Ryuichiro Nakato <rnakato@iam.u-tokyo.ac.jp>
+	Version 1.1.0
+	- add COPYING, ChangeLog, GPL and README
+	- bug fix in readdata.c
+	- refine stroke.c to suppress redundunt isoforms of refFlat in pdf files
+
+2013-01-18  Ryuichiro Nakato <rnakato@iam.u-tokyo.ac.jp>
+	Version 1.0.0
+	First commit.
+
