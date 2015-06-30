@@ -174,8 +174,9 @@ static void read_parse2wig_stats(Samplefile *p, RefGenome *g, int binsize){
   FILE *IN = my_fopen(filename, FILE_MODE_READ);
   char *tp;
 
-  int chr;
+  int i,chr;
   int on=0;
+  int ncol, ncol_readnum=-1;
   while((fgets(str, STR_LEN, IN))!=NULL){
     if(str[0]=='\n') continue;
     if(!on){
@@ -190,11 +191,21 @@ static void read_parse2wig_stats(Samplefile *p, RefGenome *g, int binsize){
 	p->nb_n = atof(tp+2);
 	tp = strstr(str, "p0=");
 	p->nb_p0 = atof(tp+3);
+      }else if(strstr(str, "normalized read number")){
+	chomp(str);
+	ncol = ParseLine(str, clm);
+	for(i=0; i<ncol; i++){
+	  if(!strcmp(clm[i].str, "normalized read number")){
+	    ncol_readnum=i;
+	    break;
+	  }
+	}
       }else if(strstr(str, "Whole genome")){
 	chomp(str);
 	ParseLine(str, clm);
 	//	p->genome->nread = atoi(delimit_str(clm[8].str, ' '));
-	p->genome->nread = atoi(clm[16].str);
+	p->genome->nread = atoi(clm[ncol_readnum].str);
+	LOG("%ld, %s\n",p->genome->nread,clm[ncol_readnum].str);
 	on=1;
       }
     }else{

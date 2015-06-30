@@ -24,7 +24,7 @@ close (InputFile);
 for($i=0; $i<$num; $i++){
     my $filename =  "${dir}_${name[$i]}_binary.txt";
 #    print "$filename\n";
-    open(InputFile,$filename) ||die "error: can't open filename.\n";
+    open(InputFile,$filename) ||die "error: can't open $filename.\n";
     while($line = <InputFile>){
 #	$count0 = ($line =~ tr/0/0/);
 	$count1 = ($line =~ tr/1/1/);
