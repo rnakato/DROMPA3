@@ -18,19 +18,17 @@
 
 static void make_GCdist(PwParam *p, Mapfile *mapfile, RefGenome *g);
 static int *makeGCarray_genome(TYPE_FASTAGCARRAY *fastaGCarray, char *ar, long chrlen, int flen4gc);
-static int *makeGCarray_read(Mapfile *mapfile, TYPE_FASTAGCARRAY *fastaGCarray, char *ar, int chr, long chrlen, int flen4gc);
+static int *makeGCarray_read(PwParam *p, Mapfile *mapfile, TYPE_FASTAGCARRAY *fastaGCarray, char *ar, int chr, long chrlen, int flen4gc);
 static void weight_read(PwParam *p, Mapfile *mapfile, RefGenome *g);
 static void output_GCdist(PwParam *p, Mapfile *mapfile, RefGenome *g);
 static char *make_fragarray(PwParam *p, RefGenome *g, int chr);
 
 void GCnorm(PwParam *p, Mapfile *mapfile, RefGenome *g){
   printf("\nNormalize with GC distribution...\n");
-
   /* estimate the GC distribution of the sample */
   make_GCdist(p, mapfile, g);
   /* weight each read */
   weight_read(p, mapfile, g);
-
   return;
 }
 
@@ -53,7 +51,7 @@ static void make_GCdist(PwParam *p, Mapfile *mapfile, RefGenome *g){
   /* make GCarray for genome */
   g->GCdist = makeGCarray_genome(fastaGCarray, ar, g->chr[chrref].len, p->flen4gc);
   /* make GCarray for reads */
-  mapfile->GCdist = makeGCarray_read(mapfile, fastaGCarray, ar, chrref, g->chr[chrref].len, p->flen4gc);
+  mapfile->GCdist = makeGCarray_read(p, mapfile, fastaGCarray, ar, chrref, g->chr[chrref].len, p->flen4gc);
 
   MYFREE(fastaGCarray);
   MYFREE(ar);
@@ -89,14 +87,14 @@ static int *makeGCarray_genome(TYPE_FASTAGCARRAY *fastaGCarray, char *ar, long c
   return array;
 }
 
-static int define_posi4gc(Strand strand, Readarray *read, int i, int flen4gc, long chrlen){
+static int define_posi4gc(PwParam *p, Strand strand, Readarray *read, int i, long chrlen){
   long posi;
   if(strand==STRAND_PLUS) posi = min(read->F3[i] + FRAG_IGNORE, chrlen -1);
-  else                    posi = max(read->F3[i] - FRAG_IGNORE - flen4gc, 0);
+  else                    posi = max(read->F3[i] - p->fraglen + FRAG_IGNORE, 0);
   return posi;
 }
 
-static int *makeGCarray_read(Mapfile *mapfile, TYPE_FASTAGCARRAY *fastaGCarray, char *ar, int chr, long chrlen, int flen4gc){
+static int *makeGCarray_read(PwParam *p, Mapfile *mapfile, TYPE_FASTAGCARRAY *fastaGCarray, char *ar, int chr, long chrlen, int flen4gc){
   long i, nread;
   int gc, posi;
   Strand strand;
@@ -110,7 +108,7 @@ static int *makeGCarray_read(Mapfile *mapfile, TYPE_FASTAGCARRAY *fastaGCarray, 
     nread = seq->n_read_infile;
     for(i=0; i<nread; i++){
       if(read->delete[i]) continue;
-      posi = define_posi4gc(strand, read, i, flen4gc, chrlen);
+      posi = define_posi4gc(p, strand, read, i, chrlen);
       if(!ar[posi] || !ar[posi + flen4gc]) continue;
       gc = fastaGCarray[posi];
       if(gc != -1) array[gc]++;
@@ -142,7 +140,7 @@ static void weight_read(PwParam *p, Mapfile *mapfile, RefGenome *g){
       read  = &(mapfile->readarray[chr][strand]);
       nread = seq->n_read_infile;
       for(i=0; i<nread; i++){
-	posi = define_posi4gc(strand, read, i, p->flen4gc, g->chr[chr].len);
+	posi = define_posi4gc(p, strand, read, i, g->chr[chr].len);
 	gc = fastaGCarray[posi];
 	if(gc != -1) read->weight[i] *= mapfile->GCweight[gc];
 	seq->n_read_afterGC += read->weight[i];

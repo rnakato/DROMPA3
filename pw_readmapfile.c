@@ -70,14 +70,20 @@ static void output_read_fragment_distribution(PwParam *p, Mapfile *mapfile){
   fclose(OUT);
 
   /* fragment length distribution */
+  int flen_max=0;
   if(p->rtype==READTYPE_PAIR){
     sprintf(outputfile, "%s/%s.fragmentlength_dist.xls", p->output_dir, p->output_prefix);
     OUT = my_fopen(outputfile, FILE_MODE_WRITE);
     fprintf(OUT, "length\tread number\tproportion\n");
     for(i=0; i<DIST_FRAGLEN_MAX; i++){
       if(mapfile->fstats.dist_fraglen[i]) fprintf(OUT, "%d\t%d\t%.3f\n", i, mapfile->fstats.dist_fraglen[i], mapfile->fstats.dist_fraglen[i]/(double)mapfile->genome->both.n_read_infile);
+      if(flen_max < mapfile->fstats.dist_fraglen[i]){
+	flen_max = mapfile->fstats.dist_fraglen[i];
+	p->fraglen = i;
+      }
     }
     if(mapfile->fstats.dist_fraglen[i]) fprintf(OUT, ">%d\t%d\t%.3f\n", DIST_FRAGLEN_MAX, mapfile->fstats.dist_fraglen[i], mapfile->fstats.dist_fraglen[i]/(double)mapfile->genome->both.n_read_infile);
+    fprintf(OUT, "estimated fragment length: %d\n", p->fraglen);
     fclose(OUT);
   }
 
@@ -123,9 +129,9 @@ static void init_frag(FragmentData *p){
   p->num_multimapped = 1;
 }
 
-static int define_readstartposition(int posi, int fraglen, Strand strand, Inputfiletype ftype){
+static int define_readstartposition(int posi, int readlen, Strand strand, Inputfiletype ftype){
   int s=0;
-  if(strand==STRAND_PLUS) s = posi; else s = posi + fraglen;
+  if(strand==STRAND_PLUS) s = posi; else s = posi + readlen;
   if(ftype==FILETYPE_SAM || ftype==FILETYPE_BAM) s--; /* SAM format uses 1-based position */
   return s;
 }
@@ -139,15 +145,16 @@ static void add_fragment_to_readarray(PwParam *pwparam, Mapfile *p, FragmentData
   int num = p->chr[chr].seq[strand].n_read_infile;
   int narray = p->readarray[chr][strand].narray;
   
-  //  printf("%s\tchr%d, strand:%s, F3len:%d, F5len:%d, fraglen:%d, n_read_infile: %ld\tn_readname: %.1Lf\t",p_frag->name, chr, str_strand[strand], p_frag->readlen_F3, p_frag->readlen_F5, p_frag->fraglen, p->chr[chr].seq[strand].n_read_infile, p->chr[chr].seq[strand].n_readname);
+  //  printf("%s\tchr%d, strand:%s, F3len:%d, F5len:%d, fraglen:%d, n_read_infile: %ld\tn_readname: %.1Lf\n",p_frag->name, chr, str_strand[strand], p_frag->readlen_F3, p_frag->readlen_F5, p_frag->fraglen, p->chr[chr].seq[strand].n_read_infile, p->chr[chr].seq[strand].n_readname);
 
-  p->readarray[chr][strand].F3[num] = define_readstartposition(p_frag->F3, p_frag->fraglen, strand, pwparam->ftype);
+  p->readarray[chr][strand].F3[num] = define_readstartposition(p_frag->F3, p_frag->readlen_F3, strand, pwparam->ftype);
   if(pwparam->rtype==READTYPE_PAIR){
     if(strand==STRAND_PLUS) strandF5 = STRAND_MINUS; else strandF5 = STRAND_PLUS;
-    p->readarray[chr][strand].F5[num] = define_readstartposition(p_frag->F5, p_frag->fraglen, strandF5, pwparam->ftype);
+    p->readarray[chr][strand].F5[num] = define_readstartposition(p_frag->F5, p_frag->readlen_F5, strandF5, pwparam->ftype);
   }
   p->readarray[chr][strand].weight[num] = WEIGHT2INT(1/(double)p_frag->num_multimapped);
-  //  printf("F3:%d, F5:%d, num_multimapped:%d, strand%s\n", p->readarray[chr][strand].F3[num], p->readarray[chr][strand].F5[num], p->readarray[chr][strand].weight[num], str_strand[strand]);
+  //  printf("F3:%d, num_multimapped:%d\n", p->readarray[chr][strand].F3[num], p->readarray[chr][strand].weight[num]);
+  //  printf("F3:%d, F5:%d, num_multimapped:%d, strand%s\n", p->readarray[chr][strand].F3[num], p->readarray[chr][strand].F5[num], p->readarray[chr][strand].weight[num]);
   num++;
   p->chr[chr].seq[strand].n_read_infile = num;
   p->chr[chr].seq[strand].n_readname += 1/(double)p_frag->num_multimapped;

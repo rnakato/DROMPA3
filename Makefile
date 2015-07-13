@@ -17,8 +17,7 @@ OBJS_DD = dd_main.o dd_init.o dd_readannotation.o dd_stroke.o dd_profile.o dd_he
 HEADS_DD = dd_init.h dd_readannotation.h dd_gv.h dd_stroke.h dd_profile.h dd_heatmap.h dd_otherfunc.h $(HEADS_DR)
 
 CFLAGS += -Wall -W -O3 $(FLAG)
-LIBS_PW += -lm -lz -lgsl -lgslcblas
-LIBS_DP += -lm -lz -lgsl -lgslcblas
+LIBS += -lm -lz -lgsl -lgslcblas
 
 ifdef READSV
 DEBUG=1
@@ -45,11 +44,11 @@ echo:
 	@echo "LIBS = $(LIBS)"
 
 parse2wig: $(OBJS_PW)
-	$(CC) -o $@ $^ $(CFLAGS) $(LIBS_PW) $(LIBS)
+	$(CC) -o $@ $^ $(CFLAGS) $(LIBS)
 drompa_peakcall: $(OBJS_DP)
-	$(CC) -o $@ $^ $(CFLAGS) $(LIBS_DP) $(LIBS)
+	$(CC) -o $@ $^ $(CFLAGS) $(LIBS)
 drompa_draw: $(OBJS_DD)
-	$(CC) -o $@ $^ $(CFLAGS) $(LIBS_DP) $(LIBS) `pkg-config gtk+-2.0 --libs` 
+	$(CC) -o $@ $^ $(CFLAGS) $(LIBS) `pkg-config gtk+-2.0 --libs` 
 
 dd_heatmap.o: dd_heatmap.c
 	$(CC) -c $< $(CFLAGS) `pkg-config gtk+-2.0 --cflags`
