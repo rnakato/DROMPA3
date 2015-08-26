@@ -287,7 +287,7 @@ static void parse_sam(PwParam *p, Mapfile *mapfile, RefGenome *g, char *inputfil
 	p_frag->F3      = atoi(clm[3].str);
 	p_frag->F5      = atoi(clm[7].str);
 	p_frag->fraglen = abs(atoi(clm[8].str));
-	if(p_frag->fraglen <= p->max_fraglen) add_fragment_to_readarray(p, mapfile, p_frag);
+	if(p_frag->fraglen <= p->max_fraglen && p_frag->fraglen > 0) add_fragment_to_readarray(p, mapfile, p_frag);
 	mapfile->fstats.dist_readlen_F3[p_frag->readlen_F3]++;
       }else{          // F5 read
 	p_frag->readlen_F5 = strlen(clm[9].str);
@@ -360,10 +360,9 @@ static void parse_bowtie(PwParam *p, Mapfile *mapfile, RefGenome *g, char *input
 	mapfile->fstats.dist_readlen_F5[p_frag->readlen_F5]++;
       }
       if(tptemp){
-	//	printf("sss %s, %d, %d, %d, %d\n",tptemp, p_frag->F3, p_frag->F5, p_frag->fraglen, p->max_fraglen);
-	if(p_frag->strand == STRAND_PLUS) p_frag->fraglen = abs(p_frag->F5 + p_frag->readlen_F5 - p_frag->F3);
-	else p_frag->fraglen = abs(p_frag->F3 + p_frag->readlen_F3 - p_frag->F5);
-	if(p_frag->fraglen <= p->max_fraglen) add_fragment_to_readarray(p, mapfile, p_frag);
+	if(p_frag->strand == STRAND_PLUS) p_frag->fraglen = p_frag->F5 + p_frag->readlen_F5 - p_frag->F3;
+	else p_frag->fraglen = p_frag->F3 + p_frag->readlen_F3 - p_frag->F5;
+	if(p_frag->fraglen <= p->max_fraglen && p_frag->fraglen > 0) add_fragment_to_readarray(p, mapfile, p_frag);
 	tptemp=NULL;
       }
     }

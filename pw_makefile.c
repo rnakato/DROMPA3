@@ -408,10 +408,10 @@ static void get_start_end_of_read(PwParam *p, Mapfile *mapfile, int *s, int *e, 
       *e = mapfile->readarray[chr][strand].F3[i];
     }
   }
-  if(*s > *e){
+  /*if(*s > *e){
     fprintf(stderr, "%s error: invalud i%d strand%s s-e (%d)-(%d)\n", func, i, str_strand[strand],*s,*e);
     fprintf(stderr, "chr%d, i%d, F3 %d, F5 %d, strand %d\n", chr,i,mapfile->readarray[chr][strand].F3[i], mapfile->readarray[chr][strand].F5[i], strand);
     exit(0);
-  }
+    }*/
   return;
 }

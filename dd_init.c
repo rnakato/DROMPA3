@@ -145,7 +145,9 @@ void dd_argv_init(int argc, char **argv, DrParam *p, DDParam *d, SamplePair **sa
   argument_read(&argc, argv, args);
 
   check_ddparam(p, d, sample, st, g, &sp);
+
   init_dump(p, d, g, *sample);
+
 
   StructInit_delete(st);
   return;
@@ -228,8 +230,8 @@ static void check_ddparam(DrParam *p, DDParam *d, SamplePair **sample, StructIni
   if(print_error_peakcall(p,g)) goto err;
   if(g->genome->len > THRE_GENOMELEN4WG) d->large_genome = true;
 
-  if((p->ftype==FTYPE_COMPARE_GENEBODY || p->ftype == FTYPE_TR) && !d->gene.argv)   PRINT_ERROR("error: %s requires -gene option.\n", str_ftype[p->ftype]);
-  if((p->ftype==FTYPE_FRIP || p->ftype==FTYPE_COMPARE_INTENSITY) && !d->bednum) PRINT_ERROR("error: %s requires -bed option.\n", str_ftype[p->ftype]);
+  if((p->ftype==FTYPE_COMPARE_GENEBODY || p->ftype == FTYPE_TR) && !d->gene.argv) PRINT_ERROR("error: %s requires -gene option.\n", str_ftype[p->ftype]);
+  if((p->ftype==FTYPE_FRIP || p->ftype==FTYPE_COMPARE_INTENSITY) && !d->bednum)   PRINT_ERROR("error: %s requires -bed option.\n", str_ftype[p->ftype]);
   if(p->ftype==FTYPE_GOVERLOOK && !range(d->bednum, 1, 3)) PRINT_ERROR("error: please specify -bed option (up to 3.)\n");
   if(p->ftype==FTYPE_PROFILE || p->ftype==FTYPE_HEATMAP){
     if(!range(d->ptype, 1, PTYPENUM-1))        PRINT_ERROR("error: Invalid input ptype: %d.\n",       d->ptype);
@@ -330,6 +332,8 @@ static void check_ddparam(DrParam *p, DDParam *d, SamplePair **sample, StructIni
       }
     }
   }
+  printf("testd\n");
+
   
   return;
   err:
@@ -425,7 +429,7 @@ static void check_sample_copy(DrParam *p, SamplePair **sample){
     }
     if(argI){
       for(j=0; j<i; j++){
-	if(!strcmp(argI, (*sample)[j].Input->argv)){
+	if((*sample)[j].Input->argv && !strcmp(argI, (*sample)[j].Input->argv)){
 	  (*sample)[i].Input = (*sample)[j].Input;
 	  (*sample)[i].copyI = j;
 	  break;
