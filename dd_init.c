@@ -332,8 +332,6 @@ static void check_ddparam(DrParam *p, DDParam *d, SamplePair **sample, StructIni
       }
     }
   }
-  printf("testd\n");
-
   
   return;
   err:
