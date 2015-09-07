@@ -144,7 +144,7 @@ static void output_Rfile(DrParam *p, DDParam *d, SamplePair *sample, int num, in
   char *posistr[]={"",
 		   "Distance from TSS (bp)",
 		   "Distance from TTS (bp)",
-		   "%% gene length from TSS",
+		   "% gene length from TSS",
 		   "Distance from the peak summit (bp)"};
 
   FILE *OUT = my_fopen(d->filename_profile, FILE_MODE_WRITE);
