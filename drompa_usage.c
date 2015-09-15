@@ -25,7 +25,7 @@ static void print_usage_if_binsize(int binsize){
 }
 
 static void print_usage_io(){
-  fprintf(stderr, "       -norm <int>      : normalization between ChIP and Input\n");
+  fprintf(stderr, "       -norm <int>     : normalization between ChIP and Input\n");
   fprintf(stderr, "            0; not normalize\n");
   fprintf(stderr, "            1; with total read number (default)\n");
   fprintf(stderr, "            2; with NCIS method\n");
@@ -163,9 +163,7 @@ void print_usage_dd(Function_Type ftype){
   if(ftype==FTYPE_GV) binsize = BINSIZE_DEFAULT_GV; else binsize = BINSIZE_DEFAULT;
   print_usage_if_binsize(binsize);
   if(ftype==FTYPE_PEAKCALL_SHARP || ftype==FTYPE_PEAKCALL_BROAD || ftype==FTYPE_PEAKCALL_E){
-    fprintf(stderr, "       -bs<int1> <int2>: change bin size of <int1>st sample\n");
     print_usage_io();
-    //  fprintf(stderr, "       -nosig: do not implement significant test (default: off)\n");
     //    print_mpbl();
     print_usage_threshold();
     fprintf(stderr, "\n   annotations:\n");
