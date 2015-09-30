@@ -162,6 +162,7 @@ void dr_calc_global_param(DrParam *p, SamplePair *sample, RefGenome *g){
       printf("sample%d: genome: ChIP read=%ld, Input read=%ld, ChIP/Input = %.2f\n", i+1, sample[i].ChIP->genome->nread, sample[i].Input->genome->nread, sample[i].comp->genome->ratio);
     }
   }
+
   return;
 }
 

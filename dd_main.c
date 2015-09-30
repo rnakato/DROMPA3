@@ -43,6 +43,7 @@ int main(int argc, char **argv){
   ddparam->pageheight = calc_pageheight(drparam, ddparam);
 
 #ifdef CLOCK
+
   clock_t t2 = clock();
   print_time(t1,t2);
 #endif
@@ -126,8 +127,10 @@ static void drompa4chr(DrParam *p, DDParam *d, SamplePair *sample, RefGenome *g,
   int i;
   char *prefix=NULL;
   char *filename=NULL;
+
   if(!p->includeYM && (!strcmp(g->chr[chr].name, "chrY") || !strcmp(g->chr[chr].name, "chrM") || !strcmp(g->chr[chr].name, "chrMT"))) return;
   if(d->chronly && d->chronly != chr) return;
+
   if(d->drawregion_argv && !d->drawregion->chr[chr].num) return;
   FLUSH("%s: ", g->chr[chr].name);  
   

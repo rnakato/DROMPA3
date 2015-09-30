@@ -40,7 +40,7 @@ static void print_usage(){
   fprintf(stderr, "       For paired-end file:\n");
   fprintf(stderr, "           -pair: add when the input file is paired-end \n");
   fprintf(stderr, "           -maxins: maximum fragment length (default: %d bp) \n", MAX_FRAGMENT_LEN);
-  fprintf(stderr, "       For consider enriched regions (peaks):\n");
+  fprintf(stderr, "       To take peaks into consideration:\n");
   fprintf(stderr, "           -bed <bedfile>: specify the BED file of enriched regions (e.g., peak regions)\n\n");
   fprintf(stderr, "       For normalization:\n");
   fprintf(stderr, "           Total read normalization: \n");

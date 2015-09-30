@@ -148,7 +148,6 @@ void dd_argv_init(int argc, char **argv, DrParam *p, DDParam *d, SamplePair **sa
 
   init_dump(p, d, g, *sample);
 
-
   StructInit_delete(st);
   return;
 }
@@ -241,8 +240,11 @@ static void check_ddparam(DrParam *p, DDParam *d, SamplePair **sample, StructIni
     if(!range(d->ntype, 0, 1))                 PRINT_ERROR("error: Invalid input ntype: %d.\n",       d->ntype);
   }
 
+  if(p->ftype == FTYPE_GV || p->ftype == FTYPE_PD){
+    d->drawregion_argv=NULL;    
+  }
   if(d->makefig){
-    if(p->ftype != FTYPE_GV && d->drawregion_argv){
+    if(d->drawregion_argv){
       isfile(d->drawregion_argv);
       d->drawregion = read_bedfile(d->drawregion_argv, g);
       //      show_bedfile(d->drawregion, g->chrnum);
