@@ -6,4 +6,7 @@ DROMPA (DRaw and Observe Multiple enrichment Profiles and Annotation) is a progr
 #2. Install and Usage
 See Manual.pdf for the installation and Usage.
 
+#3. Reference
+Nakato, R., Itoh T. and Shirahige K.: DROMPA: easy-to-handle peak calling and visualization software for the computational analysis and validation of ChIP-seq data, Genes to Cells, vol.18, issue 7, 2013.
+
 Please direct bug reports and questions about usage to rnakato@iam.u-tokyo.ac.jp.
