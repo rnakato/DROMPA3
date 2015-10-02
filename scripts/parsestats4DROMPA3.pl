@@ -46,7 +46,7 @@ close (File);
 print STDERR "Sample\tMapped reads\t + strand\t - strand\tRedundancy threshold\tNonredundant\tRedundant\tComplexity for10M\tRead depth\tGenome coverage\tTested_reads";
 print STDERR "\tGC summit" if($gcsummit ne "");
 print STDERR "\tFRiP" if($FRiP ne "");
-print "\n";
+print STDERR "\n";
 
 print "$file\t$total_reads\t$plus\t$minus\t$pcrbiasthre\t$total_remained\t$total_filtered\t$tested_complexity\t$depth\t$total_gc_base\t$tested_reads";
 print "\t$gcsummit" if($gcsummit ne "");
