@@ -43,7 +43,7 @@ int ParseLine(char *str, Elem clm[]){
 
 int ParseLine_arbit(char *str, Elem clm[], char token){
   int i, j=0, num=0, len=strlen(str);
-  char *strtemp = (char *)my_calloc(len, sizeof(char), "strtemp");
+  char *strtemp = (char *)my_calloc(len+1, sizeof(char), "strtemp");
   for(i=0; i<=len; i++){
     if(str[i]=='\0'){
       strtemp[j]='\0';

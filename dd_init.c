@@ -239,6 +239,8 @@ static void check_ddparam(DrParam *p, DDParam *d, SamplePair **sample, StructIni
     if(!range(d->stype, READDIST, PVALUEDIST)) PRINT_ERROR("error: Invalid input stype: %d.\n",       d->stype);
     if(!range(d->ntype, 0, 1))                 PRINT_ERROR("error: Invalid input ntype: %d.\n",       d->ntype);
   }
+  if(!range(d->visualize_ratio, 0, 2))         PRINT_ERROR("error: Invalid input showratio: %d.\n",   d->visualize_ratio);
+
 
   if(p->ftype == FTYPE_GV || p->ftype == FTYPE_PD){
     d->drawregion_argv=NULL;    
@@ -336,7 +338,7 @@ static void check_ddparam(DrParam *p, DDParam *d, SamplePair **sample, StructIni
   }
   
   return;
-  err:
+ err:
   print_error_dd(p->ftype);
 }
 
