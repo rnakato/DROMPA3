@@ -10,7 +10,7 @@
 
 void output_bindata(char *dir, char *prefix, RefGenome *g, TYPE_WIGARRAY *array, char *gtfile, int binsize, int binnum, int chr, PWfile_Type wtype);
 void make_binary(TYPE_WIGARRAY *array, char *outputfile, int binnum);
-void make_bedGraph(RefGenome *g, TYPE_WIGARRAY *array, char *outputfile, char *name, int binsize, int binnum, int chr);
+void make_bedGraph(RefGenome *g, TYPE_WIGARRAY *array, char *outputfile, char *prefix, int binsize, int binnum, int chr);
 void convert_bedGraph_to_bigWig(char *outputfile, char *output_prefix, char *gtfile);
 void make_wig(RefGenome *g, TYPE_WIGARRAY *array, char *outputfile, char *name, int binsize, int binnum, int chr, PWfile_Type wtype);
 

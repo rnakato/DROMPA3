@@ -22,8 +22,8 @@ void output_bindata(char *dir, char *prefix, RefGenome *g, TYPE_WIGARRAY *array,
   }
   else if(wtype==TYPE_BEDGRAPH || wtype==TYPE_BIGWIG){
     sprintf(outputfilename, "%s.bedGraph", output_prefix);
-    make_bedGraph(g, array, outputfilename, prefix, binsize, binnum, chr);
-    if(wtype==TYPE_BIGWIG && chr == g->chrnum-1) convert_bedGraph_to_bigWig(outputfilename, output_prefix, gtfile);
+    make_bedGraph(g, array, outputfilename, output_prefix, binsize, binnum, chr);
+    if(chr == g->chrnum-1 && wtype==TYPE_BIGWIG) convert_bedGraph_to_bigWig(outputfilename, output_prefix, gtfile);
   }
   else if(wtype==TYPE_COMPRESSWIG || wtype==TYPE_UNCOMPRESSWIG){
     sprintf(outputfilename, "%s.wig", output_prefix);
@@ -45,29 +45,47 @@ void make_binary(TYPE_WIGARRAY *array, char *outputfile, int binnum){
   return;
 }
 
-void make_bedGraph(RefGenome *g, TYPE_WIGARRAY *array, char *outputfile, char *name, int binsize, int binnum, int chr){
+void make_bedGraph(RefGenome *g, TYPE_WIGARRAY *array, char *outputfile, char *prefix, int binsize, int binnum, int chr){
   int i,e;
   if(chr==1) remove_file(outputfile);
   FILE *OUT = my_fopen(outputfile, FILE_MODE_A);
-  if(chr==1){
-    fprintf(OUT, "browser position %s:%ld-%ld\n", g->chr[chr].name, g->chr[chr].len/3, min(g->chr[chr].len/3+1000000, g->chr[chr].len-1));
-    fprintf(OUT, "browser hide all\n");
-    fprintf(OUT, "browser pack refGene encodeRegions\n");
-    fprintf(OUT, "browser full altGraph\n");
-    fprintf(OUT, "track type=bedGraph name=\"%s\" description=\"Merged tag counts for every %d bp\" visibility=full\n", name, binsize);
-  }
   for(i=0; i<binnum; i++){
     if(i==binnum -1) e = g->chr[chr].len-1; else e = (i+1)*binsize;
     if(array[i]) fprintf(OUT, "%s %d %d %.3f\n", g->chr[chr].name, i*binsize, e, WIGARRAY2VALUE(array[i]));
   }
   fclose(OUT);
+
+  if(chr == g->chrnum-1){
+      char *command = alloc_str_new(outputfile, strlen(outputfile) + 100);
+      sprintf(command, "sort -k1,1 -k2,2n %s > %s.sort", outputfile, outputfile);
+      LOG("%s\n", command);
+      my_system(command);
+      char *tempfile = alloc_str_new(outputfile, 100);
+      sprintf(tempfile, "%s.temp", outputfile);
+      OUT = my_fopen(tempfile, FILE_MODE_A);
+      fprintf(OUT, "browser position %s:%ld-%ld\n", g->chr[1].name, g->chr[1].len/3, min(g->chr[1].len/3+1000000, g->chr[1].len-1));
+      fprintf(OUT, "browser hide all\n");
+      fprintf(OUT, "browser pack refGene encodeRegions\n");
+      fprintf(OUT, "browser full altGraph\n");
+      fprintf(OUT, "track type=bedGraph name=\"%s\" description=\"Merged tag counts for every %d bp\" visibility=full\n", prefix, binsize);
+      fclose(OUT);
+      sprintf(command, "cat %s %s.sort > %s", tempfile, outputfile, outputfile);
+      LOG("%s\n", command);
+      my_system(command);
+      sprintf(command, "rm %s.sort %s", outputfile, tempfile);
+      LOG("%s\n", command);
+      my_system(command);
+
+      MYFREE(command);
+      MYFREE(tempfile);
+  }
   return;
 }
 
 void convert_bedGraph_to_bigWig(char *outputfile, char *output_prefix, char *gtfile){
   printf("convert to bigWig format...\n");
   char *command = alloc_str_new(outputfile, strlen(gtfile) + strlen(output_prefix) + 100);
-  sprintf(command, "bedGraphToBigWig %s %s %s.bw", outputfile, gtfile, output_prefix);
+  sprintf(command, "bedGraphToBigWig %s.bedGraph %s %s.bw", output_prefix, gtfile, output_prefix);
   LOG("%s\n", command);
   my_system(command);
   remove(outputfile);
