@@ -297,11 +297,9 @@ static gdouble define_value_and_color(DrParam *p, DDParam *d, cairo_t *cr, Sampl
   switch(type){
   case LTYPE_CHIP:
     value = WIGARRAY2VALUE(sample->ChIP->data[i]) /sample->scale_tag;
-
     cairo_set_source_rgba(cr, CLR_GREEN3, 1);
-
     if(sample->peakarray && sample->peakarray[i]) cairo_set_source_rgba(cr, CLR_PINK, 1);
-    if(!sample->peakarray) peakcall(p, cr, sample, i);
+    if(!sample->peakarray && d->do_peakcall) peakcall(p, cr, sample, i);
     
     break;
   case LTYPE_INPUT:

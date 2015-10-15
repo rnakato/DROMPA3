@@ -161,6 +161,7 @@ typedef struct{
   int visualize_ctag;
   int visualize_itag;
   int barnum;
+  int do_peakcall;
   bool backcolors;
 
   /* annotation*/

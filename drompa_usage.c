@@ -92,6 +92,7 @@ static void print_usage_annotations(){
 }
 
 static void print_usage_drawing1(){
+  fprintf(stderr, "       -nosig: do not call peaks\n");
   fprintf(stderr, "       -png: output with png format (Note: output each page separately)\n");
   fprintf(stderr, "       -ls <int>: length per one line (kb) (default: %d kb)\n", LS_DEFAULT);
   fprintf(stderr, "       -lpp <int>: number of lines per one page (default: 1)\n");

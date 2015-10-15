@@ -95,6 +95,7 @@ void dd_argv_init(int argc, char **argv, DrParam *p, DDParam *d, SamplePair **sa
     {"-qthre",    ARGUMENT_TYPE_FLOAT,    &p->qthre,            NULL},
     {"-norm",     ARGUMENT_TYPE_INTEGAR,  &p->ntype,            NULL},
     /* DDParam */
+    {"-nosig",    ARGUMENT_TYPE_FLAG_OFF, &d->do_peakcall,      NULL},
     {"-chr",      ARGUMENT_TYPE_INTEGAR,  &d->chronly,          NULL},
     {"-bed",      ARGUMENT_TYPE_STRING_MULTI, &(st->str_bed), &(d->bednum)},
     {"-inter",    ARGUMENT_TYPE_STRING_MULTI, &(st->str_inter), &(d->internum)},
@@ -157,9 +158,11 @@ static void check_argv1(DrParam *p, DDParam *d, char *argv, SampleParam *sp){
   if(!strcmp(argv, "--version")) print_version();
   else if(!strcmp(argv, "PC_SHARP")){
     p->ftype = FTYPE_PEAKCALL_SHARP;
+    d->do_peakcall = 1;
     d->makefig = 1;
   }else if(!strcmp(argv, "PC_BROAD")){
     p->ftype = FTYPE_PEAKCALL_BROAD;
+    d->do_peakcall = 1;
     d->makefig = 1;
     p->smoothing = SMOOTHING_BROAD;
     d->width_per_line = LS_DEFAULT*2;
