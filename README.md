@@ -21,6 +21,7 @@ DROMPA requires the following programs and libraries:
 
  See Manual.pdf for detail.
 
+
 #3. Reference
 Nakato, R., Itoh T. and Shirahige K.: DROMPA: easy-to-handle peak calling and visualization software for the computational analysis and validation of ChIP-seq data, Genes to Cells, vol.18, issue 7, 2013.
 
