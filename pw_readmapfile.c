@@ -2,6 +2,7 @@
  * This file is a part of DROMPA sources.
  */
 #include <string.h>
+#include <zlib.h>
 #include "pw_readmapfile.h"
 #include "pw_param_new.h"
 #include "alloc.h"
@@ -378,12 +379,31 @@ static void parse_bowtie(PwParam *p, Mapfile *mapfile, RefGenome *g, char *input
 
 static void parse_tagAlign(PwParam *p, Mapfile *mapfile, RefGenome *g, char *inputfile){
   char *str = (char *)my_calloc(STR_LEN, sizeof(char), "str");
+  char *c=NULL;
   Elem clm[ELEM_NUM];
-  FragmentData *p_frag = (FragmentData *)my_calloc(1, sizeof(FragmentData), "p_frag");
-  FILE *IN = my_fopen(inputfile, FILE_MODE_READ);
   int nclm=0;
+  FragmentData *p_frag = (FragmentData *)my_calloc(1, sizeof(FragmentData), "p_frag");
+  int zipped=0;
+  if(strstr(inputfile, ".gz")) zipped=1;
+  FILE *IN=NULL;
+  struct gzFile_s *gzIN=NULL;
+  if(zipped){
+    if((gzIN = gzopen(inputfile, "r"))==NULL){
+      fprintf(stderr,"[E] Cannot open <%s>.\n", inputfile); 
+      exit(1);
+    }
+  }else{
+    IN = my_fopen(inputfile, FILE_MODE_READ);
+  }
 
-  while((fgets(str, STR_LEN, IN))!=NULL){
+  
+  while(1){
+    if(zipped){
+      c = gzgets(gzIN, str, STR_LEN);
+    }else{
+      c = fgets(str, STR_LEN, IN);
+    }
+    if(!c) break;
     if(str[0]=='\n') continue;
     chomp(str);
     nclm = ParseLine(str, clm);
@@ -409,7 +429,11 @@ static void parse_tagAlign(PwParam *p, Mapfile *mapfile, RefGenome *g, char *inp
       exit(0);
     }
   }
-  fclose(IN);
+  if(zipped){
+    gzclose(gzIN);
+  }else{
+    fclose(IN);
+  }
   MYFREE(str);
   MYFREE(p_frag);
 
