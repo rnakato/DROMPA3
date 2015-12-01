@@ -23,6 +23,8 @@ static void print_usage(){
   fprintf(stderr, "       <genome_table>\tTab-delimited file describing the name and length of each chromosome\n\n");
   fprintf(stderr, "Options:\n");
   fprintf(stderr, "       -f {SAM|BAM|BOWTIE|TAGALIGN}: format of input file (default:SAM) \n");
+  fprintf(stderr, "       TAGALIGN could be gzip'ed (extension: tagAlign.gz)\n");
+
   fprintf(stderr, "       -odir: output directory name (default: 'parse2wigdir') \n");
   fprintf(stderr, "       -binsize: bin size (default: %d bp) \n", BINSIZE_DEFAULT);
   fprintf(stderr, "       -rcenter <int>: consider <int> bp around the center of fragment \n");
