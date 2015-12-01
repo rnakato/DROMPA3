@@ -24,6 +24,7 @@ typedef struct{
 static void do_parse(PwParam *p, char *inputfile, Mapfile *mapfile, RefGenome *);
 static void parse_sam(PwParam *p, Mapfile *mapfile, RefGenome *g, char *inputfile);
 static void parse_bowtie(PwParam *p, Mapfile *mapfile, RefGenome *g, char *inputfile);
+static void parse_tagAlign(PwParam *p, Mapfile *mapfile, RefGenome *g, char *inputfile);
 
 static void add_SeqStats_to_genome(Mapfile *mapfile, RefGenome *g){
   int chr;
@@ -115,6 +116,7 @@ static void do_parse(PwParam *p, char *inputfile, Mapfile *mapfile, RefGenome *g
   case FILETYPE_BAM:    /* same as SAM */
   case FILETYPE_SAM:    parse_sam(p, mapfile, g, inputfile);    break;
   case FILETYPE_BOWTIE: parse_bowtie(p, mapfile, g, inputfile); break;
+  case FILETYPE_TAGALIGN: parse_tagAlign(p, mapfile, g, inputfile); break;
   }
   printf("done.\n");
 }
@@ -365,6 +367,46 @@ static void parse_bowtie(PwParam *p, Mapfile *mapfile, RefGenome *g, char *input
 	if(p_frag->fraglen <= p->max_fraglen && p_frag->fraglen > 0) add_fragment_to_readarray(p, mapfile, p_frag);
 	tptemp=NULL;
       }
+    }
+  }
+  fclose(IN);
+  MYFREE(str);
+  MYFREE(p_frag);
+
+  return;
+}
+
+static void parse_tagAlign(PwParam *p, Mapfile *mapfile, RefGenome *g, char *inputfile){
+  char *str = (char *)my_calloc(STR_LEN, sizeof(char), "str");
+  Elem clm[ELEM_NUM];
+  FragmentData *p_frag = (FragmentData *)my_calloc(1, sizeof(FragmentData), "p_frag");
+  FILE *IN = my_fopen(inputfile, FILE_MODE_READ);
+  int nclm=0;
+
+  while((fgets(str, STR_LEN, IN))!=NULL){
+    if(str[0]=='\n') continue;
+    chomp(str);
+    nclm = ParseLine(str, clm);
+    //    printf("%s %d\n",str, nclm);
+    if(nclm < 6){
+      fprintf(stderr, "please use tagAlign (BED3+3) file.\n");
+      exit(0);
+    }
+    p_frag->num_multimapped = 1;
+
+    if(p->rtype==READTYPE_SINGLE){  // single_end
+      p_frag->chr_F3 = changechr_str2int(clm[0].str, g);
+      if(!p_frag->chr_F3){ printf("invalid chr name: %s\n", clm[2].str); exit(0);}
+      p_frag->F3      = atoi(clm[1].str);
+      p_frag->readlen_F3 = abs(atoi(clm[2].str) - atoi(clm[1].str));
+      p_frag->fraglen = p->fraglen;
+      if(clm[5].str[0] == '+') p_frag->strand = STRAND_PLUS; else p_frag->strand = STRAND_MINUS;
+      //      printf("%d %d %d %d\n", p_frag->F3, p_frag->readlen_F3, p_frag->fraglen, p_frag->strand);
+      add_fragment_to_readarray(p, mapfile, p_frag);
+      mapfile->fstats.dist_readlen_F3[p_frag->readlen_F3]++;
+    }else{   // paired_end
+      fprintf(stderr, "paired-end tagAlign format is not supported.\n");
+      exit(0);
     }
   }
   fclose(IN);

@@ -26,7 +26,7 @@
 #define WEIGHT2INT(v) ((v) * 10000.0)
 #define INT2WEIGHT(v) ((v) * (1.0/10000.0))
 
-typedef enum {FILETYPE_SAM, FILETYPE_BAM, FILETYPE_BOWTIE} Inputfiletype;
+typedef enum {FILETYPE_SAM, FILETYPE_BAM, FILETYPE_BOWTIE, FILETYPE_TAGALIGN} Inputfiletype;
 typedef enum {READTYPE_SINGLE, READTYPE_PAIR} Readtype;
 typedef enum{
   NORMTYPE_NONE,

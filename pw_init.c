@@ -22,7 +22,7 @@ static void print_usage(){
   fprintf(stderr, "       <output>\tPrefix of output files\n");
   fprintf(stderr, "       <genome_table>\tTab-delimited file describing the name and length of each chromosome\n\n");
   fprintf(stderr, "Options:\n");
-  fprintf(stderr, "       -f {SAM|BAM|BOWTIE}: format of input file (default:SAM) \n");
+  fprintf(stderr, "       -f {SAM|BAM|BOWTIE|TAGALIGN}: format of input file (default:SAM) \n");
   fprintf(stderr, "       -odir: output directory name (default: 'parse2wigdir') \n");
   fprintf(stderr, "       -binsize: bin size (default: %d bp) \n", BINSIZE_DEFAULT);
   fprintf(stderr, "       -rcenter <int>: consider <int> bp around the center of fragment \n");
@@ -146,6 +146,7 @@ static void check_pwparam(PwParam *p, RefGenome *g, char *ftype, char *ntype){
     if(!strcmp(ftype, "SAM"))         p->ftype = FILETYPE_SAM;
     else if(!strcmp(ftype, "BAM"))    p->ftype = FILETYPE_BAM;
     else if(!strcmp(ftype, "BOWTIE")) p->ftype = FILETYPE_BOWTIE;
+    else if(!strcmp(ftype, "TAGALIGN")) p->ftype = FILETYPE_TAGALIGN;
     else{ fprintf(stderr, "Invalid input filetype: %s\n", ftype); exit(0);}
   }
 
@@ -177,7 +178,7 @@ static void check_pwparam(PwParam *p, RefGenome *g, char *ftype, char *ntype){
 }
 
 static void init_dump(PwParam *p){
-  char str_Inputfiletype[][10]={"SAM", "BAM", "BOWTIE"};
+  char str_Inputfiletype[][10]={"SAM", "BAM", "BOWTIE", "TAGALIGN"};
   char str_end[][16]={"SINGLE_END", "PAIRED_END"};
   char str_bool[][10]={"OFF", "ON"};
   char str_wigfiletype[][20]={"BINARY", "COMPRESSED WIG", "WIG", "BEDGRAPH", "BIGWIG"};
