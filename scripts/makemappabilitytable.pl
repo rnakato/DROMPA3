@@ -30,7 +30,7 @@ for($i=0; $i<$num; $i++){
 	$count1 = ($line =~ tr/1/1/);
     }
     if(!$count1){die "error: no mappable seq data in $filename.\n"}
-#    my $r = $count1 / $len[$i];
+    my $r = $count1 / $len[$i];
 #    print "$name[$i]\t$count1\t$len[$i]\t$r\n";
     print "$name[$i]\t$count1\n";
     close (InputFile);
