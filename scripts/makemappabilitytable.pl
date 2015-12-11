@@ -29,7 +29,7 @@ for($i=0; $i<$num; $i++){
 #	$count0 = ($line =~ tr/0/0/);
 	$count1 = ($line =~ tr/1/1/);
     }
-    my $r = $count1 / $len[$i];
+#    my $r = $count1 / $len[$i];
 #    print "$name[$i]\t$count1\t$len[$i]\t$r\n";
     print "$name[$i]\t$count1\n";
     close (InputFile);
