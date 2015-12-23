@@ -70,6 +70,7 @@ gdouble dot_per_bp;
     cairo_move_to(cr, x1, (int)y1);		\
     cairo_rel_line_to(cr, 0, (int)ylen); }while(0)
 
+static void draw_region(DrParam *p, DDParam *d, SamplePair *sample, RefGenome *g, cairo_surface_t *surface, cairo_t *cr, int s, int e, char *prefix, int region_no, int chr);
 static void draw_page(DrParam *p, DDParam *d, SamplePair *sample, RefGenome *g, cairo_t *cr, int page_curr, int num_line, int num_page, int pstart, int pend, int region_no, int chr);
 static void draw_dataline(DrParam *p, DDParam *d, SamplePair *sample, cairo_t *cr, int xstart, int xend);
 static void stroke_xaxis(DDParam *d, cairo_t *cr, gint lstart, gint lend);
@@ -85,18 +86,6 @@ static void show_colors(cairo_t *cr, gint x, gint *ycen, gchar *label, gdouble r
 static void stroke_rectangle(cairo_t *cr, gint x1, gint x2, gint y1, gint height);
 static void fill_rectangle(cairo_t *cr, gint x1, gint x2, gint y1, gint height, gdouble r, gdouble g, gdouble b, double alpha);
 static void showtext_cr(cairo_t *cr, gdouble x, gdouble y, gchar *str, gint fontsize);
-
-void merge_pdf(char *prefix){
-  char *command = alloc_str_new(prefix, strlen(prefix) +50);
-  /* pdftk */
-  sprintf(command, "pdftk %s_*.pdf cat output %s.pdf", prefix, prefix);
-  my_system(command);
-  /* rm */
-  sprintf(command, "rm %s_*.pdf", prefix);
-  my_system(command);
-  MYFREE(command);
-  return;
-}
 
 int calc_pageheight(DrParam *p, DDParam *d){
   gint height=OFFSET_Y*2, height_sample=0, height_lpp=0, height_dataline=0;
@@ -138,45 +127,66 @@ int calc_pageheight(DrParam *p, DDParam *d){
   return height;
 }
 
-void draw_region(DrParam *p, DDParam *d, SamplePair *sample, RefGenome *g, int s, int e, char *prefix, int region_no, int chr){
+static void draw_region(DrParam *p, DDParam *d, SamplePair *sample, RefGenome *g, cairo_surface_t *surface, cairo_t *cr, int s, int e, char *prefix, int region_no, int chr){
   int i;
   int num_line = (e-s-1) / d->width_per_line +1;
   int num_page = (num_line -1) / d->linenum_per_page +1;
-  char *format;
-  if(!d->png) format="pdf"; else format="png";
   char *filename = alloc_str_new(prefix, 128);
-  sprintf(filename, "%s.%s", prefix, format);
-  remove_file(filename);
 
   /* initialize global variables */
   dot_per_bp = WIDTH_DRAW/(double)d->width_per_line;
 
-  cairo_surface_t *surface;
-  cairo_t *cr;
   for(i=0; i<num_page; i++){
-    if(num_page > 1) sprintf(filename, "%s_%.4d_%.4d.%s", prefix, region_no +1, i+1, format);
-    else             sprintf(filename, "%s_%.4d.%s",      prefix, region_no +1,      format);
+    if(d->png){
+      sprintf(filename, "%s_%.4d_%.4d.png", prefix, region_no +1, i+1);
+      remove_file(filename);
+      surface = cairo_image_surface_create(CAIRO_FORMAT_ARGB32, PAGEWIDTH, d->pageheight);
+      cr = cairo_create(surface);
+    }
 
     FLUSH("   page %5d/%5d/%5d\r", i+1, num_page, region_no+1);
-
-    if(!d->png) surface = cairo_pdf_surface_create(filename, PAGEWIDTH, d->pageheight);
-    else        surface = cairo_image_surface_create(CAIRO_FORMAT_ARGB32, PAGEWIDTH, d->pageheight);
-    cr = cairo_create(surface);
     draw_page(p, d, sample, g, cr, i, num_line, num_page, s, e, region_no, chr);
-    cairo_destroy(cr);
-    if(d->png) cairo_surface_write_to_png(surface, filename);
-    cairo_surface_destroy(surface);
+    if(!d->png) cairo_show_page(cr);
+    else{
+      cairo_destroy(cr);
+      cairo_surface_write_to_png(surface, filename);
+      cairo_surface_destroy(surface);
+    }
   }
   printf("\n");
   MYFREE(filename);
 
-  char *tempstr=NULL;
-  if(num_page > 1 && !d->png){
-    tempstr = alloc_str_new(prefix, 20);
-    sprintf(tempstr, "%s_%.4d", prefix, region_no +1);
-    merge_pdf(tempstr);
-    MYFREE(tempstr);
+  return;
+}
+
+void draw(DrParam *p, DDParam *d, SamplePair *sample, RefGenome *g, int chr, char *prefix){
+  int j;
+  BedChr *region=NULL;
+  cairo_surface_t *surface=NULL;
+  cairo_t *cr=NULL;
+
+  char *filename = alloc_str_new(prefix, 128);
+  if(!d->png){
+    sprintf(filename, "%s.pdf", prefix);
+    remove_file(filename);
+    surface = cairo_pdf_surface_create(filename, PAGEWIDTH, d->pageheight);
+    cr = cairo_create(surface);
   }
+
+  if(!d->drawregion_argv){  // whole chromosome
+    draw_region(p, d, sample, g, surface, cr, 0, (int)g->chr[chr].len, prefix, 0, chr);
+  }else{                    // -r option supplied
+    region = &(d->drawregion->chr[chr]);
+    for(j=0; j<region->num; j++){
+      //      printf("chr%d\t%d\t%d\n", chr, region->bed[j].s, region->bed[j].e);
+      draw_region(p, d, sample, g, surface, cr, region->bed[j].s, region->bed[j].e, prefix, j, chr);
+    }
+  }
+  if(!d->png){
+    cairo_destroy(cr);
+    cairo_surface_destroy(surface);
+  }
+  MYFREE(filename);
   return;
 }
 

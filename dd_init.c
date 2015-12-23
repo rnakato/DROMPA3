@@ -277,7 +277,7 @@ static void check_ddparam(DrParam *p, DDParam *d, SamplePair **sample, StructIni
       }
     }
     d->command_mergepdf = (char *)my_calloc((strlen(p->headname)+100)*g->chrnum, sizeof(char), "command_margepdf");
-    sprintf(d->command_mergepdf, "pdftk ");
+    sprintf(d->command_mergepdf, "cpdf ");
   }
 
   if(d->bednum){ // bedfiles

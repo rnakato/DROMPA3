@@ -22,7 +22,6 @@
 
 static void drompafunc(DrParam *p, DDParam *d, SamplePair *sample, RefGenome *g);
 static void drompa4chr(DrParam *p, DDParam *d, SamplePair *sample, RefGenome *g, int chr);
-static void draw(DrParam *p, DDParam *d, SamplePair *sample, RefGenome *g, int chr, char *prefix);
 static void mergepdf_all(DrParam *p, DDParam *d, RefGenome *g);
 static DDParam *ddparam_new();
 static void ddparam_delete(DDParam *p);
@@ -193,23 +192,6 @@ static void drompa4chr(DrParam *p, DDParam *d, SamplePair *sample, RefGenome *g,
   return;
 }
 
-static void draw(DrParam *p, DDParam *d, SamplePair *sample, RefGenome *g, int chr, char *prefix){
-  int j;
-  BedChr *region=NULL;
-
-  if(!d->drawregion_argv){  // whole chromosome
-    draw_region(p, d, sample, g, 0, (int)g->chr[chr].len, prefix, 0, chr);
-  }else{                    // -r option supplied
-    region = &(d->drawregion->chr[chr]);
-    for(j=0; j<region->num; j++){
-      //      printf("chr%d\t%d\t%d\n", chr, region->bed[j].s, region->bed[j].e);
-      draw_region(p, d, sample, g, region->bed[j].s, region->bed[j].e, prefix, j, chr);
-    }
-  }
-  if(!d->png) merge_pdf(prefix);
-  return;
-}
-
 static void mergepdf_all(DrParam *p, DDParam *d, RefGenome *g){
   int chr;
   char *filename = alloc_str_new(p->headname, 20);
@@ -217,8 +199,8 @@ static void mergepdf_all(DrParam *p, DDParam *d, RefGenome *g){
 
   sprintf(filename, "%s.pdf", p->headname);
   remove_file(filename);
-  /* pdftk */
-  sprintf(d->command_mergepdf, "%scat output %s.pdf", d->command_mergepdf, p->headname);
+  /* cpdf */
+  sprintf(d->command_mergepdf, "%s-o %s.pdf", d->command_mergepdf, p->headname);
   my_system(d->command_mergepdf);
   /* rm */
   if(d->rmchr){

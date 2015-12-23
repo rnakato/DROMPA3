@@ -7,8 +7,7 @@
 #include "drompa_gv.h"
 #include "dd_gv.h"
 
-void draw_region(DrParam *p, DDParam *d, SamplePair *sample, RefGenome *g, int s, int e, char *prefix, int region_no, int chr);
-void merge_pdf(char *prefix);
+void draw(DrParam *p, DDParam *d, SamplePair *sample, RefGenome *g, int chr, char *prefix);
 int calc_pageheight(DrParam *p, DDParam *d);
 void genome_overlook(DrParam *p, DDParam *d, RefGenome *g);
 

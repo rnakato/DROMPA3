@@ -1,6 +1,10 @@
-# DROMPA3 README (version 3.0.0)
+# DROMPA3 README (version 3.1.0)
 
 #0. Recent news
+* 2015-12-24
+3.1.0 
+improve pdf creating and change the tool for marging pdf files from pdftk to cpdf (Coherent PDF) because pdftk is no longer supported on several OS (e.g., CentOS 7).
+
 * 2015-06-10  
 3.0.0 (Beta) first commit.
 
@@ -15,7 +19,7 @@ DROMPA requires the following programs and libraries:
 * Cairo libraries (http://www.cairographics.org/)
 * GTK library (http://www.gtk.org/)
 * GNU Scientific Library (http://www.gnu.org/software/gsl/)
-* PDFtk (http://www.pdflabs.com/tools/pdftk-the-pdf-toolkit/)
+* Coherent PDF (http://community.coherentpdf.com/)
 * (optional) SAMtools (http://samtools.sourceforge.net/)
 * (optional) R (http://www.r-project.org/)
 
