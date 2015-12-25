@@ -59,7 +59,6 @@ dd_stroke.o: dd_stroke.c
 
 clean:
 	rm -f $(OBJS_PW) $(OBJS_DP) $(OBJS_DD) $(TARGET)
-	rm *~
 
 $(OBJS_PW): $(HEADS_PW) Makefile
 $(OBJS_DP): $(HEADS_DP) Makefile
