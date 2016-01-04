@@ -99,11 +99,10 @@ static void add_wigstats_bg(Mapfile *p, TYPE_WIGARRAY *array, int chr, int binnu
       p->wstats.chr[chr].darray_bg[0]++;
       continue;
     }
-    if(val >= p->wstats.num95) continue;
     v = WIGARRAY2VALUE(val);
-
     if(v >= p->wstats.n_darray - 1) p->wstats.chr[chr].darray_bg[p->wstats.n_darray]++;
     else p->wstats.chr[chr].darray_bg[v]++;
+    if(val >= p->wstats.num95) continue;
 
     ave += v;
     num++;
@@ -200,7 +199,7 @@ static void makewig_chr(PwParam *p, Mapfile *mapfile, RefGenome *g, int chr){
   mapfile->wstats.genome->num += mapfile->wstats.chr[chr].num = num;
 
   /* make wigarray stats */
-  add_wigstats_bg(mapfile, wigarray, chr, num);
+  add_wigstats_bg(mapfile, bgarray, chr, num);
   MYFREE(bgarray);
   add_wigstats_all(mapfile, wigarray, chr, binnum);
   

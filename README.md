@@ -1,19 +1,12 @@
-# DROMPA3 README (version 3.1.0)
+# DROMPA3 README (version 3.1.1)
 
 #0. Recent news
-* 2015-12-24
-3.1.0 
-improve pdf creating and change the tool for marging pdf files from pdftk to cpdf (Coherent PDF) because pdftk is no longer supported on several OS (e.g., CentOS 7).
-
-* 2015-06-10  
-3.0.0 (Beta) first commit.
+Please check the file 'ChangeLog' for the changelog.
 
 #1. Overview
 DROMPA (DRaw and Observe Multiple enrichment Profiles and Annotation) is a program for user-friendly and flexible ChIP-seq pipelining. DROMPA can be used for quality check, PCRbias filtering, normalization, peak calling, visualization and other multiple analyses of ChIP-seq data. DROMPA is specially designed so that it is easy to handle, and for users without a strong bioinformatics background.
 
 #2. Install and Usage
-To install DROMPA, simply type "make".
-
 DROMPA requires the following programs and libraries:
 * GCC compiler (http://gcc.gnu.org/)
 * Cairo libraries (http://www.cairographics.org/)
@@ -24,6 +17,8 @@ DROMPA requires the following programs and libraries:
 * (optional) R (http://www.r-project.org/)
 
  See Manual.pdf for detail.
+
+To install DROMPA, simply type "make".
 
 
 #3. Reference
