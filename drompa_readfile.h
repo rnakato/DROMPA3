@@ -7,7 +7,7 @@
 #include "seq.h"
 #include "drompa_gv.h"
 
-SamplePair *scan_samplestr(DrParam *p, char **str, int chrnum);
+SamplePair *scan_samplestr(DrParam *p, char **, char **, int);
 void dr_calc_global_param(DrParam *p, SamplePair *sample, RefGenome *g);
 void dr_read_wigdata(DrParam *, SamplePair *sample, Samplefile *, RefGenome *g, int chr);
 void dr_delete_wigdata(Samplefile *s);

@@ -1,4 +1,4 @@
-# DROMPA3 README (version 3.1.1)
+# DROMPA3 README (version 3.2.0)
 
 #0. Recent news
 Please check the file 'ChangeLog' for the changelog.

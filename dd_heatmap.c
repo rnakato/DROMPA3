@@ -509,7 +509,7 @@ static void stroke_ylabel(DDParam *d, cairo_t *cr, gint num){
   gint x = OFFSET_X - 10;
   gint y = -OFFSET_Y - FONTSIZE * strlen(str)/2;
   cairo_set_source_rgba(cr, CLR_BLACK, 1);
-  cairo_select_font_face(cr, "sans-serif", CAIRO_FONT_SLANT_NORMAL, CAIRO_FONT_WEIGHT_NORMAL);
+  cairo_select_font_face(cr, FONTS_STYLE, CAIRO_FONT_SLANT_NORMAL, CAIRO_FONT_WEIGHT_NORMAL);
   cairo_set_font_size(cr, FONTSIZE);
   cairo_rotate(cr, -M_PI / 2);
 
@@ -541,7 +541,7 @@ static void define_color(cairo_t *cr, gdouble r){
 
 static void showtext_cr(cairo_t *cr, gdouble x, gdouble y, gchar *str, gint fontsize){
   cairo_move_to(cr, x, y);
-  cairo_select_font_face(cr, "sans-serif", CAIRO_FONT_SLANT_NORMAL, CAIRO_FONT_WEIGHT_NORMAL);
+  cairo_select_font_face(cr, FONTS_STYLE, CAIRO_FONT_SLANT_NORMAL, CAIRO_FONT_WEIGHT_NORMAL);
   cairo_set_font_size(cr, fontsize);
   cairo_show_text(cr, str);
   cairo_stroke(cr);

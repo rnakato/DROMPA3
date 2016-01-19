@@ -17,17 +17,17 @@
 #include "drompa_usage.h"
 
 typedef struct{
-  char **str_argv;
+  char **str_argv, **str_argv_overlay;
   char **str_pd;
   char **str_bed;
   char **str_inter;
 } StructInit;
 
 typedef struct{
-  int binsize;
-  double scale_tag;
-  double scale_ratio;
-  double scale_pvalue;
+  int binsize, binsize_overlay;
+  double scale_tag, scale_tag_overlay;
+  double scale_ratio, scale_ratio_overlay;
+  double scale_pvalue, scale_pvalue_overlay;
 } SampleParam;
 
 #define PRINT_ERROR(args...) do{ fprintf(stderr, args); goto err; }while(0)
@@ -43,6 +43,7 @@ static StructInit *StructInit_new(int num){
   if(num<=0){ printf("error:%s: num = %d.\n",__FUNCTION__, num); exit(0);}
   StructInit *p = (StructInit *)my_calloc(num, sizeof(StructInit), "StructInit");
   p->str_argv   = (char **)my_calloc(num, sizeof(char *), "str_argv");
+  p->str_argv_overlay = (char **)my_calloc(num, sizeof(char *), "str_argv_overlay");
   p->str_pd     = (char **)my_calloc(num, sizeof(char *), "str_pd");
   p->str_bed    = (char **)my_calloc(num, sizeof(char *), "str_bed");
   p->str_inter  = (char **)my_calloc(num, sizeof(char *), "str_inter");
@@ -51,6 +52,7 @@ static StructInit *StructInit_new(int num){
 
 static void StructInit_delete(StructInit *p){
   MYFREE(p->str_argv);
+  MYFREE(p->str_argv_overlay);
   MYFREE(p->str_pd);
   MYFREE(p->str_bed);
   MYFREE(p->str_inter);
@@ -62,10 +64,10 @@ void dd_argv_init(int argc, char **argv, DrParam *p, DDParam *d, SamplePair **sa
   if(argc<=1) print_usage_base();
   
   SampleParam sp;
-  sp.binsize = BINSIZE_DEFAULT;
-  sp.scale_tag = SCALE_TAG_DEFAULT;
-  sp.scale_ratio = SCALE_RATIO_DEFAULT;
-  sp.scale_pvalue = SCALE_PVALUE_DEFAULT;
+  sp.binsize      = sp.binsize_overlay      = BINSIZE_DEFAULT;
+  sp.scale_tag    = sp.scale_tag_overlay    = SCALE_TAG_DEFAULT;
+  sp.scale_ratio  = sp.scale_ratio_overlay  = SCALE_RATIO_DEFAULT;
+  sp.scale_pvalue = sp.scale_pvalue_overlay = SCALE_PVALUE_DEFAULT;
 
   check_argv1(p, d, argv[1], &sp);
   argv++; argc--;
@@ -78,9 +80,11 @@ void dd_argv_init(int argc, char **argv, DrParam *p, DDParam *d, SamplePair **sa
     {"--help",    ARGUMENT_TYPE_FUNCTION, print_usage_base,     NULL},
     {"-gt",       ARGUMENT_TYPE_STRING,   &p->gtfile,           NULL},
     {"-p",        ARGUMENT_TYPE_STRING,   &p->headname,         NULL},
-    {"-i",        ARGUMENT_TYPE_STRING_MULTI, &(st->str_argv), &(p->samplenum)},
+    {"-i",        ARGUMENT_TYPE_STRING_MULTI, &(st->str_argv), &(p->samplenum_1st)},
+    {"-ioverlay", ARGUMENT_TYPE_STRING_MULTI, &(st->str_argv_overlay), &(p->samplenum_overlay)},
     {"-pd",       ARGUMENT_TYPE_STRING_MULTI, &(st->str_pd),   &(d->pdnum)},
     {"-binsize",  ARGUMENT_TYPE_INTEGAR,  &sp.binsize,          NULL},
+    {"-binsize2", ARGUMENT_TYPE_INTEGAR,  &sp.binsize_overlay,  NULL},
     {"-mp",       ARGUMENT_TYPE_STRING,   &p->mpfile,           NULL},
     {"-mpthre",   ARGUMENT_TYPE_FLOAT,    &p->mpthre,           NULL},
     {"-gap",      ARGUMENT_TYPE_STRING,   &p->gapfile,          NULL},
@@ -118,14 +122,20 @@ void dd_argv_init(int argc, char **argv, DrParam *p, DDParam *d, SamplePair **sa
     {"-scale_tag",    ARGUMENT_TYPE_FLOAT, &sp.scale_tag,     NULL},
     {"-scale_ratio",  ARGUMENT_TYPE_FLOAT, &sp.scale_ratio,   NULL},
     {"-scale_pvalue", ARGUMENT_TYPE_FLOAT, &sp.scale_pvalue,  NULL},
+    {"-scale_tag2",   ARGUMENT_TYPE_FLOAT, &sp.scale_tag_overlay,   NULL},
+    {"-scale_ratio2", ARGUMENT_TYPE_FLOAT, &sp.scale_ratio_overlay, NULL},
+    {"-scale_pvalue2",ARGUMENT_TYPE_FLOAT, &sp.scale_pvalue_overlay,NULL},
     {"-show_ctag", ARGUMENT_TYPE_INTEGAR, &d->visualize_ctag,   NULL},
     {"-show_itag", ARGUMENT_TYPE_INTEGAR, &d->visualize_itag,   NULL},
     {"-showratio", ARGUMENT_TYPE_INTEGAR, &d->visualize_ratio,  NULL},
-    {"-showpinter",  ARGUMENT_TYPE_INTEGAR, &d->visualize_p_inter, NULL},
+    {"-showpinter",  ARGUMENT_TYPE_INTEGAR, &d->visualize_p_inter,  NULL},
     {"-showpenrich", ARGUMENT_TYPE_INTEGAR, &d->visualize_p_enrich, NULL},
     {"-bn",     ARGUMENT_TYPE_INTEGAR, &d->barnum,      NULL},
     {"-ystep",  ARGUMENT_TYPE_FLOAT,   &d->ystep,       NULL},
     {"-offbg",  ARGUMENT_TYPE_FLAG_OFF, &d->backcolors, NULL},
+    {"-offymem",ARGUMENT_TYPE_FLAG_OFF, &d->stroke_ymem,NULL},
+    {"-offylab",ARGUMENT_TYPE_FLAG_OFF, &d->stroke_ylab,NULL},
+    {"-viz",    ARGUMENT_TYPE_INTEGAR, &d->viz,        NULL},
     /* CG */
     {"-cgthre", ARGUMENT_TYPE_FLOAT, &d->cgthre,        NULL},
     /* PD */
@@ -144,7 +154,6 @@ void dd_argv_init(int argc, char **argv, DrParam *p, DDParam *d, SamplePair **sa
     {NULL, ARGUMENT_TYPE_NONE, NULL, NULL},
   };
   argument_read(&argc, argv, args);
-
   check_ddparam(p, d, sample, st, g, &sp);
 
   init_dump(p, d, g, *sample);
@@ -166,9 +175,9 @@ static void check_argv1(DrParam *p, DDParam *d, char *argv, SampleParam *sp){
     d->makefig = 1;
     p->smoothing = SMOOTHING_BROAD;
     d->width_per_line = LS_DEFAULT*2;
-    sp->binsize = BINSIZE_BROAD;
-    sp->scale_tag = SCALE_TAG_BROAD;
-    sp->scale_ratio = SCALE_RATIO_BROAD;
+    sp->binsize     = sp->binsize_overlay     = BINSIZE_BROAD;
+    sp->scale_tag   = sp->scale_tag_overlay   = SCALE_TAG_BROAD;
+    sp->scale_ratio = sp->scale_ratio_overlay = SCALE_RATIO_BROAD;
   }else if(!strcmp(argv, "PC_ENRICH")){
     p->ftype = FTYPE_PEAKCALL_E;
     p->enrichthre = ENRICHTHRE_DEFAULT;
@@ -182,8 +191,8 @@ static void check_argv1(DrParam *p, DDParam *d, char *argv, SampleParam *sp){
     d->visualize_ctag = 0;
     d->visualize_ratio = 1;
     d->rmchr = 1;
-    sp->binsize = BINSIZE_DEFAULT_GV;
-    sp->scale_ratio = 1;
+    sp->binsize = sp->binsize_overlay = BINSIZE_DEFAULT_GV;
+    sp->scale_ratio = sp->scale_ratio_overlay = 1;
   }else if(!strcmp(argv, "PD")){
     p->ftype = FTYPE_PD;
     d->gw = true;
@@ -305,22 +314,37 @@ static void check_ddparam(DrParam *p, DDParam *d, SamplePair **sample, StructIni
     if(!d->pdnum) PRINT_ERROR("error: please specify sample file.\n");
     else d->PD = scan_pdstr(p, st->str_pd, d->pdnum, d->pdsize);
   }else if(p->ftype != FTYPE_GOVERLOOK){
-    if(!p->samplenum) PRINT_ERROR("error: please specify sample file.\n");
-    else (*sample) = scan_samplestr(p, st->str_argv, g->chrnum);
+    if(!p->samplenum_1st) PRINT_ERROR("error: please specify sample file.\n");
+    else{
+      p->samplenum = p->samplenum_1st + p->samplenum_overlay;
+      (*sample) = scan_samplestr(p, st->str_argv, st->str_argv_overlay, g->chrnum);
+    }
     check_sample_copy(p, sample);
     for(i=0; i<p->samplenum; i++){
       if((*sample)[i].peak_argv){
 	isfile((*sample)[i].peak_argv);
 	(*sample)[i].peak = read_peakfile((*sample)[i].peak_argv, g);
       }
-      if((*sample)[i].binsize      <= 0) (*sample)[i].binsize = sp->binsize;
+      if((*sample)[i].binsize <= 0){
+	if(i<p->samplenum_1st) (*sample)[i].binsize = sp->binsize;
+	else (*sample)[i].binsize = sp->binsize_overlay;
+      }
       for(chr=1; chr<g->chrnum; chr++){
 	(*sample)[i].binnum[chr] = g->chr[chr].len/(*sample)[i].binsize +1;
 	if(g->chr[chr].len < (*sample)[i].binsize) fprintf(stderr, "Warning: length of %s (%ld) is shorter than binsize (%d).\n", g->chr[chr].name, g->chr[chr].len, (*sample)[i].binsize);
       }
-      if((*sample)[i].scale_tag    <= 0) (*sample)[i].scale_tag = sp->scale_tag;
-      if((*sample)[i].scale_ratio  <= 0) (*sample)[i].scale_ratio = sp->scale_ratio;
-      if((*sample)[i].scale_pvalue <= 0) (*sample)[i].scale_pvalue = sp->scale_pvalue;
+      if((*sample)[i].scale_tag    <= 0){
+	if(i<p->samplenum_1st) (*sample)[i].scale_tag = sp->scale_tag;
+	else (*sample)[i].scale_tag = sp->scale_tag_overlay;
+      }
+      if((*sample)[i].scale_ratio  <= 0){
+	if(i<p->samplenum_1st) (*sample)[i].scale_ratio = sp->scale_ratio;
+	else (*sample)[i].scale_ratio = sp->scale_ratio_overlay;
+      }
+      if((*sample)[i].scale_pvalue <= 0){
+	if(i<p->samplenum_1st) (*sample)[i].scale_pvalue = sp->scale_pvalue;
+	else (*sample)[i].scale_pvalue = sp->scale_pvalue_overlay;
+      }
     }
   }
   if(p->ftype==FTYPE_PROFILE || p->ftype==FTYPE_HEATMAP){
@@ -379,8 +403,13 @@ static void init_dump(DrParam *p, DDParam *d, RefGenome *g, SamplePair *sample){
   }
   if(p->ftype != FTYPE_GOVERLOOK){
     printf("\nSamples\n");
-    for(i=0; i<p->samplenum; i++){
+    for(i=0; i<p->samplenum_1st; i++){
       printf("   ChIP%d: %s\tname: %s\tbinsize:%d\n", i+1, sample[i].ChIP->argv, sample[i].linename, sample[i].binsize);
+      if(sample[i].Input->argv) printf("   Input%d: %s\n", i+1, sample[i].Input->argv);
+      if(sample[i].peak_argv) printf("      peak list: %s\n", sample[i].peak_argv);
+    }
+    for(i=0; i<p->samplenum_overlay; i++){
+      printf("   Overlayed ChIP%d: %s\tname: %s\tbinsize:%d\n", i+1, sample[i].ChIP->argv, sample[i].linename, sample[i].binsize);
       if(sample[i].Input->argv) printf("   Input%d: %s\n", i+1, sample[i].Input->argv);
       if(sample[i].peak_argv) printf("      peak list: %s\n", sample[i].peak_argv);
     }
@@ -413,6 +442,8 @@ static void init_dump(DrParam *p, DDParam *d, RefGenome *g, SamplePair *sample){
     printf("   display pvalue (internal): %s\n", str_bool[d->visualize_p_inter]);
     printf("   display pvalue (ChIP/Input): %s\n", str_bool[d->visualize_p_enrich]);
     printf("   background color: %s\n", str_bool[d->backcolors]);
+    printf("   Y label: %s\n", str_bool[d->stroke_ylab]);
+    printf("   Y memory: %s\n", str_bool[d->stroke_ymem]);
   }
 
   printf("======================================\n");

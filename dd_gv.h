@@ -27,6 +27,8 @@
 #define WIDTH_DRAW 820
 #define PAGEWIDTH  1088
 
+#define FONTS_STYLE "Arial" //"sans-serif"
+
 // for profile and heatmap
 
 // for GV and PD
@@ -162,7 +164,11 @@ typedef struct{
   int visualize_itag;
   int barnum;
   int do_peakcall;
-  bool backcolors;
+  int viz;
+  int backcolors;
+  int stroke_ymem;
+  int stroke_ylab;
+  int cl_orange;
 
   /* annotation*/
   Graph GC;

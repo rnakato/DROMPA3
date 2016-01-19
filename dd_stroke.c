@@ -109,7 +109,7 @@ int calc_pageheight(DrParam *p, DDParam *d){
     if(d->visualize_ctag)     height_sample += lineheight;
     if(d->visualize_itag==1)  height_sample += lineheight;
 
-    height_dataline += height_sample * p->samplenum;
+    height_dataline += height_sample * p->samplenum_1st;
     if(d->visualize_itag==2) height_dataline += lineheight;
 
     height_lpp += height_dataline;
@@ -302,19 +302,19 @@ static void peakcall(DrParam *p, cairo_t *cr, SamplePair *sample, gint i){
   return;
 }
 
-static gdouble define_value_and_color(DrParam *p, DDParam *d, cairo_t *cr, SamplePair *sample, gint i, LINE_Type type){
+static gdouble define_value_and_color(DrParam *p, DDParam *d, cairo_t *cr, SamplePair *sample, gint i, LINE_Type type, gdouble r_trans, gint nlayer){
   gdouble value=0, ratio, data;
   switch(type){
   case LTYPE_CHIP:
     value = WIGARRAY2VALUE(sample->ChIP->data[i]) /sample->scale_tag;
-    cairo_set_source_rgba(cr, CLR_GREEN3, 1);
-    if(sample->peakarray && sample->peakarray[i]) cairo_set_source_rgba(cr, CLR_PINK, 1);
+    if(!nlayer) cairo_set_source_rgba(cr, CLR_GREEN3, r_trans);
+    else cairo_set_source_rgba(cr, CLR_ORANGE, r_trans);
+    if(sample->peakarray && sample->peakarray[i]) cairo_set_source_rgba(cr, CLR_PINK, r_trans);
     if(!sample->peakarray && d->do_peakcall) peakcall(p, cr, sample, i);
-    
     break;
   case LTYPE_INPUT:
     value = WIGARRAY2VALUE(sample->Input->data[i]) /sample->scale_tag;
-    cairo_set_source_rgba(cr, CLR_BLUE, 1); 
+    cairo_set_source_rgba(cr, CLR_BLUE, r_trans); 
     break;
   case LTYPE_RATIO_GV: /* same as LTYPE_RATIO */
   case LTYPE_RATIO:
@@ -325,28 +325,29 @@ static gdouble define_value_and_color(DrParam *p, DDParam *d, cairo_t *cr, Sampl
       else value = ratio / sample->scale_ratio; 
     }
     if(type==LTYPE_RATIO_GV){
-      if(d->visualize_ratio==1 && value > 1) cairo_set_source_rgba(cr, CLR_PINK, 1);
-      else if(d->visualize_ratio==2 && value > 0) cairo_set_source_rgba(cr, CLR_PINK, 1);
-      else cairo_set_source_rgba(cr, CLR_GRAY3, 1);
+      if(d->visualize_ratio==1 && value > 1) cairo_set_source_rgba(cr, CLR_ORANGE, r_trans);
+      else if(d->visualize_ratio==2 && value > 0) cairo_set_source_rgba(cr, CLR_ORANGE, r_trans);
+      else cairo_set_source_rgba(cr, CLR_SLATEGRAY, r_trans);
       break;
     }
     if(p->ftype!=FTYPE_PEAKCALL_E){
-      if(ratio > p->enrichthre) cairo_set_source_rgba(cr, CLR_PINK, 1);
-      else cairo_set_source_rgba(cr, CLR_GRAY, 1);
-    }else cairo_set_source_rgba(cr, CLR_ORANGE, 1);
-    if(d->visualize_ratio==2 && value < 0) cairo_set_source_rgba(cr, CLR_GRAY3, 1);
+      if(ratio > p->enrichthre) cairo_set_source_rgba(cr, CLR_PINK, r_trans);
+      else cairo_set_source_rgba(cr, CLR_GRAY, r_trans);
+    }else cairo_set_source_rgba(cr, CLR_ORANGE, r_trans);
+    if(nlayer) cairo_set_source_rgba(cr, CLR_BLUE, r_trans);
+    if(d->visualize_ratio==2 && value < 0) cairo_set_source_rgba(cr, CLR_GRAY3, r_trans);
     break;
   case LTYPE_PVALUE_INTER:
     data = zero_inflated_binomial_test(WIGARRAY2VALUE(sample->ChIP->data[i]), sample->ChIP->nb_p, sample->ChIP->nb_n);
     value = data /sample->scale_pvalue;
-    if(data > p->pthre_internal) cairo_set_source_rgba(cr, CLR_PINK, 1);
-    else cairo_set_source_rgba(cr, CLR_GRAY, 1);
+    if(data > p->pthre_internal) cairo_set_source_rgba(cr, CLR_PINK, r_trans);
+    else cairo_set_source_rgba(cr, CLR_GRAY, r_trans);
     break;
   case LTYPE_PVALUE_ENRICH:
     data = binomial_test(WIGARRAY2VALUE(sample->ChIP->data[i]), WIGARRAY2VALUE(sample->Input->data[i]), sample->comp->genome->ratio);
     value = data /sample->scale_pvalue;
-    if(data > p->pthre_enrich) cairo_set_source_rgba(cr, CLR_PINK, 1);
-    else cairo_set_source_rgba(cr, CLR_GRAY, 1);
+    if(data > p->pthre_enrich) cairo_set_source_rgba(cr, CLR_PINK, r_trans);
+    else cairo_set_source_rgba(cr, CLR_GRAY, r_trans);
     break;
   default:
     fprintf(stderr, "error: invalid stroke value.\n");
@@ -355,7 +356,79 @@ static gdouble define_value_and_color(DrParam *p, DDParam *d, cairo_t *cr, Sampl
   return value;
 }
 
-static void stroke_bindata(DrParam *p, DDParam *d, cairo_t *cr, SamplePair *sample, gint xstart, gint xend, LINE_Type type){
+static void stroke_dataframe(DDParam *d, cairo_t *cr, SamplePair *sample, gint xstart, gint xend, LINE_Type type, gint nlayer){
+  gint i;
+  gdouble width = (xend-xstart+1) * dot_per_bp;
+  gdouble height = d->ystep * d->barnum;
+  gdouble x,y, scale=0;
+  gchar str[128];
+
+  /* y memory */
+  if(d->backcolors){
+    cairo_set_source_rgba(cr, CLR_BLACK, 0.5);
+    for(i=0, y=yaxis_now; i<d->barnum; i++, y-=d->ystep) rel_xline(cr, OFFSET_X, y, width);
+    cairo_stroke(cr);
+  }
+
+  /* y key */
+  if(d->stroke_ymem){
+    gint barnum_minus = d->barnum/2;
+    if(type==LTYPE_CHIP || type==LTYPE_INPUT) scale = sample->scale_tag;
+    else if(type==LTYPE_RATIO || type==LTYPE_RATIO_GV) scale = sample->scale_ratio;
+    else if(type==LTYPE_PVALUE_ENRICH || type==LTYPE_PVALUE_INTER) scale = sample->scale_pvalue;
+    else{ fprintf(stderr, "error:%s: invalid type.\n", __FUNCTION__); exit(1);}
+
+    cairo_set_source_rgba(cr, CLR_BLACK, 1);
+    if(!nlayer) x = OFFSET_X + width + 7; else x = OFFSET_X - 20;
+    for(i=1; i<=d->barnum; i++){
+      y = yaxis_now - i*(d->ystep - 1.5);
+      if(d->visualize_ratio==2){
+	if(i < barnum_minus) sprintf(str, "1/%d", (int)pow(2, (barnum_minus-i)*scale));
+	else sprintf(str, "%d", (int)pow(2, (i - barnum_minus)*scale));
+      }else  sprintf(str, "%.1f", (gdouble)(i*scale));
+      showtext_cr(cr, x, y, str, 9);
+    }
+  }
+  if(nlayer) goto final;
+
+  /* frame */
+  cairo_set_line_width(cr, 0.4);
+  cairo_set_source_rgba(cr, CLR_BLACK, 1);
+  rel_xline(cr, OFFSET_X, yaxis_now, width);
+  rel_yline(cr, OFFSET_X, yaxis_now-height, height);
+  cairo_stroke(cr);
+  if(d->backcolors) fill_rectangle(cr, xstart, xend, yaxis_now-height, height, CLR_BLUE3, 0.1);
+
+  /* keys */
+  if(d->stroke_ylab){
+    cairo_set_source_rgba(cr, CLR_BLACK, 1);
+    switch(type){
+    case LTYPE_CHIP: sprintf(str, "%s", sample->linename); break;
+    case LTYPE_INPUT: sprintf(str, "Input"); break;
+    case LTYPE_RATIO_GV: /* same as LTYPE_RATIO */ 
+    case LTYPE_RATIO: 
+      if(d->visualize_ctag) sprintf(str, "IP/Input");
+      else sprintf(str, "%s", sample->linename);
+      break;
+    case LTYPE_PVALUE_INTER:
+      if(d->visualize_ctag || d->visualize_ratio) sprintf(str, "pval (ChIP internal)");
+      else sprintf(str, "%s", sample->linename);
+      break;
+    case LTYPE_PVALUE_ENRICH: 
+      if(d->visualize_ctag || d->visualize_ratio) sprintf(str, "pval (IP/Input)");
+      else sprintf(str, "%s", sample->linename);
+      break;
+    }
+    x = 50;
+    y = yaxis_now - d->ystep * d->barnum/2; 
+    showtext_cr(cr, x, y, str, 12);
+  }
+
+ final:
+  return;
+}
+
+static void stroke_bindata(DrParam *p, DDParam *d, cairo_t *cr, SamplePair *sample, gint xstart, gint xend, LINE_Type type, gint nlayer){
   gint i,binsize = sample->binsize;
   gint sbin = xstart/binsize;
   gint ebin = xend/binsize;
@@ -381,7 +454,7 @@ static void stroke_bindata(DrParam *p, DDParam *d, cairo_t *cr, SamplePair *samp
       rel_yline(cr, xcen, (gint)yaxis_now - d->ystep * d->barnum, (gint)(d->ystep * d->barnum));
       cairo_stroke(cr);
     }
-    value = define_value_and_color(p, d, cr, sample, i, type);
+    value = define_value_and_color(p, d, cr, sample, i, type, 1, nlayer);
     if(!value) continue;
 
     if(d->visualize_ratio==2){
@@ -390,7 +463,15 @@ static void stroke_bindata(DrParam *p, DDParam *d, cairo_t *cr, SamplePair *samp
       rel_yline(cr, xcen, (gint)yaxis_now - d->ystep * barnum_minus, (gint)len);
     }else{
       len = -d->ystep * (min(value, d->barnum));
-      rel_yline(cr, xcen, (gint)yaxis_now, (gint)len);
+
+      if(!d->viz){
+	rel_yline(cr, xcen, (gint)yaxis_now, (gint)len);
+      }else{ // d->viz ==1
+	if(len <-1 && value <= d->barnum) rel_yline(cr, xcen, (gint)(yaxis_now+len +1), 1);
+	cairo_stroke(cr);
+	define_value_and_color(p, d, cr, sample, i, type, 0.5, nlayer);
+	rel_yline(cr, xcen, (gint)yaxis_now, (gint)len);
+      }
     }
     cairo_stroke(cr);
   }
@@ -411,95 +492,37 @@ static void stroke_bindata(DrParam *p, DDParam *d, cairo_t *cr, SamplePair *samp
   return;
 }
 
-static void stroke_dataframe(DDParam *d, cairo_t *cr, SamplePair *sample, gint xstart, gint xend, LINE_Type type){
-  gint i;
-  gdouble width = (xend-xstart+1) * dot_per_bp;
-  gdouble height = d->ystep * d->barnum;
-  gdouble y;
-  gchar str[128];
-
-  /* frame */
-  cairo_set_line_width(cr, 0.4);
-  cairo_set_source_rgba(cr, CLR_BLACK, 1);
-  rel_xline(cr, OFFSET_X, yaxis_now, width);
-  rel_yline(cr, OFFSET_X, yaxis_now-height, height);
-  cairo_stroke(cr);
-  if(d->backcolors) fill_rectangle(cr, xstart, xend, yaxis_now-height, height, CLR_BLUE3, 0.1);
-  
-  /* y memory */
-  if(d->backcolors){
-    cairo_set_source_rgba(cr, CLR_BLACK, 0.5);
-    for(i=0, y=yaxis_now; i<d->barnum; i++, y-=d->ystep) rel_xline(cr, OFFSET_X, y, width);
-    cairo_stroke(cr);
-  }
-
-  /* y key */
-  gint barnum_minus = d->barnum/2;
-  gdouble x, scale=0;
-  if(type==LTYPE_CHIP || type==LTYPE_INPUT) scale = sample->scale_tag;
-  else if(type==LTYPE_RATIO || type==LTYPE_RATIO_GV) scale = sample->scale_ratio;
-  else if(type==LTYPE_PVALUE_ENRICH || type==LTYPE_PVALUE_INTER) scale = sample->scale_pvalue;
-  else{ fprintf(stderr, "error:%s: invalid type.\n", __FUNCTION__); exit(1);}
-
-  cairo_set_source_rgba(cr, CLR_BLACK, 1);
-  x = OFFSET_X + width + 7;
-  for(i=0; i<=d->barnum; i++){
-    if(d->visualize_ratio==2){
-      if(i < barnum_minus) sprintf(str, "1/%d", (int)pow(2, (barnum_minus-i)*scale));
-      else sprintf(str, "%d", (int)pow(2, (i - barnum_minus)*scale));
-    }else  sprintf(str, "%.1f", (gdouble)(i*scale));
-    y = yaxis_now - i*(d->ystep - 1.5);
-    showtext_cr(cr, x, y, str, 9);
-  }
-
-  /* keys */
-  cairo_set_source_rgba(cr, CLR_BLACK, 1);
-  switch(type){
-  case LTYPE_CHIP: sprintf(str, "%s", sample->linename); break;
-  case LTYPE_INPUT: sprintf(str, "Input"); break;
-  case LTYPE_RATIO_GV: /* same as LTYPE_RATIO */ 
-  case LTYPE_RATIO: 
-    if(d->visualize_ctag) sprintf(str, "IP/Input");
-    else sprintf(str, "%s", sample->linename);
-    break;
-  case LTYPE_PVALUE_INTER:
-    if(d->visualize_ctag || d->visualize_ratio) sprintf(str, "pval (ChIP internal)");
-    else sprintf(str, "%s", sample->linename);
-    break;
-  case LTYPE_PVALUE_ENRICH: 
-    if(d->visualize_ctag || d->visualize_ratio) sprintf(str, "pval (IP/Input)");
-    else sprintf(str, "%s", sample->linename);
-    break;
-  }
-  x = 40;
-  y = yaxis_now - d->ystep * d->barnum/2; 
-  showtext_cr(cr, x, y, str, 12);
-
+static void stroke_readdist(DrParam *p, DDParam *d, cairo_t *cr, SamplePair *sample, gint xstart, gint xend, LINE_Type type, gint nlayer){
+  yaxis_now += d->ystep * d->barnum + MERGIN_BETWEEN_DATA;
+  stroke_bindata(p, d, cr, sample, xstart, xend, type, nlayer);
+  stroke_dataframe(d, cr, sample, xstart, xend, type, nlayer);
+  if(!nlayer) stroke_xaxis(d, cr, xstart, xend);
   return;
 }
 
-static void stroke_readdist(DrParam *p, DDParam *d, cairo_t *cr, SamplePair *sample, gint xstart, gint xend, LINE_Type type){
-  //  printf("type=%d\n", type);
-  yaxis_now += d->ystep * d->barnum + MERGIN_BETWEEN_DATA;
-  stroke_bindata(p, d, cr, sample, xstart, xend, type);
-  stroke_dataframe(d, cr, sample, xstart, xend, type);
-  stroke_xaxis(d, cr, xstart, xend);
+static void stroke_each_layer(DrParam *p, DDParam *d, SamplePair *sample, cairo_t *cr, gint xstart, gint xend, gint nlayer){
+  if(d->visualize_p_inter)  stroke_readdist(p, d, cr, sample, xstart, xend, LTYPE_PVALUE_INTER,  nlayer);
+  if(d->visualize_p_enrich) stroke_readdist(p, d, cr, sample, xstart, xend, LTYPE_PVALUE_ENRICH, nlayer);
+  if(d->visualize_ratio){
+    if(p->ftype==FTYPE_GV)  stroke_readdist(p, d, cr, sample, xstart, xend, LTYPE_RATIO_GV, nlayer);
+    else                    stroke_readdist(p, d, cr, sample, xstart, xend, LTYPE_RATIO,    nlayer);
+  }if(d->visualize_ctag)    stroke_readdist(p, d, cr, sample, xstart, xend, LTYPE_CHIP,     nlayer);
+  if(d->visualize_itag==1)  stroke_readdist(p, d, cr, sample, xstart, xend, LTYPE_INPUT,    nlayer);
   return;
 }
 
 static void draw_dataline(DrParam *p, DDParam *d, SamplePair *sample, cairo_t *cr, int xstart, int xend){
-  int i;
-  for(i=0; i<p->samplenum; i++){
-    if(d->visualize_p_inter)  stroke_readdist(p, d, cr, &(sample[i]), xstart, xend, LTYPE_PVALUE_INTER);
-    if(d->visualize_p_enrich) stroke_readdist(p, d, cr, &(sample[i]), xstart, xend, LTYPE_PVALUE_ENRICH);
-    if(d->visualize_ratio){
-      if(p->ftype==FTYPE_GV)  stroke_readdist(p, d, cr, &(sample[i]), xstart, xend, LTYPE_RATIO_GV);
-      else                    stroke_readdist(p, d, cr, &(sample[i]), xstart, xend, LTYPE_RATIO);
-    }if(d->visualize_ctag)    stroke_readdist(p, d, cr, &(sample[i]), xstart, xend, LTYPE_CHIP);
-    if(d->visualize_itag==1)  stroke_readdist(p, d, cr, &(sample[i]), xstart, xend, LTYPE_INPUT);
+  gint i;
+  gdouble ytemp = yaxis_now;
+  gint nlayer = 0;
+  for(i=0; i<p->samplenum_1st; i++) stroke_each_layer(p, d, &(sample[i]), cr, xstart, xend, nlayer);
+  if(p->samplenum_overlay){
+    nlayer = 1;
+    yaxis_now = ytemp;
+    for(; i<p->samplenum; i++) stroke_each_layer(p, d, &(sample[i]), cr, xstart, xend, nlayer);
   }
-  if(d->visualize_itag==2) stroke_readdist(p, d, cr, &(sample[0]), xstart, xend, LTYPE_INPUT);
-
+  if(d->visualize_itag==2) stroke_readdist(p, d, cr, &(sample[0]), xstart, xend, LTYPE_INPUT, 0);
+    
   stroke_xaxis_num(d, cr, xstart, xend, yaxis_now, 9);
   return;
 }
@@ -1026,7 +1049,7 @@ static void show_colors(cairo_t *cr, gint x, gint *ycen, gchar *label, gdouble r
 
 static void showtext_cr(cairo_t *cr, gdouble x, gdouble y, gchar *str, gint fontsize){
   cairo_move_to(cr, x, y);
-  cairo_select_font_face(cr, "sans-serif", CAIRO_FONT_SLANT_NORMAL, CAIRO_FONT_WEIGHT_NORMAL);
+  cairo_select_font_face(cr, FONTS_STYLE, CAIRO_FONT_SLANT_NORMAL, CAIRO_FONT_WEIGHT_NORMAL);
   cairo_set_font_size(cr, fontsize);
   cairo_show_text(cr, str);
   cairo_stroke(cr);

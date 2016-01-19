@@ -113,7 +113,13 @@ static void print_usage_drawing2(){
   fprintf(stderr, "       -sct<int> <double>:     scale of <int>st read line\n");
   fprintf(stderr, "       -scale_ratio <double>:  scale of ratio line\n");
   fprintf(stderr, "       -scale_pvalue <double>: scale of pvalue line\n");
-  fprintf(stderr, "       -scr<int> <double>:     scale of <int>st ratio line\n\n");
+  fprintf(stderr, "       -scr<int> <double>:     scale of <int>st ratio line\n");
+  fprintf(stderr, "       -viz <int>: color of read profile\n");
+  fprintf(stderr, "            0(default): normal color\n");
+  fprintf(stderr, "            1: semitransparent color\n");
+  fprintf(stderr, "       -offylab:   delete Y label\n");
+  fprintf(stderr, "       -offymem:   delete Y memory\n");
+  fprintf(stderr, "       -offbg:     delete background color of read lines\n\n");
 }
 
 static void print_usage_CG_POL2(Function_Type ftype){

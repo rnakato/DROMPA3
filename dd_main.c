@@ -222,7 +222,9 @@ static DDParam *ddparam_new(){
   p->barnum = BARNUM_DEFAULT;
   p->ystep = YSTEP_DEFAULT;
   p->visualize_ctag = 1;
-  p->backcolors = true;
+  p->backcolors  = 1;
+  p->stroke_ymem = 1;
+  p->stroke_ylab = 1;
   p->width_per_line = LS_DEFAULT;
 
   /* profile and heatmap */

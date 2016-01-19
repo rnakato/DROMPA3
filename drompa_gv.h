@@ -53,7 +53,7 @@ typedef enum{
 } ChIPNormalize_Type;
 
 typedef struct{
-  int samplenum;
+  int samplenum, samplenum_1st, samplenum_overlay;
   char *headname;
   int smoothing;
   int width4lambda;
@@ -99,7 +99,7 @@ typedef struct{
 typedef struct _Samplefile{
   char *argv;
   Library *genome, *chr;
-  TYPE_WIGARRAY *data;    /* chr１つぶんのwigデータを格納 */
+  TYPE_WIGARRAY *data;
 
   double lambda;
   double nb_p, nb_n, nb_p0;
@@ -117,6 +117,7 @@ typedef struct{
   Samplefile *ChIP, *Input;
   LibCompare *comp;
   int copyC, copyI, copycomp;
+  int overlay;
 
   Peak *peak;
   char *peak_argv;

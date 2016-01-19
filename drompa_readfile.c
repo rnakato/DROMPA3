@@ -15,34 +15,40 @@
 
 static void read_parse2wig_stats(Samplefile *p, RefGenome *g, int binsize);
 
+static void func(SamplePair *sample, char *str){
+  Elem *clm = (Elem *)my_calloc(ELEM_NUM, sizeof(Elem), "clm");
+  int nline = ParseLine_arbit(str, clm, ',');
+  if(nline >8){
+    fprintf(stderr, "error: sample string has ',' more than 8: %s\n", str);
+    exit(1);
+  }
+  LOG("ChIP:%s Input:%s name:%s peak:%s\n", clm[0].str, clm[1].str, clm[2].str, clm[3].str);
+  if(!strcmp(clm[0].str, "")){
+    fprintf(stderr, "please specify ChIP sample: %s.\n", str);
+    exit(1);
+  }else                      sample->ChIP->argv  = strdup(clm[0].str);
+  if(strcmp(clm[1].str, "")) sample->Input->argv = strdup(clm[1].str);
+  if(strcmp(clm[2].str, "")) sample->linename    = strdup(clm[2].str);
+  else                       sample->linename    = sample->ChIP->argv;
+  if(strcmp(clm[3].str, "")) sample->peak_argv   = strdup(clm[3].str);
+  if(strcmp(clm[4].str, "")) sample->binsize     = atoi(clm[4].str);
+  if(strcmp(clm[5].str, "")) sample->scale_tag   = atof(clm[5].str);
+  if(strcmp(clm[6].str, "")) sample->scale_ratio = atof(clm[6].str);
+  if(strcmp(clm[7].str, "")) sample->scale_pvalue= atof(clm[7].str);
+  LOG("ChIP:%s Input:%s name:%s peak:%s binsize:%d scale_tag %f scale_ratio %f scale_pvalue %f\n", sample->ChIP->argv, sample->Input->argv, sample->linename, sample->peak_argv, sample->binsize, sample->scale_tag, sample->scale_ratio, sample->scale_pvalue);
+  
+  MYFREE(clm);
+  return;
+}
+
 /* 1:ChIP   2:Input   3:name   4:peaklist   5:binsize
    6:scale_tag   7:scale_ratio   8:scale_pvalue */
-SamplePair *scan_samplestr(DrParam *p, char **str, int chrnum){
-  int i, nline;
+SamplePair *scan_samplestr(DrParam *p, char **str, char **str_overlay, int chrnum){
+  int i;
   SamplePair *sample = SamplePair_new(p->samplenum, chrnum);
-  for(i=0; i<p->samplenum; i++){
-    Elem *clm = (Elem *)my_calloc(ELEM_NUM, sizeof(Elem), "clm");
-    nline = ParseLine_arbit(str[i], clm, ',');
-    if(nline >8){
-      fprintf(stderr, "error: sample %d has ',' more than 8: %s\n", i+1, str[i]);
-      exit(1);
-    }
-    LOG("%d ChIP:%s Input:%s name:%s peak:%s\n", i+1, clm[0].str, clm[1].str, clm[2].str, clm[3].str);
-    if(!strcmp(clm[0].str, "")){
-      fprintf(stderr, "please specify ChIP sample %d: %s.\n", i+1, str[i]);
-      exit(1);
-    }else                      sample[i].ChIP->argv  = strdup(clm[0].str);
-    if(strcmp(clm[1].str, "")) sample[i].Input->argv = strdup(clm[1].str);
-    if(strcmp(clm[2].str, "")) sample[i].linename    = strdup(clm[2].str);
-    else                       sample[i].linename    = sample[i].ChIP->argv;
-    if(strcmp(clm[3].str, "")) sample[i].peak_argv   = strdup(clm[3].str);
-    if(strcmp(clm[4].str, "")) sample[i].binsize     = atoi(clm[4].str);
-    if(strcmp(clm[5].str, "")) sample[i].scale_tag   = atof(clm[5].str);
-    if(strcmp(clm[6].str, "")) sample[i].scale_ratio = atof(clm[6].str);
-    if(strcmp(clm[7].str, "")) sample[i].scale_pvalue= atof(clm[7].str);
-    LOG("sample %d ChIP:%s Input:%s name:%s peak:%s binsize:%d scale_tag %f scale_ratio %f scale_pvalue %f\n", i, sample[i].ChIP->argv, sample[i].Input->argv, sample[i].linename, sample[i].peak_argv, sample[i].binsize, sample[i].scale_tag, sample[i].scale_ratio, sample[i].scale_pvalue);
-    MYFREE(clm);
-  }
+
+  for(i=0; i<p->samplenum_1st;     i++) func(&(sample[i]), str[i]);
+  for(i=0; i<p->samplenum_overlay; i++) func(&(sample[p->samplenum_1st +i]), str_overlay[i]);
   return sample;
 }
 
