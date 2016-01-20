@@ -321,7 +321,7 @@ static gdouble define_value_and_color(DrParam *p, DDParam *d, cairo_t *cr, Sampl
     ratio = CALCRATIO(sample->ChIP->data[i], sample->Input->data[i], sample->comp->genome->ratio);
     if(!ratio) value = 0;
     else{
-      if(d->visualize_ratio==2) value = log2(ratio) / sample->scale_ratio;
+      if(d->visualize_ratio==2) value = log10(ratio) / sample->scale_ratio;
       else value = ratio / sample->scale_ratio; 
     }
     if(type==LTYPE_RATIO_GV){

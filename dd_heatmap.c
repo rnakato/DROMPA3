@@ -362,7 +362,7 @@ static void stroke_dot(DDParam *d, cairo_t *cr, SamplePair *sample, gdouble val,
     r = min(1, val/sample->scale_tag);
     break;
   case ENRICHDIST:
-    val = val ? log2(val) : 0;
+    val = val ? log10(val) : 0;
     r = max(-1, min(1, val/sample->scale_ratio));
     break;
   case PVALUEDIST:
@@ -469,7 +469,7 @@ static void show_indicatior(DDParam *d, cairo_t *cr, SamplePair *sample, gdouble
     sprintf(str, "ChIP reads");
     scale = sample->scale_tag;
   }else if(d->stype==ENRICHDIST){
-    sprintf(str, "Log2 Ratio");
+    sprintf(str, "LogRatio");
     scale = sample->scale_ratio;
   }else if(d->stype==PVALUEDIST){
     sprintf(str, "P-value");
