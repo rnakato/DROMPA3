@@ -8,7 +8,6 @@
 #include "readfile.h"
 #include "filehandle.h"
 #include "pw_filtering.h"
-#include "pw_complexity.h"
 #include "pw_param_new.h"
 #include "pw_init.h"
 #include "pw_readmapfile.h"
@@ -68,9 +67,8 @@ int main(int argc, char *argv[]){
 
   if(p->bedfilename) calc_FRiP(p, mapfile, g);
 
-  /* calculate depth and complexity */
+  /* calculate depth */
   calc_depth(p, mapfile, g);
-  calc_complexity(p, mapfile, g);
 
 #ifdef CLOCK
   clock_t t5 = clock();

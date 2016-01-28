@@ -6,8 +6,8 @@ TARGET = parse2wig drompa_peakcall drompa_draw
 OBJS_UTIL = alloc.o readfile.o filehandle.o seq.o stringp.o argument.o outputfile.o compress.o 
 HEADS_UTIL = alloc.h readfile.h filehandle.h seq.h stringp.h argument.h outputfile.h compress.h macro.h common.h memtest.h 
 
-OBJS_PW = pw_main.o pw_init.o pw_param_new.o pw_readmapfile.o pw_filtering.o pw_makefile.o pw_complexity.o pw_gc.o readfasta.o pw_estimate.o pw_ccp.o $(OBJS_UTIL)
-HEADS_PW = pw_init.h pw_filtering.h pw_param_new.h pw_readmapfile.h pw_gv.h pw_makefile.h pw_complexity.h pw_gc.h readfasta.h pw_estimate.h pw_ccp.h $(HEADS_UTIL)
+OBJS_PW = pw_main.o pw_init.o pw_param_new.o pw_readmapfile.o pw_filtering.o pw_makefile.o pw_gc.o readfasta.o pw_estimate.o pw_ccp.o $(OBJS_UTIL)
+HEADS_PW = pw_init.h pw_filtering.h pw_param_new.h pw_readmapfile.h pw_gv.h pw_makefile.h pw_gc.h readfasta.h pw_estimate.h pw_ccp.h $(HEADS_UTIL)
 
 OBJS_DR = drompa_param_new.o drompa_readfile.o dp_call.o gsl_func.o drompa_usage.o $(OBJS_UTIL)
 HEADS_DR = drompa_gv.h drompa_param_new.h drompa_readfile.h dp_call.h gsl_func.h drompa_usage.h $(HEADS_UTIL)

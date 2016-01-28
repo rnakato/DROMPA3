@@ -57,6 +57,7 @@ typedef struct{
   double num4depth;
 
   int num4cmp;
+  double r4cmp;
 
   bool pcrfilter;
   int thre_filter;
@@ -77,17 +78,15 @@ typedef struct{
   bool ccp;
   bool out_readpair;
 
-  /*
-  int winsize4gc;
-  */
 } PwParam;
 
 typedef struct{
   int *F3;
   int *F5;
   int *weight;
-  bool *delete;
-  bool *ignore;
+  bool *delete; // for filtering redundant reads
+  bool *ignore; // for ignoring peak regions
+  //  char *lcmp;   // for calculating complexity
 
   int narray;
 } Readarray;
