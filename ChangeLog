@@ -1,8 +1,9 @@
-2016-01-XX Ryuichiro Nakato <rnakato@iam.u-tokyo.ac.jp>
+2016-01-29 Ryuichiro Nakato <rnakato@iam.u-tokyo.ac.jp>
 	Version 3.2.0
 	- add new option -viz: semitransparent color vizualization
         - add new option -ioverlay: overlay two sample profiles in each line
 	- add new options -offylab and -offymem: delete Y-axis label and memory, respectively.
+	- bug fix for calculating library complexity.
 
 2016-01-04 Ryuichiro Nakato <rnakato@iam.u-tokyo.ac.jp>
 	Version 3.1.1
