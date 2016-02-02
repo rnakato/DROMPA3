@@ -1,3 +1,7 @@
+2016-02-02 Ryuichiro Nakato <rnakato@iam.u-tokyo.ac.jp>
+	Version 3.2.1
+	- bug fix for calculating genome coverage when using -mp option.
+
 2016-01-29 Ryuichiro Nakato <rnakato@iam.u-tokyo.ac.jp>
 	Version 3.2.0
 	- add new option -viz: semitransparent color vizualization
