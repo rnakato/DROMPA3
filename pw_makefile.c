@@ -197,7 +197,10 @@ static void makewig_chr(PwParam *p, Mapfile *mapfile, RefGenome *g, int chr){
     if(WIGARRAY2VALUE(wigarray[i]) <= mapfile->wstats.thre && mparray[i] >= mpthretemp) bgarray[num++] = wigarray[i];
   }
   mapfile->wstats.genome->num += mapfile->wstats.chr[chr].num = num;
+  if(!num) fprintf(stderr,"Warning: no mappable window in chr%d. Check mappability files.\n",chr);
 
+  //  printf("chr=%d,binnum=%d, num=%d\n",chr,binnum,num);
+  
   /* make wigarray stats */
   add_wigstats_bg(mapfile, bgarray, chr, num);
   MYFREE(bgarray);

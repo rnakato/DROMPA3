@@ -131,15 +131,15 @@ static void output_wigstats(PwParam *p, Mapfile *mapfile, RefGenome *g){
 
   /* calculate genome coverage */
   for(chr=1; chr<g->chrnum; chr++){
-    /*  int s=0;
-        for(i=0;i<=mapfile->wstats.n_darray;i++){
-      printf("%d, %d\n",i,mapfile->wstats.chr[chr].darray_bg[i]);
+    int s=0;
+    for(i=0;i<=mapfile->wstats.n_darray;i++){
+      //      printf("%d, %d\n",i,mapfile->wstats.chr[chr].darray_bg[i]);
       s += mapfile->wstats.chr[chr].darray_bg[i];
     }
-    printf("s=%d, mapfile->wstats.chr[chr].num=%d\n",s,mapfile->wstats.chr[chr].num);*/
-    g->chr[chr].gcov = (mapfile->wstats.chr[chr].num - mapfile->wstats.chr[chr].darray_all[0])/(double)mapfile->wstats.chr[chr].num;
+    g->chr[chr].gcov = (mapfile->wstats.chr[chr].num - mapfile->wstats.chr[chr].darray_bg[0])/(double)mapfile->wstats.chr[chr].num;
+    //    printf("chr=%d, s=%d, mapfile->wstats.chr[chr].num=%d, 0=%d, gcov=%f (%d/%d)\n",chr,s,mapfile->wstats.chr[chr].num, mapfile->wstats.chr[chr].darray_all[0], g->chr[chr].gcov, (mapfile->wstats.chr[chr].num - mapfile->wstats.chr[chr].darray_bg[0]), mapfile->wstats.chr[chr].num);
   }
-  g->genome->gcov = (mapfile->wstats.genome->num - mapfile->wstats.genome->darray_all[0])/(double)mapfile->wstats.genome->num;
+  g->genome->gcov = (mapfile->wstats.genome->num - mapfile->wstats.genome->darray_bg[0])/(double)mapfile->wstats.genome->num;
 
   fclose(OUT);
   return;
