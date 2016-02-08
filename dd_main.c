@@ -97,6 +97,7 @@ static void drompafunc(DrParam *p, DDParam *d, SamplePair *sample, RefGenome *g)
   return;
 }
 
+
 static void read_annotation(DrParam *p, DDParam *d, RefGenome *g, int chr){
   if(d->GC.argv) read_graph(&(d->GC), g, chr, "GC%",   GC_MMIN, GC_MMAX, GTYPE_SINGLE);
   if(d->GD.argv) read_graph(&(d->GD), g, chr, "genes", GD_MMIN, GD_MMAX, GTYPE_SINGLE);
@@ -107,6 +108,8 @@ static void read_annotation(DrParam *p, DDParam *d, RefGenome *g, int chr){
   if(d->arsfile)     read_ARS_OriDB(d->arsfile, &(d->gene), chr);
   if(d->terfile)     read_TER_scer(d->terfile, &(d->gene), chr);
   if(d->repeat.argv) read_repeat(d, g, chr);
+
+  if(d->genefile_argv) read_genefile(d, d->drawregion, g, chr);
   return;
 }
 
@@ -131,6 +134,11 @@ static void drompa4chr(DrParam *p, DDParam *d, SamplePair *sample, RefGenome *g,
   if(d->chronly && d->chronly != chr) return;
 
   if(d->drawregion_argv && !d->drawregion->chr[chr].num) return;
+  /* read annotation files */
+  read_annotation(p, d, g, chr);
+  //  printf("num=%d\n", d->drawregion->chr[chr].num);
+  if(d->genefile_argv && !d->drawregion->chr[chr].num) return;
+  
   FLUSH("%s: ", g->chr[chr].name);  
   
   if(p->ftype==FTYPE_PD){
@@ -152,9 +160,6 @@ static void drompa4chr(DrParam *p, DDParam *d, SamplePair *sample, RefGenome *g,
     }
     printf("\n");
   }
-  /* read annotation files */
-  read_annotation(p, d, g, chr);
-  
   if(p->ftype==FTYPE_PROFILE) add_profile(p, d, g, sample, chr);
   if(d->makefig){
     /* read gapfile */
@@ -226,6 +231,9 @@ static DDParam *ddparam_new(){
   p->stroke_ymem = 1;
   p->stroke_ylab = 1;
   p->width_per_line = LS_DEFAULT;
+
+  /* readfile */
+  p->genefile_len = 50000; // 50 kbp
 
   /* profile and heatmap */
   p->showse = true;

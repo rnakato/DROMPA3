@@ -73,7 +73,6 @@ void read_gene(GeneSet *p, RefGenome *g, int chr, GeneFile_Type gftype){
     fprintf(stderr, "error %s: chr=%d\n", __FUNCTION__, chr);
     return;
   }
-  //  printf("reading gene file...\n");
 
   switch(gftype){
   case GFTYPE_REFFLAT: read_refFlat(p, g, chr); break;
@@ -391,5 +390,45 @@ void read_repeat(DDParam *d, RefGenome *g, int chr){
   d->repeat.num = num;
 
   MYFREE(str);
+  return;
+}
+
+void read_genefile(DDParam *d, BedFile *p, RefGenome *g, int chr){
+  int i, s,e,num=0, on=0;
+  char *str = (char *)my_calloc(STR_LEN, sizeof(char), "str");
+  GeneSet *gene=&(d->gene);
+  
+  FILE *IN = my_fopen(d->genefile_argv, FILE_MODE_READ);
+  while((fgets(str, STR_LEN, IN))!=NULL){
+    if(str[0]=='\n' || str[0]=='#') continue;
+    chomp(str);
+    
+    on=0;
+    s=0; e=0;
+    for(i=0; i<gene->num; i++){
+      if(!strcmp(gene->gene[i].name, str) && !gene->gene[i].delete){
+	printf("str %s, name=%s, %d, %d, %d\n",str, gene->gene[i].name, gene->gene[i].dir, gene->gene[i].start, gene->gene[i].end);
+	if(!s && !e){
+	  s = gene->gene[i].start;
+	  e = gene->gene[i].end;
+	  on++;
+	}else{
+	  s = min(s, gene->gene[i].start);
+	  e = max(e, gene->gene[i].end);
+	}
+      }
+      LOG("\n\n\nnum=%d, %d, %d\n",num, s, e);
+    }
+    if(on){
+      p->chr[chr].bed[num].s = max(0, s - d->genefile_len);
+      p->chr[chr].bed[num].e = min(e + d->genefile_len, g->chr[chr].len -1);
+      num++;
+    }
+  }
+  p->chr[chr].num = num;
+  //  printf("a%d, b%d\n", p->chr[chr].num, num);
+  fclose(IN);
+  MYFREE(str);
+
   return;
 }

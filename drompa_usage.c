@@ -98,7 +98,9 @@ static void print_usage_drawing1(){
   fprintf(stderr, "       -lpp <int>: number of lines per one page (default: 1)\n");
   fprintf(stderr, "       -chr <int>: output only a chromosome specified\n");
   fprintf(stderr, "       -rmchr: remove chromosome-separated pdf files\n");
-  fprintf(stderr, "       -r <regionfile>: specify the regions to visualize\n\n");
+  fprintf(stderr, "       -r <regionfile>: specify the regions to visualize\n");
+  fprintf(stderr, "       -genefile <genelist>: specify the gene loci to visualize\n");
+  fprintf(stderr, "       -len_genefile <regionfile>: extended length for each gene locus\n\n");
 }
 
 static void print_usage_drawing2(){

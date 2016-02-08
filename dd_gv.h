@@ -185,6 +185,8 @@ typedef struct{
   int png;
   int rmchr;
   char *drawregion_argv;
+  char *genefile_argv;
+  int genefile_len;
   BedFile *drawregion;
   BedFile **bed;
   int bednum;

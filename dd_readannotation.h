@@ -13,5 +13,6 @@ void read_gene(GeneSet *p, RefGenome *g, int chr, GeneFile_Type gftype);
 void read_ARS_OriDB(char *argv, GeneSet *p, int chr);
 void read_TER_scer(char *argv, GeneSet *p, int chr);
 void read_repeat(DDParam *p, RefGenome *g, int chr);
+void read_genefile(DDParam *d, BedFile *p, RefGenome *g, int chr);
 
 #endif /* _DD_READANNO_H_ */

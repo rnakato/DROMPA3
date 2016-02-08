@@ -1,3 +1,7 @@
+2016-02-08 Ryuichiro Nakato <rnakato@iam.u-tokyo.ac.jp>
+	Version 3.2.2
+	- add -genefile and -len_genefile options for drompa_draw
+
 2016-02-02 Ryuichiro Nakato <rnakato@iam.u-tokyo.ac.jp>
 	Version 3.2.1
 	- bug fix for calculating genome coverage when using -mp option.

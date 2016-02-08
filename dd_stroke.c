@@ -173,7 +173,7 @@ void draw(DrParam *p, DDParam *d, SamplePair *sample, RefGenome *g, int chr, cha
     cr = cairo_create(surface);
   }
 
-  if(!d->drawregion_argv){  // whole chromosome
+  if(!d->drawregion_argv && !d->genefile_argv){  // whole chromosome
     draw_region(p, d, sample, g, surface, cr, 0, (int)g->chr[chr].len, prefix, 0, chr);
   }else{                    // -r option supplied
     region = &(d->drawregion->chr[chr]);

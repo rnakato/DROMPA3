@@ -119,6 +119,8 @@ void dd_argv_init(int argc, char **argv, DrParam *p, DDParam *d, SamplePair **sa
     {"-ls",       ARGUMENT_TYPE_INTEGAR,  &d->width_per_line,   NULL},
     {"-lpp",      ARGUMENT_TYPE_INTEGAR,  &d->linenum_per_page, NULL},
     {"-r",        ARGUMENT_TYPE_STRING,   &d->drawregion_argv,  NULL},
+    {"-genefile", ARGUMENT_TYPE_STRING,   &d->genefile_argv,  NULL},
+    {"-len_genefile", ARGUMENT_TYPE_INTEGAR, &d->genefile_len,NULL},
     {"-scale_tag",    ARGUMENT_TYPE_FLOAT, &sp.scale_tag,     NULL},
     {"-scale_ratio",  ARGUMENT_TYPE_FLOAT, &sp.scale_ratio,   NULL},
     {"-scale_pvalue", ARGUMENT_TYPE_FLOAT, &sp.scale_pvalue,  NULL},
@@ -255,10 +257,16 @@ static void check_ddparam(DrParam *p, DDParam *d, SamplePair **sample, StructIni
 
 
   if(p->ftype == FTYPE_GV || p->ftype == FTYPE_PD){
-    d->drawregion_argv=NULL;    
+    d->drawregion_argv=NULL;
+    d->genefile_argv=NULL;
   }
   if(d->makefig){
-    if(d->drawregion_argv){
+    if(d->genefile_argv){
+      d->drawregion_argv=NULL;
+      isfile(d->genefile_argv);
+      d->drawregion = bedfile_new(g->chrnum);
+      //      show_bedfile(d->drawregion, g->chrnum);
+    }else if(d->drawregion_argv){
       isfile(d->drawregion_argv);
       d->drawregion = read_bedfile(d->drawregion_argv, g);
       //      show_bedfile(d->drawregion, g->chrnum);
