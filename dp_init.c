@@ -98,6 +98,7 @@ void dp_argv_init(int argc, char **argv, DrParam *p, SamplePair **sample, RefGen
   if(!p->samplenum) PRINT_ERROR("please specify sample file.\n");
   if(p->samplenum>1) PRINT_ERROR("drompa_peakcall accepts only one ChIP-input pair.\n");
 
+  p->samplenum_1st = p->samplenum;
   (*sample) = scan_samplestr(p, str_argv, NULL, g->chrnum);
   (*sample)->binsize = binsize;
   for(chr=1; chr<g->chrnum; chr++){
