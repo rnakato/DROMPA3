@@ -100,7 +100,7 @@ static void print_usage_drawing1(){
   fprintf(stderr, "       -rmchr: remove chromosome-separated pdf files\n");
   fprintf(stderr, "       -r <regionfile>: specify the regions to visualize\n");
   fprintf(stderr, "       -genefile <genelist>: specify the gene loci to visualize\n");
-  fprintf(stderr, "       -len_genefile <regionfile>: extended length for each gene locus\n\n");
+  fprintf(stderr, "       -len_genefile <int>: extended length for each gene locus (default: 50000 bp)\n\n");
 }
 
 static void print_usage_drawing2(){

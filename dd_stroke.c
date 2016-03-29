@@ -72,7 +72,6 @@ gdouble dot_per_bp;
 
 static void draw_region(DrParam *p, DDParam *d, SamplePair *sample, RefGenome *g, cairo_surface_t *surface, cairo_t *cr, int s, int e, char *prefix, int region_no, int chr);
 static void draw_page(DrParam *p, DDParam *d, SamplePair *sample, RefGenome *g, cairo_t *cr, int page_curr, int num_line, int num_page, int pstart, int pend, int region_no, int chr);
-static void draw_dataline(DrParam *p, DDParam *d, SamplePair *sample, cairo_t *cr, int xstart, int xend);
 static void stroke_xaxis(DDParam *d, cairo_t *cr, gint lstart, gint lend);
 static void stroke_xaxis_num(DDParam *d, cairo_t *cr, gint lstart, gint lend, gint yaxis, gint fontsize);
 static void stroke_ARS(DDParam *d, cairo_t *cr, gint xstart, gint xend);
@@ -86,6 +85,8 @@ static void show_colors(cairo_t *cr, gint x, gint *ycen, gchar *label, gdouble r
 static void stroke_rectangle(cairo_t *cr, gint x1, gint x2, gint y1, gint height);
 static void fill_rectangle(cairo_t *cr, gint x1, gint x2, gint y1, gint height, gdouble r, gdouble g, gdouble b, double alpha);
 static void showtext_cr(cairo_t *cr, gdouble x, gdouble y, gchar *str, gint fontsize);
+static void stroke_readdist(DrParam *p, DDParam *d, cairo_t *cr, SamplePair *sample, gint xstart, gint xend, LINE_Type type, gint nlayer);
+static void stroke_each_layer(DrParam *p, DDParam *d, SamplePair *sample, cairo_t *cr, gint xstart, gint xend, gint nlayer);
 
 int calc_pageheight(DrParam *p, DDParam *d){
   gint height=OFFSET_Y*2, height_sample=0, height_lpp=0, height_dataline=0;
@@ -285,9 +286,20 @@ static void draw_page(DrParam *p, DDParam *d, SamplePair *sample, RefGenome *g, 
       if(d->internum){
 	for(j=0; j<d->internum; j++) draw_interaction(cr, &(d->inter[j]), xstart, xend, chr);
       }
-      draw_dataline(p, d, sample, cr, xstart, xend);
+      gdouble ytemp = yaxis_now;
+      gint nlayer = 0;
+      for(i=0; i<p->samplenum_1st; i++) stroke_each_layer(p, d, &(sample[i]), cr, xstart, xend, nlayer);
+      stroke_xaxis_num(d, cr, xstart, xend, yaxis_now, 9);
+      
       if(d->bednum) draw_bedfile(d, cr, xstart, xend, chr);
       if(d->repeat.argv) draw_repeat(d, cr, xstart, xend);
+      
+      if(p->samplenum_overlay){
+	nlayer = 1;
+	yaxis_now = ytemp;
+	for(; i<p->samplenum; i++) stroke_each_layer(p, d, &(sample[i]), cr, xstart, xend, nlayer);
+      }
+      if(d->visualize_itag==2) stroke_readdist(p, d, cr, &(sample[0]), xstart, xend, LTYPE_INPUT, 0);
     }
     yaxis_now += MERGIN_BETWEEN_LINE;
   }
@@ -508,22 +520,6 @@ static void stroke_each_layer(DrParam *p, DDParam *d, SamplePair *sample, cairo_
     else                    stroke_readdist(p, d, cr, sample, xstart, xend, LTYPE_RATIO,    nlayer);
   }if(d->visualize_ctag)    stroke_readdist(p, d, cr, sample, xstart, xend, LTYPE_CHIP,     nlayer);
   if(d->visualize_itag==1)  stroke_readdist(p, d, cr, sample, xstart, xend, LTYPE_INPUT,    nlayer);
-  return;
-}
-
-static void draw_dataline(DrParam *p, DDParam *d, SamplePair *sample, cairo_t *cr, int xstart, int xend){
-  gint i;
-  gdouble ytemp = yaxis_now;
-  gint nlayer = 0;
-  for(i=0; i<p->samplenum_1st; i++) stroke_each_layer(p, d, &(sample[i]), cr, xstart, xend, nlayer);
-  if(p->samplenum_overlay){
-    nlayer = 1;
-    yaxis_now = ytemp;
-    for(; i<p->samplenum; i++) stroke_each_layer(p, d, &(sample[i]), cr, xstart, xend, nlayer);
-  }
-  if(d->visualize_itag==2) stroke_readdist(p, d, cr, &(sample[0]), xstart, xend, LTYPE_INPUT, 0);
-    
-  stroke_xaxis_num(d, cr, xstart, xend, yaxis_now, 9);
   return;
 }
 
