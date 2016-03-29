@@ -9,7 +9,6 @@
 #include "filehandle.h"
 #include "stringp.h"
 #include "macro.h"
-#include "memtest.h"
 
 #define READFILE_PEAKNUM 10000
 

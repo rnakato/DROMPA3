@@ -10,7 +10,6 @@
 #include "stringp.h"
 #include "filehandle.h"
 #include "macro.h"
-#include "memtest.h"
 
 typedef struct{
   char *name;

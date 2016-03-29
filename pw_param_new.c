@@ -3,7 +3,6 @@
  */
 #include "pw_param_new.h"
 #include "alloc.h"
-#include "memtest.h"
 
 PwParam *pwparam_new(){
   PwParam *p = (PwParam *)my_calloc(1, sizeof(PwParam), "PwParam");

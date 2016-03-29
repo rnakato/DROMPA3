@@ -3,7 +3,6 @@
  */
 #include "seq.h"
 #include "alloc.h"
-#include "memtest.h"
 
 const char str_strand[][STRANDNUM]={"+","-"};
 

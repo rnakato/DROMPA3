@@ -5,7 +5,6 @@
 #include <string.h>
 #include "alloc.h"
 #include "stringp.h"
-#include "memtest.h"
 
 void chomp(char *str){
   char *p = strchr(str, '\n');

@@ -4,7 +4,6 @@
 #include <math.h>
 #include "drompa_param_new.h"
 #include "alloc.h"
-#include "memtest.h"
 
 DrParam *drparam_new(){
   DrParam *p = (DrParam *)my_calloc(1, sizeof(DrParam), "DrParam");
