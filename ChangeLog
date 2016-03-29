@@ -1,3 +1,8 @@
+2016-03-29 Ryuichiro Nakato <rnakato@iam.u-tokyo.ac.jp>
+	Version 3.2.3
+	- bug fix when using -ioverlay option
+	- delete memtest.h
+
 2016-02-08 Ryuichiro Nakato <rnakato@iam.u-tokyo.ac.jp>
 	Version 3.2.2
 	- add -genefile and -len_genefile options for drompa_draw
