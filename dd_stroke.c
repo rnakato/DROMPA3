@@ -288,7 +288,7 @@ static void draw_page(DrParam *p, DDParam *d, SamplePair *sample, RefGenome *g, 
       }
       gdouble ytemp = yaxis_now;
       gint nlayer = 0;
-      for(i=0; i<p->samplenum_1st; i++) stroke_each_layer(p, d, &(sample[i]), cr, xstart, xend, nlayer);
+      for(j=0; j<p->samplenum_1st; j++) stroke_each_layer(p, d, &(sample[j]), cr, xstart, xend, nlayer);
       stroke_xaxis_num(d, cr, xstart, xend, yaxis_now, 9);
       
       if(d->bednum) draw_bedfile(d, cr, xstart, xend, chr);
@@ -297,7 +297,7 @@ static void draw_page(DrParam *p, DDParam *d, SamplePair *sample, RefGenome *g, 
       if(p->samplenum_overlay){
 	nlayer = 1;
 	yaxis_now = ytemp;
-	for(; i<p->samplenum; i++) stroke_each_layer(p, d, &(sample[i]), cr, xstart, xend, nlayer);
+	for(; j<p->samplenum; j++) stroke_each_layer(p, d, &(sample[j]), cr, xstart, xend, nlayer);
       }
       if(d->visualize_itag==2) stroke_readdist(p, d, cr, &(sample[0]), xstart, xend, LTYPE_INPUT, 0);
     }
