@@ -36,6 +36,7 @@ static void print_usage_io(){
 static void print_mpbl(){
   fprintf(stderr, "       -mp <mappability file>: for normalization of mappability\n");
   fprintf(stderr, "       -mpthre <double>: threshold of low mappability (default: %.1f)\n", THRE_LOW_MAPPABILITY);
+  fprintf(stderr, "       -gap <gap file>: shade highly gapped regions\n");
 }
 
 static void print_usage_threshold(){
