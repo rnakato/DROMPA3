@@ -290,7 +290,7 @@ static void draw_page(DrParam *p, DDParam *d, SamplePair *sample, RefGenome *g, 
       gint nlayer = 0;
       for(j=0; j<p->samplenum_1st; j++) stroke_each_layer(p, d, &(sample[j]), cr, xstart, xend, nlayer);
       stroke_xaxis_num(d, cr, xstart, xend, yaxis_now, 9);
-      
+
       if(d->bednum) draw_bedfile(d, cr, xstart, xend, chr);
       if(d->repeat.argv) draw_repeat(d, cr, xstart, xend);
       
@@ -370,12 +370,13 @@ static gdouble define_value_and_color(DrParam *p, DDParam *d, cairo_t *cr, Sampl
 
 static void stroke_dataframe(DDParam *d, cairo_t *cr, SamplePair *sample, gint xstart, gint xend, LINE_Type type, gint nlayer){
   gint i;
-  gdouble width = (xend-xstart+1) * dot_per_bp;
+  gdouble width  = (xend-xstart+1) * dot_per_bp;
   gdouble height = d->ystep * d->barnum;
   gdouble x,y, scale=0;
   gchar str[128];
 
   /* y memory */
+  cairo_set_line_width(cr, 0.4);
   if(d->backcolors){
     cairo_set_source_rgba(cr, CLR_BLACK, 0.5);
     for(i=0, y=yaxis_now; i<d->barnum; i++, y-=d->ystep) rel_xline(cr, OFFSET_X, y, width);
