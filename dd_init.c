@@ -416,9 +416,9 @@ static void init_dump(DrParam *p, DDParam *d, RefGenome *g, SamplePair *sample){
       if(sample[i].Input->argv) printf("   Input%d: %s\n", i+1, sample[i].Input->argv);
       if(sample[i].peak_argv) printf("      peak list: %s\n", sample[i].peak_argv);
     }
-    for(i=0; i<p->samplenum_overlay; i++){
+    for(; i<p->samplenum; i++){
       printf("   Overlayed ChIP%d: %s\tname: %s\tbinsize:%d\n", i+1, sample[i].ChIP->argv, sample[i].linename, sample[i].binsize);
-      if(sample[i].Input->argv) printf("   Input%d: %s\n", i+1, sample[i].Input->argv);
+      if(sample[i].Input->argv) printf("   Input%d: %s\n", i-p->samplenum_1st+1, sample[i].Input->argv);
       if(sample[i].peak_argv) printf("      peak list: %s\n", sample[i].peak_argv);
     }
   }
