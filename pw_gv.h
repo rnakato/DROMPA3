@@ -76,7 +76,6 @@ typedef struct{
 
   /* cross-correlation*/
   bool ccp;
-  bool out_readpair;
 
 } PwParam;
 

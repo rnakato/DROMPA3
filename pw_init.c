@@ -87,7 +87,6 @@ void pw_argv_init(int argc, char *argv[], PwParam *p, RefGenome *g){
     {"-odir",     ARGUMENT_TYPE_STRING,   &p->output_dir,    NULL},
     {"-pair",     ARGUMENT_TYPE_FLAG_ON,  &p->rtype,         NULL},
     {"-ccp",      ARGUMENT_TYPE_FLAG_ON,  &p->ccp,           NULL},
-    {"-opair",    ARGUMENT_TYPE_FLAG_ON,  &p->out_readpair,  NULL},
     {"-binsize",  ARGUMENT_TYPE_INTEGAR,  &p->binsize,       NULL},
     {"-flen",     ARGUMENT_TYPE_INTEGAR,  &p->fraglen,       NULL},
     {"-maxins",   ARGUMENT_TYPE_INTEGAR,  &p->max_fraglen,   NULL},
