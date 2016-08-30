@@ -140,7 +140,7 @@ void add_profile(DrParam *p, DDParam *d, RefGenome *g, SamplePair *sample, int c
 
 static void output_Rfile(DrParam *p, DDParam *d, SamplePair *sample, int num, int samplenum){
   int i,j;
-  double color[]={CLR_RED, CLR_BLUE, CLR_GREEN, CLR_BLACK, CLR_PINK, CLR_DARKORANGE, CLR_PURPLE, CLR_GRAY3, CLR_OLIVE, CLR_YELLOW3, CLR_LIGHTCYAN, CLR_LIGHTCORAL, CLR_SALMON, CLR_GREEN2, CLR_BLUE3, CLR_PURPLE2};
+  double color[]={CLR_RED, CLR_BLUE, CLR_GREEN, CLR_LIGHTCORAL, CLR_BLACK, CLR_DARKORANGE, CLR_PURPLE, CLR_GRAY3, CLR_OLIVE, CLR_YELLOW3, CLR_LIGHTCYAN, CLR_PINK, CLR_SALMON, CLR_GREEN2, CLR_BLUE3, CLR_PURPLE2};
   char *posistr[]={"",
 		   "Distance from TSS (bp)",
 		   "Distance from TTS (bp)",
