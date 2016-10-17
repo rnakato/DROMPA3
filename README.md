@@ -15,17 +15,17 @@ DROMPA requires the following programs and libraries:
 * (optional) SAMtools (http://samtools.sourceforge.net/)
 * (optional) R (http://www.r-project.org/)
 
-for Ubuntu:
+* for Ubuntu:
  sudo apt-get install git gcc libgtk2.0-dev libgsl-dev samtools r-base
-for CentOS:
+* for CentOS:
  sudo yum -y install zlib-devel gsl-devel gtk2-devel
-
- See Manual.pdf for detail.
 
 To install DROMPA, simply type "make".
 
+#3. Usage
+ See Manual.pdf for detail.
 
-#3. Reference
+#4. Reference
 Nakato, R., Itoh T. and Shirahige K.: DROMPA: easy-to-handle peak calling and visualization software for the computational analysis and validation of ChIP-seq data, Genes to Cells, vol.18, issue 7, 2013.
 
 Please direct bug reports and questions about usage to rnakato@iam.u-tokyo.ac.jp.
