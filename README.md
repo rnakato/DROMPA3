@@ -1,4 +1,4 @@
-# DROMPA3 README (version 3.2.1)
+# DROMPA3 README (version 3.2.3)
 
 #0. Recent news
 Please check the file 'ChangeLog' for the changelog.
@@ -8,13 +8,17 @@ DROMPA (DRaw and Observe Multiple enrichment Profiles and Annotation) is a progr
 
 #2. Install and Usage
 DROMPA requires the following programs and libraries:
-* GCC compiler (http://gcc.gnu.org/)
 * Cairo libraries (http://www.cairographics.org/)
 * GTK library (http://www.gtk.org/)
 * GNU Scientific Library (http://www.gnu.org/software/gsl/)
 * Coherent PDF (http://community.coherentpdf.com/)
 * (optional) SAMtools (http://samtools.sourceforge.net/)
 * (optional) R (http://www.r-project.org/)
+
+for Ubuntu:
+ sudo apt-get install git gcc libgtk2.0-dev libgsl-dev samtools r-base
+for CentOS:
+ sudo yum -y install zlib-devel gsl-devel gtk2-devel
 
  See Manual.pdf for detail.
 
