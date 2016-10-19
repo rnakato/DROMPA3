@@ -182,6 +182,7 @@ static void check_argv1(DrParam *p, DDParam *d, char *argv, SampleParam *sp){
     sp->scale_ratio = sp->scale_ratio_overlay = SCALE_RATIO_BROAD;
   }else if(!strcmp(argv, "PC_ENRICH")){
     p->ftype = FTYPE_PEAKCALL_E;
+    d->do_peakcall = 1;
     p->enrichthre = ENRICHTHRE_DEFAULT;
     d->visualize_ctag = 0;
     d->visualize_ratio = 1;

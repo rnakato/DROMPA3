@@ -342,7 +342,7 @@ static gdouble define_value_and_color(DrParam *p, DDParam *d, cairo_t *cr, Sampl
       else cairo_set_source_rgba(cr, CLR_SLATEGRAY, r_trans);
       break;
     }
-    if(p->ftype!=FTYPE_PEAKCALL_E){
+    if(d->do_peakcall){
       if(ratio > p->enrichthre) cairo_set_source_rgba(cr, CLR_PINK, r_trans);
       else cairo_set_source_rgba(cr, CLR_GRAY, r_trans);
     }else cairo_set_source_rgba(cr, CLR_ORANGE, r_trans);
