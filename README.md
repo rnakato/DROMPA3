@@ -15,20 +15,15 @@ DROMPA requires the following programs and libraries:
 * (optional) SAMtools (http://samtools.sourceforge.net/)
 * (optional) R (http://www.r-project.org/)
 
-# test1
-##test2
-###test3
-#### test4
-#####test5
-#####for Ubuntu:
+#### for Ubuntu:
 
  sudo apt-get install git gcc libgtk2.0-dev libgsl-dev samtools r-base
  
-#####for CentOS:
+#### for CentOS:
 
  sudo yum -y install zlib-devel gsl-devel gtk2-devel
 
-#####Install DROMPA
+#### Install DROMPA
  git clone https://github.com/rnakato/DROMPA3.git
 
  cd DROMPA3
