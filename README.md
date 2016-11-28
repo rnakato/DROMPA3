@@ -33,7 +33,7 @@ for CentOS:
 
 If you get an installation error, make sure that all required libraries are installed.
 
-#### 2.4. Add the software directory to your PATH environment variable
+#### 2.4. Add the PATH environment variable
 For example, if you downloaded DROMPA and cpdf into the $HOME/my_chipseq_exp directory, type:
 
     export PATH = $PATH:$HOME/my_chipseq_exp/DROMPA3:$HOME/my_chipseq_exp/cpdf-binaries-master/Linux-Intel-**bit
