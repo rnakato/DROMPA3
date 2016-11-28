@@ -31,6 +31,8 @@ for CentOS:
     cd DROMPA3
     make
 
+If you get an installation error, make sure that all required libraries are installed.
+
 #3. Usage
  See Manual.pdf for detail.
 
