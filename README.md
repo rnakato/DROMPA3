@@ -21,20 +21,16 @@ DROMPA requires the following programs and libraries:
  
 #### for CentOS:
 
- sudo yum -y install zlib-devel gsl-devel gtk2-devel
+     sudo yum -y install zlib-devel gsl-devel gtk2-devel
 
+#### download cpdf
+    wget http://github.com/coherentgraphics/cpdf-binaries/archive/master.zip
+    unzip master.zip
+    
 #### Install DROMPA
- git clone https://github.com/rnakato/DROMPA3.git
-
- cd DROMPA3
-
- make
-
-
-wget http://github.com/coherentgraphics/cpdf-binaries/archive/master.zip
-
- unzip master.zip
-
+    git clone https://github.com/rnakato/DROMPA3.git
+    cd DROMPA3
+    make
 
 #3. Usage
  See Manual.pdf for detail.
