@@ -17,7 +17,7 @@ DROMPA requires the following programs and libraries:
 
 #### for Ubuntu:
 
- sudo apt-get install git gcc libgtk2.0-dev libgsl-dev samtools r-base
+     sudo apt-get install git gcc libgtk2.0-dev libgsl-dev samtools r-base
  
 #### for CentOS:
 
