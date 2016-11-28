@@ -22,8 +22,9 @@ for CentOS:
 
 #### 2.2. Install cpdf
  DROMPA uses Coherent PDF (http://community.coherentpdf.com/) for merging pdf files.
-    wget http://github.com/coherentgraphics/cpdf-binaries/archive/master.zip
-    unzip master.zip
+ 
+     wget http://github.com/coherentgraphics/cpdf-binaries/archive/master.zip
+     unzip master.zip
     
 #### 2.3. Install DROMPA
     git clone https://github.com/rnakato/DROMPA3.git
