@@ -11,19 +11,20 @@ DROMPA requires the following programs and libraries:
 * Cairo libraries (http://www.cairographics.org/)
 * GTK library (http://www.gtk.org/)
 * GNU Scientific Library (http://www.gnu.org/software/gsl/)
-* Coherent PDF (http://community.coherentpdf.com/)
 * (optional) SAMtools (http://samtools.sourceforge.net/)
 * (optional) R (http://www.r-project.org/)
 
-#### for Ubuntu:
+#### install required libraries
+for Ubuntu:
 
      sudo apt-get install git gcc libgtk2.0-dev libgsl-dev samtools r-base
  
-#### for CentOS:
+for CentOS:
 
      sudo yum -y install zlib-devel gsl-devel gtk2-devel
 
 #### download cpdf
+ DROMPA uses Coherent PDF (http://community.coherentpdf.com/) for merging pdf files.
     wget http://github.com/coherentgraphics/cpdf-binaries/archive/master.zip
     unzip master.zip
     
