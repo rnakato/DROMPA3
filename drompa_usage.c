@@ -211,6 +211,10 @@ void print_usage_dd(Function_Type ftype){
       fprintf(stderr, "       -offse: omit the standard error in profile.\n\n");
     }
     if(ftype==FTYPE_HEATMAP){
+      fprintf(stderr, "       -norm <int>     : normalization between ChIP and Input\n");
+      fprintf(stderr, "            0; not normalize\n");
+      fprintf(stderr, "            1; with total read number (default)\n");
+      fprintf(stderr, "            2; with NCIS method\n");
       fprintf(stderr, "       -scale_tag    <double>: maxvalue for -stype0\n");
       fprintf(stderr, "       -scale_ratio  <double>: maxvalue for -stype1\n");
       fprintf(stderr, "       -scale_pvalue <double>: maxvalue for -stype2\n\n");
