@@ -231,6 +231,7 @@ static DDParam *ddparam_new(){
   p->stroke_ymem = 1;
   p->stroke_ylab = 1;
   p->width_per_line = LS_DEFAULT;
+  p->ntype = 1;
 
   /* readfile */
   p->genefile_len = 50000; // 50 kbp

@@ -246,8 +246,9 @@ void show_profile(DrParam *p, DDParam *d, SamplePair *sample){
 
   for(i=0; i<samplenum; i++){
     if(d->stype == READDIST){
-      if(!d->ntype) r = 1 /(double)(d->ntotal_profile);
-      else          r = s / sample[i].profile.IPsum /(double)(d->ntotal_profile);
+      if(!d->ntype) r = 1;
+      else if(d->ntype == 1) r = 1 /(double)(d->ntotal_profile);
+      else                   r = s / sample[i].profile.IPsum /(double)(d->ntotal_profile);
       for(j=0; j<num; j++){
 	sample[i].profile.IP[j] = WIGARRAY2VALUE(sample[i].profile.IP[j]) * r;
       }

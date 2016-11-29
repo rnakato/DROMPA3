@@ -58,6 +58,17 @@ void print_usage_dp(){
   print_usage_if_binsize(BINSIZE_DEFAULT);
   fprintf(stderr, "       -width4lmd <int> : width for calculating local lambda (default: %d bp)\n", WIDTH4LAMBDA_DEFAULT);
   print_usage_io();
+  fprintf(stderr, "       -outputwig <int> : output bin data\n");
+  fprintf(stderr, "            0; ChIP/Input ratio\n");
+  fprintf(stderr, "            1; output ChIP-internal p-value\n");
+  fprintf(stderr, "            2; ChIP/Input enrichment p-value\n");
+  fprintf(stderr, "       -owtype <int>: output format (default: 0)\n");
+  fprintf(stderr, "           0: binary (.bin) \n");
+  fprintf(stderr, "           1: compressed wig (.wig.gz) \n");
+  fprintf(stderr, "           2: uncompressed wig (.wig) \n");
+  fprintf(stderr, "           3: bedGraph (.bedGraph) \n");
+  fprintf(stderr, "           4: bigWig (.bw) \n");
+  fprintf(stderr, "       -odir: output directory name (default: 'drompadir') \n");
   print_usage_threshold();
   fprintf(stderr, "       -qthre <double>: q-value threshold (Bonferroni-Hochberg, default < %.3f)\n", QTHRE_DEFAULT);
   fprintf(stderr, "\n   annotations:\n");
@@ -192,11 +203,11 @@ void print_usage_dd(Function_Type ftype){
   }else if(ftype==FTYPE_PROFILE || ftype==FTYPE_HEATMAP){
     print_gene_anno();
     fprintf(stderr, "       -bed <peakfile>:  peaklist (multiple files allowed)\n\n");
+    fprintf(stderr, "       -cw <int>: width from the center (default: 2.5kb)\n");
     fprintf(stderr, "       -ptype <int>: (1; around TSS, 2; around TES, 3; divide gene into 100 subregions 4; around peak sites) \n");
     fprintf(stderr, "       -stype <int>: (0; ChIP read (default) 1; ChIP/Input enrichment)\n");
-    fprintf(stderr, "       -ntype <int>: (normalization: 0; total read 1; target regions only)\n");
-    fprintf(stderr, "       -cw <int>: width from the center (default: 2.5kb)\n");
     if(ftype==FTYPE_PROFILE){
+      fprintf(stderr, "       -ntype <int>: (normalization: 0; not normalized 1; total read (default) 2; target regions only)\n");
       fprintf(stderr, "       -offse: omit the standard error in profile.\n\n");
     }
     if(ftype==FTYPE_HEATMAP){

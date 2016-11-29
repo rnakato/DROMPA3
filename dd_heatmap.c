@@ -144,7 +144,6 @@ static void sort_eachbedfile(DDParam *d, HMarray *p){
   return;
 }
 
-/* clustering? */
 void draw_heatmap(DrParam *p, DDParam *d, SamplePair *sample, RefGenome *g){
   gint i, num;
   gchar filename[128];
