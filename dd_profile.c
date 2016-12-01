@@ -17,12 +17,17 @@ static void delete_pdarray(double **p, int snum);
 static void func(DDParam *d, SamplePair *sample, int samplenum, int i, int posi){
   int k;
   for(k=0; k<samplenum; k++){
-    sample[k].profile.IP[i] += sample[k].ChIP->data[posi];
-    sample[k].profile.IPsum += sample[k].ChIP->data[posi];
-    if(d->showse) sample[k].profile.SE[i][d->ntotal_profile] = sample[k].ChIP->data[posi];
     if(d->stype == ENRICHDIST){
-      sample[k].profile.Input[i] += sample[k].Input->data[posi];
-      sample[k].profile.Inputsum += sample[k].Input->data[posi];
+      double r = CALCRATIO(sample[k].ChIP->data[posi], sample[k].Input->data[posi], sample->comp->genome->ratio);
+      //      printf("r0=%f, r=%f, ratio=%f\n",sample[k].ChIP->data[posi]/(double)sample[k].Input->data[posi], r, sample->comp->genome->ratio);
+      sample[k].profile.IP[i] += r;
+      sample[k].profile.IPsum += r;
+      if(d->showse) sample[k].profile.SE[i][d->ntotal_profile] = r;
+    }
+    else {
+      sample[k].profile.IP[i] += sample[k].ChIP->data[posi];
+      sample[k].profile.IPsum += sample[k].ChIP->data[posi];
+      if(d->showse) sample[k].profile.SE[i][d->ntotal_profile] = sample[k].ChIP->data[posi];
     }
   }
   return;
@@ -34,7 +39,7 @@ static void output_detail(DDParam *d, SamplePair *sample, char *sitename, int sa
   for(k=0; k<samplenum; k++){
     fprintf(OUT, "%s\t%s\t%s", chrname, sitename, sample[k].linename);
     for(i=0; i<arraynum; i++){
-      if(d->stype == ENRICHDIST) fprintf(OUT, "\t%.2f", sample[k].profile.Input[i] ? sample[k].profile.IP[i]/(double)sample[k].profile.Input[i]: 0);
+      if(d->stype == ENRICHDIST) fprintf(OUT, "\t%.2f", sample[k].profile.IP[i]);
       else fprintf(OUT, "\t%.2f", WIGARRAY2VALUE(sample[k].profile.IP[i]));
     }
     fprintf(OUT, "\n");
@@ -105,7 +110,6 @@ void add_profile(DrParam *p, DDParam *d, RefGenome *g, SamplePair *sample, int c
 	  }
 	}
       }
-
     }
     delete_pdarray(pdarray, samplenum);
   }
@@ -155,7 +159,6 @@ static void output_Rfile(DrParam *p, DDParam *d, SamplePair *sample, int num, in
       fprintf(OUT, "%.3f", sample[i].profile.IP[j]);
       if(j != num-1) fprintf(OUT, ","); else fprintf(OUT, ")\n");
     }
-
     if(d->showse){
       fprintf(OUT, "p%d_SE <- c(", i+1);
       for(j=0; j<num; j++){
@@ -185,7 +188,9 @@ static void output_Rfile(DrParam *p, DDParam *d, SamplePair *sample, int num, in
   if(!min) min = 0.1;
 
   /* datalines */
-  fprintf(OUT, "plot(x,p%d,type=\"l\",col=rgb(%.3f,%.3f,%.3f),xlab=\"%s\",ylab=\"read density\", ",1, color[0], color[1], color[2], posistr[d->ptype]);
+  if(d->stype == READDIST) fprintf(OUT, "plot(x,p%d,type=\"l\",col=rgb(%.3f,%.3f,%.3f),xlab=\"%s\",ylab=\"Read density\", ",1, color[0], color[1], color[2], posistr[d->ptype]);
+  else if(d->stype == ENRICHDIST) fprintf(OUT, "plot(x,p%d,type=\"l\",col=rgb(%.3f,%.3f,%.3f),xlab=\"%s\",ylab=\"Enrichment density\", ",1, color[0], color[1], color[2], posistr[d->ptype]);
+       
   if(d->ptype == GENE100) fprintf(OUT, "log=\"y\", ylim=c(%.1f, ymax))\n", min);
   else                    fprintf(OUT, "ylim=c(0, ymax))\n");  
 
@@ -229,6 +234,23 @@ static double calc_SE(double *array, int num){
   double se = sqrt(var/num);
   return se;
 }
+static double calc_SE_ratio(double *array, int num){
+  int i;
+  if(!num) return 0;
+  double ave=0;
+  for(i=0; i<num; i++){
+    ave += array[i];
+  }
+  ave /= num;
+  double var=0, diff;
+  for(i=0; i<num; i++){
+    diff = array[i] - ave;
+    var += diff * diff;
+  }
+  var /= num-1; 
+  double se = sqrt(var/num);
+  return se;
+}
 
 /* profiles and standard errors (condidence interval) */
 void show_profile(DrParam *p, DDParam *d, SamplePair *sample){
@@ -245,18 +267,11 @@ void show_profile(DrParam *p, DDParam *d, SamplePair *sample){
   if(d->ptype == GENE100) num = GENEBLOCKNUM*3; else num = cwbin*2+1;
 
   for(i=0; i<samplenum; i++){
-    if(d->stype == READDIST){
-      if(!d->ntype) r = 1;
-      else if(d->ntype == 1) r = 1 /(double)(d->ntotal_profile);
-      else                   r = s / sample[i].profile.IPsum /(double)(d->ntotal_profile);
-      for(j=0; j<num; j++){
-	sample[i].profile.IP[j] = WIGARRAY2VALUE(sample[i].profile.IP[j]) * r;
-      }
-    }
-    else if(d->stype == ENRICHDIST){
-      for(j=0; j<num; j++){ 
-	sample[i].profile.IP[j] = CALCRATIO(sample[i].profile.IP[j], sample[i].profile.Input[j], sample->comp->genome->ratio);
-      }
+    if(!d->ntype) r = 1 /(double)(d->ntotal_profile);
+    else          r = (s / sample[i].profile.IPsum) /(double)(d->ntotal_profile);
+    for(j=0; j<num; j++){
+      if(d->stype == READDIST)        sample[i].profile.IP[j] = WIGARRAY2VALUE(sample[i].profile.IP[j]) * r;
+      else if(d->stype == ENRICHDIST) sample[i].profile.IP[j] *= r;
     }
   }
 
@@ -264,7 +279,8 @@ void show_profile(DrParam *p, DDParam *d, SamplePair *sample){
   if(d->showse){
     for(i=0; i<samplenum; i++){
       for(j=0; j<num; j++){ 
-	sample[i].profile.SEarray[j] = calc_SE(sample[i].profile.SE[j], d->ntotal_profile);
+	if(d->stype == READDIST) sample[i].profile.SEarray[j] = calc_SE(sample[i].profile.SE[j], d->ntotal_profile);
+	else                     sample[i].profile.SEarray[j] = calc_SE_ratio(sample[i].profile.SE[j], d->ntotal_profile);
       }
     }
   }

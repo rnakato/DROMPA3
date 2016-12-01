@@ -252,7 +252,7 @@ static void check_ddparam(DrParam *p, DDParam *d, SamplePair **sample, StructIni
     if(d->ptype==BEDSITES && !d->bednum)       PRINT_ERROR("error: ptype %d requires -bed option.\n", d->ptype);
     if(d->ptype!=BEDSITES && !d->gene.argv)    PRINT_ERROR("error: ptype %d requires -gene option.\n",d->ptype);
     if(!range(d->stype, READDIST, PVALUEDIST)) PRINT_ERROR("error: Invalid input stype: %d.\n",       d->stype);
-    if(!range(d->ntype, 0, 2))                 PRINT_ERROR("error: Invalid input ntype: %d.\n",       d->ntype);
+    if(!range(d->ntype, 0, 1))                 PRINT_ERROR("error: Invalid input ntype: %d.\n",       d->ntype);
   }
   if(!range(d->visualize_ratio, 0, 2))         PRINT_ERROR("error: Invalid input showratio: %d.\n",   d->visualize_ratio);
 
@@ -388,7 +388,7 @@ static void init_dump(DrParam *p, DDParam *d, RefGenome *g, SamplePair *sample){
   char str_norm[][20] = {"OFF", "TOTALREAD", "NCIS"};
   char str_stype[][60]={ "ChIP read", "Enrichment ratio", "Enrichment P-value"};
   char str_ptype[][20]={ "NONE", "TSS", "TTS", "GENE100", "SPECIFIEDSITES"};
-  char str_ntype[][20]={ "NONE", "WHOLE GENOME", "TARGET REGIONS ONLY"};
+  char str_ntype[][20]={ "NONE", "TARGET REGIONS NORM"};
 
   printf("\n======== %s ========\n", str_ftype[p->ftype]);
   printf("drompa_draw version %s\n", VERSION);

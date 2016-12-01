@@ -204,17 +204,17 @@ void print_usage_dd(Function_Type ftype){
     print_gene_anno();
     fprintf(stderr, "       -bed <peakfile>:  peaklist (multiple files allowed)\n\n");
     fprintf(stderr, "       -cw <int>: width from the center (default: 2.5kb)\n");
-    fprintf(stderr, "       -ptype <int>: (1; around TSS, 2; around TES, 3; divide gene into 100 subregions 4; around peak sites) \n");
-    fprintf(stderr, "       -stype <int>: (0; ChIP read (default) 1; ChIP/Input enrichment)\n");
+    fprintf(stderr, "       -norm <int>     : normalization between ChIP and Input\n");
+    fprintf(stderr, "            0; not normalize\n");
+    fprintf(stderr, "            1; with total read number (default)\n");
+    fprintf(stderr, "            2; with NCIS method\n");
+    fprintf(stderr, "       -ptype <int>: 1; around TSS, 2; around TES, 3; divide gene into 100 subregions 4; around peak sites\n");
+    fprintf(stderr, "       -stype <int>: show type (0; ChIP read (default) 1; ChIP/Input enrichment)\n");
     if(ftype==FTYPE_PROFILE){
-      fprintf(stderr, "       -ntype <int>: (normalization: 0; not normalized 1; total read (default) 2; target regions only)\n");
+      fprintf(stderr, "       -ntype <int>: normalization type (0; not normalized (default) 1; normalized by number of read mapped to target regions)\n");
       fprintf(stderr, "       -offse: omit the standard error in profile.\n\n");
     }
     if(ftype==FTYPE_HEATMAP){
-      fprintf(stderr, "       -norm <int>     : normalization between ChIP and Input\n");
-      fprintf(stderr, "            0; not normalize\n");
-      fprintf(stderr, "            1; with total read number (default)\n");
-      fprintf(stderr, "            2; with NCIS method\n");
       fprintf(stderr, "       -scale_tag    <double>: maxvalue for -stype0\n");
       fprintf(stderr, "       -scale_ratio  <double>: maxvalue for -stype1\n");
       fprintf(stderr, "       -scale_pvalue <double>: maxvalue for -stype2\n\n");

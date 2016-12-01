@@ -149,13 +149,11 @@ static void drompa4chr(DrParam *p, DDParam *d, SamplePair *sample, RefGenome *g,
   }else{
     /* read wigfile */
     for(i=0; i<p->samplenum; i++){
-      //      printf("sample%d: reading ChIP file...", i+1);
       FLUSH("sample%d..", i+1);
       if(sample[i].copyC==-1) dr_read_wigdata(p, &(sample[i]), sample[i].ChIP, g, chr);
       if(sample[i].Input->argv && sample[i].copyI==-1){
-	//	printf("reading Input file...\n");
 	dr_read_wigdata(p, &(sample[i]), sample[i].Input, g, chr);
-      }//else printf("\n");
+      }
       if(sample[i].peak_argv) sample[i].peakarray = make_peakarray(sample[i].peak, sample->binsize, sample->binnum[chr], chr);
     }
     printf("\n");
