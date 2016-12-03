@@ -6,12 +6,13 @@ Please direct bug reports and questions about usage to rnakato@iam.u-tokyo.ac.jp
 DROMPA (DRaw and Observe Multiple enrichment Profiles and Annotation) is a program for user-friendly and flexible ChIP-seq pipelining. DROMPA can be used for quality check, PCRbias filtering, normalization, peak calling, visualization and other multiple analyses of ChIP-seq data. DROMPA is specially designed so that it is easy to handle, and for users without a strong bioinformatics background.
 
 #2. Install
-DROMPA requires the following programs and libraries:
-* Cairo libraries (http://www.cairographics.org/)
-* GTK library (http://www.gtk.org/)
-* GNU Scientific Library (http://www.gnu.org/software/gsl/)
-* (optional) SAMtools (http://samtools.sourceforge.net/)
-* (optional) R (http://www.r-project.org/)
+DROMPA is written in C and requires the following programs and libraries:
+* [Cairo libraries](http://www.cairographics.org/)
+* [GTK library](http://www.gtk.org/)
+* [GNU Scientific Library](http://www.gnu.org/software/gsl/)
+* [zlib](http://www.zlib.net/)
+* [SAMtools](http://samtools.sourceforge.net/) (for BAM formatted input)
+* [R](http://www.r-project.org/) (for PROFILE command)
 
 #### 2.1. Install required libraries
 for Ubuntu:
