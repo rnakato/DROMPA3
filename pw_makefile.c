@@ -19,7 +19,7 @@
 static void makewig_chr(PwParam *p, Mapfile *mapfile, RefGenome *g, int chr);
 static TYPE_WIGARRAY *make_wigarray(PwParam *p, Mapfile *mapfile, RefGenome *g, int chr, bool free);
 static void normalize_wigarray_to_rpkm(PwParam *p, Mapfile *mapfile, TYPE_WIGARRAY **wigarrayp, RefGenome *g, int chr);
-static void get_start_end_of_read(PwParam *p, Mapfile *mapfile, int *s, int *e, int chr, int i, Strand strand, const char *func);
+static void get_start_end_of_read(PwParam *p, Mapfile *mapfile, int *s, int *e, int chr, int i, Strand strand, long chrlen, const char *func);
 
 static int comparray(const void *c1, const void *c2){
   TYPE_WIGARRAY n1 = *(TYPE_WIGARRAY *)c1;
@@ -235,7 +235,7 @@ static void makewig_chr(PwParam *p, Mapfile *mapfile, RefGenome *g, int chr){
 }
 
 static void define_s_e(PwParam *p, Mapfile *mapfile, RefGenome *g, int *s, int *e, double *w, int chr, Strand strand, int i){
-  get_start_end_of_read(p, mapfile, s, e, chr, i, strand, __FUNCTION__);
+  get_start_end_of_read(p, mapfile, s, e, chr, i, strand, g->chr[chr].len, __FUNCTION__);
 
   *w = INT2WEIGHT(mapfile->readarray[chr][strand].weight[i]);
   if(*w <0) fprintf(stderr, "Warning: weight of read[%s][strand%s] is %f.\n",g->chr[chr].name, str_strand[strand], *w);
@@ -352,7 +352,7 @@ void calc_FRiP(PwParam *p, Mapfile *mapfile, RefGenome *g){
   char *array = NULL;
 
   /* count reads */
-  for(chr=1; chr<g->chrnum; chr++){
+  for(chr=1; chr<g->chrnum; chr++){  
     array = makearray_inbed(&(p->enrichfile->chr[chr]), (int)g->chr[chr].len);
     if(!array) continue;
 
@@ -363,8 +363,9 @@ void calc_FRiP(PwParam *p, Mapfile *mapfile, RefGenome *g){
 	if(p->pcrfilter && mapfile->readarray[chr][strand].delete[i]) continue;
 
 	/* readの両端をs,eに格納 */
-	get_start_end_of_read(p, mapfile, &s, &e, chr, i, strand, __FUNCTION__);
-	//	printf("%s, %d, %d-%d, %d, %d, %s\n", g->chr[chr].name, i, s, e, mapfile->readarray[chr][strand].F3[i], mapfile->readarray[chr][strand].F5[i], str_strand[strand]);
+	  get_start_end_of_read(p, mapfile, &s, &e, chr, i, strand, g->chr[chr].len, __FUNCTION__);
+	  //	  printf("%s, %d, %d-, %d, %d, %s\n", g->chr[chr].name, i, s, e, mapfile->readarray[chr][strand].F3[i], str_strand[strand]);
+	  //	  printf("%s, %d, %d-%d, %d, %d, %s\n", g->chr[chr].name, i, s, e, mapfile->readarray[chr][strand].F3[i], mapfile->readarray[chr][strand].F5[i], str_strand[strand]);
 	for(j=s; j<=e; j++){
 	  if(array[j]){
 	    mapfile->readarray[chr][strand].ignore[i] = true;
@@ -392,7 +393,7 @@ void calc_FRiP(PwParam *p, Mapfile *mapfile, RefGenome *g){
   return;
 }
 
-static void get_start_end_of_read(PwParam *p, Mapfile *mapfile, int *s, int *e, int chr, int i, Strand strand, const char *func){
+static void get_start_end_of_read(PwParam *p, Mapfile *mapfile, int *s, int *e, int chr, int i, Strand strand, long chrlen, const char *func){
   if(p->rtype==READTYPE_SINGLE){
     if(strand==STRAND_PLUS){
       *s = mapfile->readarray[chr][strand].F3[i];
@@ -410,9 +411,15 @@ static void get_start_end_of_read(PwParam *p, Mapfile *mapfile, int *s, int *e, 
       *e = mapfile->readarray[chr][strand].F3[i];
     }
   }
+
+  *s = max(0,*s);
+  *e = min(chrlen-1,*e);
+
   if(*s > *e){
     fprintf(stderr, "Warning: %s: invalud i%d strand%s s-e (%d)-(%d)\n", func, i, str_strand[strand],*s,*e);
-    fprintf(stderr, "chr%d, i%d, F3 %d, F5 %d, strand %d\n", chr,i,mapfile->readarray[chr][strand].F3[i], mapfile->readarray[chr][strand].F5[i], strand);
+    if(p->rtype==READTYPE_PAIR){
+    fprintf(stderr, "chr%d, i%d, F3 %d, F5 %d, strand %d\n", chr, i, mapfile->readarray[chr][strand].F3[i], mapfile->readarray[chr][strand].F5[i], strand);
+    }
     //exit(0);
   }
   return;

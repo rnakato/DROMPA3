@@ -1,3 +1,7 @@
+2017-1-31 Ryuichiro Nakato <rnakato@iam.u-tokyo.ac.jp>
+	Version 3.2.5
+	- bug fix for calculating FRiP score
+
 2016-11-29 Ryuichiro Nakato <rnakato@iam.u-tokyo.ac.jp>
 	Version 3.2.4
 	- modify Usage of drompa_peakcall
