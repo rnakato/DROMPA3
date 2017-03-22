@@ -1,7 +1,7 @@
 /* Copyright(c)  Ryuichiro Nakato <rnakato@iam.u-tokyo.ac.jp>
  * This file is a part of DROMPA sources.
  */
-/* drompaとparse2wigで共有するパラメータを格納 */
+
 #ifndef _COMMON_H_
 #define _COMMON_H_
 
@@ -9,7 +9,7 @@
 #include <time.h>
 #endif
 
-#define VERSION "3.2.5"
+#define VERSION "3.2.6"
 #define BINSIZE_DEFAULT 100
 #define THRE_LOW_MAPPABILITY 0.3
 
