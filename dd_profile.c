@@ -219,7 +219,7 @@ static void output_Rfile(DrParam *p, DDParam *d, SamplePair *sample, int num, in
 
 static double calc_SE(double *array, int num){
   int i;
-  if(!num) return 0;
+  if(num<=1) return 0;
   double ave=0;
   for(i=0; i<num; i++){
     ave += array[i];
@@ -236,7 +236,7 @@ static double calc_SE(double *array, int num){
 }
 static double calc_SE_ratio(double *array, int num){
   int i;
-  if(!num) return 0;
+  if(num<=1) return 0;
   double ave=0;
   for(i=0; i<num; i++){
     ave += array[i];
