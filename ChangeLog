@@ -1,3 +1,7 @@
+2017-3-XX Ryuichiro Nakato <rnakato@iam.u-tokyo.ac.jp>
+	Version 3.2.7
+	- change filename of binarray.xls to <binsize>.binarray.xls
+
 2017-3-22 Ryuichiro Nakato <rnakato@iam.u-tokyo.ac.jp>
 	Version 3.2.6
 	- bug fix for PROFILE command
