@@ -110,7 +110,7 @@ int main(int argc, char *argv[]){
 static void output_wigstats(PwParam *p, Mapfile *mapfile, RefGenome *g){
   int i,chr;
   char *outputfile = alloc_str_new(p->output_dir, strlen(p->output_prefix) +100);
-  sprintf(outputfile, "%s/%s.binarray_dist.xls", p->output_dir, p->output_prefix);
+  sprintf(outputfile, "%s/%s.%d.binarray_dist.xls", p->output_dir, p->output_prefix, p->binsize);
   FILE *OUT = my_fopen(outputfile, FILE_MODE_WRITE);
 
   pw_estimate_nb_param(mapfile, g);
