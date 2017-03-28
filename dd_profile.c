@@ -14,19 +14,19 @@
 static double **pdarray_new(int snum, int arraynum);
 static void delete_pdarray(double **p, int snum);
 
-static void func(DDParam *d, SamplePair *sample, int samplenum, int i, int posi){
+static void func(DDParam *d, SamplePair *sample, int samplenum, int i, int posi, int binnum){
   int k;
   for(k=0; k<samplenum; k++){
     if(d->stype == ENRICHDIST){
       double r = CALCRATIO(sample[k].ChIP->data[posi], sample[k].Input->data[posi], sample->comp->genome->ratio);
       //      printf("r0=%f, r=%f, ratio=%f\n",sample[k].ChIP->data[posi]/(double)sample[k].Input->data[posi], r, sample->comp->genome->ratio);
-      sample[k].profile.IP[i] += r;
-      sample[k].profile.IPsum += r;
+      sample[k].profile.IP[i] += r/binnum;
+      sample[k].profile.IPsum += r/binnum;
       if(d->showse) sample[k].profile.SE[i][d->ntotal_profile] = r;
     }
     else {
-      sample[k].profile.IP[i] += sample[k].ChIP->data[posi];
-      sample[k].profile.IPsum += sample[k].ChIP->data[posi];
+      sample[k].profile.IP[i] += sample[k].ChIP->data[posi]/binnum;
+      sample[k].profile.IPsum += sample[k].ChIP->data[posi]/binnum;
       if(d->showse) sample[k].profile.SE[i][d->ntotal_profile] = sample[k].ChIP->data[posi];
     }
   }
@@ -55,7 +55,7 @@ static void add_around_sites(DDParam *d, RefGenome *g, SamplePair *sample, int s
     d->ntotal_skip++;
     return;
   }
-  for(i=0; i<cwbin*2+1; i++) func(d, sample, samplenum, i, wigposi - (cwbin-i)*dir);
+  for(i=0; i<cwbin*2+1; i++) func(d, sample, samplenum, i, wigposi - (cwbin-i)*dir, 1);
   if(d->pdetail) output_detail(d, sample, sitename, samplenum, cwbin*2+1, g->chr[chr].name);
   d->ntotal_profile++;
 
@@ -97,7 +97,7 @@ void add_profile(DrParam *p, DDParam *d, RefGenome *g, SamplePair *sample, int c
 	  s = (gene[i].end + len - len100 * (j+1))/ binsize;
 	  e = (gene[i].end + len - len100 * j)    / binsize;
 	}
-	for(k=s; k<=e; k++) func(d, sample, samplenum, j, k);
+	for(k=s; k<=e; k++) func(d, sample, samplenum, j, k, (e-s+1));
       }
       if(d->pdetail) output_detail(d, sample, gene[i].name, samplenum, arraynum, g->chr[chr].name);
       d->ntotal_profile++;
