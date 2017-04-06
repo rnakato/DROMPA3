@@ -203,7 +203,7 @@ static void print_SeqStats(FILE *OUT, PwParam *pwparam, SeqStats *p, long nread,
   /* genome coverage */
   fprintf(OUT, "%.2f\t", fd->gcov);
   /* FRiP */
-  if(pwparam->bedfilename) fprintf(OUT, "%.2f\t", p->FRiP);
+  if(pwparam->bedfilename) fprintf(OUT, "%.4f\t", p->FRiP);
 
   return;
 }
