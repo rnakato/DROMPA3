@@ -11,10 +11,10 @@
 #include "compress.h"
 
 void output_bindata(char *dir, char *prefix, RefGenome *g, TYPE_WIGARRAY *array, char *gtfile, int binsize, int binnum, int chr, PWfile_Type wtype){
-  char *output_prefix = alloc_str_new(dir, strlen(prefix)+100);
+  char *output_prefix = alloc_str_new(dir, strlen(prefix) + 1024);
   if(wtype==TYPE_BEDGRAPH || wtype==TYPE_BIGWIG) sprintf(output_prefix, "%s/%s.%d", dir, prefix, binsize);
   else sprintf(output_prefix, "%s/%s_%s.%d", dir, prefix, g->chr[chr].name, binsize);
-  char *outputfilename = alloc_str_new(output_prefix, 20);
+  char *outputfilename = alloc_str_new(output_prefix, 200);
 
   if(wtype==TYPE_BINARY){
     sprintf(outputfilename, "%s.bin", output_prefix);
@@ -56,11 +56,11 @@ void make_bedGraph(RefGenome *g, TYPE_WIGARRAY *array, char *outputfile, char *p
   fclose(OUT);
 
   if(chr == g->chrnum-1){
-      char *command = alloc_str_new(outputfile, strlen(outputfile) + 100);
+      char *command = alloc_str_new(outputfile, strlen(outputfile) + 1024);
       sprintf(command, "sort -k1,1 -k2,2n %s > %s.sort", outputfile, outputfile);
       LOG("%s\n", command);
       my_system(command);
-      char *tempfile = alloc_str_new(outputfile, 100);
+      char *tempfile = alloc_str_new(outputfile, 1024);
       sprintf(tempfile, "%s.temp", outputfile);
       OUT = my_fopen(tempfile, FILE_MODE_A);
       fprintf(OUT, "browser position %s:%ld-%ld\n", g->chr[1].name, g->chr[1].len/3, min(g->chr[1].len/3+1000000, g->chr[1].len-1));
@@ -84,7 +84,7 @@ void make_bedGraph(RefGenome *g, TYPE_WIGARRAY *array, char *outputfile, char *p
 
 void convert_bedGraph_to_bigWig(char *outputfile, char *output_prefix, char *gtfile){
   printf("convert to bigWig format...\n");
-  char *command = alloc_str_new(outputfile, strlen(gtfile) + strlen(output_prefix) + 100);
+  char *command = alloc_str_new(outputfile, strlen(gtfile) + strlen(output_prefix) + 1024);
   sprintf(command, "bedGraphToBigWig %s.bedGraph %s %s.bw", output_prefix, gtfile, output_prefix);
   LOG("%s\n", command);
   my_system(command);
