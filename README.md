@@ -1,4 +1,4 @@
-# DROMPA3 (version 3.2.6)
+# DROMPA3 README
 
 Please direct bug reports and questions about usage to rnakato@iam.u-tokyo.ac.jp.
 
