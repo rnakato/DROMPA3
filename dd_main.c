@@ -100,7 +100,7 @@ static void drompafunc(DrParam *p, DDParam *d, SamplePair *sample, RefGenome *g)
 
 static void read_annotation(DrParam *p, DDParam *d, RefGenome *g, int chr){
   if(d->GC.argv) read_graph(&(d->GC), g, chr, "GC%",   GC_MMIN, GC_MMAX, GTYPE_SINGLE);
-  if(d->GD.argv) read_graph(&(d->GD), g, chr, "genes", GD_MMIN, GD_MMAX, GTYPE_SINGLE);
+  if(d->GD.argv) read_graph(&(d->GD), g, chr, "Num of genes", GD_MMIN, GD_MMAX, GTYPE_SINGLE);
   if(p->ftype==FTYPE_GV) return;
 
   if(d->gene.argv || d->arsfile || d->terfile) d->gene.gene = (Gene *)my_calloc(STRUCT_GENE_MAX, sizeof(Gene), "gene");

@@ -394,7 +394,6 @@ static void draw_eachsample(DDParam *d, cairo_t *cr, SamplePair *sample, HMarray
     if(!d->hmsort){
       for(i=0; i<num; i++){
 	stroke_hmarray(d, cr, sample, hmarray[sampleid].line[i].array, x, &y);
-	//	if(i==1800)printf("\naaa %d %f\n",i,hmarray[sampleid].line[i].array[10]);
       }
     }else{
       for(i=0; i<num; i++){
