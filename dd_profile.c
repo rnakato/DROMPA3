@@ -18,8 +18,8 @@ static void func(DDParam *d, SamplePair *sample, int samplenum, int i, int posi,
   int k;
   for(k=0; k<samplenum; k++){
     if(d->stype == ENRICHDIST){
-      double r = CALCRATIO(sample[k].ChIP->data[posi], sample[k].Input->data[posi], sample->comp->genome->ratio);
-      //      printf("r0=%f, r=%f, ratio=%f\n",sample[k].ChIP->data[posi]/(double)sample[k].Input->data[posi], r, sample->comp->genome->ratio);
+      double r = CALCRATIO(sample[k].ChIP->data[posi], sample[k].Input->data[posi], sample[k].comp->genome->ratio);
+      //      printf("r=%f, ChIP=%d, Input=%d\n",r, sample[k].ChIP->data[posi], sample[k].Input->data[posi]);
       sample[k].profile.IP[i] += r/binnum;
       sample[k].profile.IPsum += r/binnum;
       if(d->showse) sample[k].profile.SE[i][d->ntotal_profile] = r;
