@@ -27,7 +27,7 @@ static void print_usage_base(){
   fprintf(stderr, "Usage: drompa_peakcall [--version] <command>\n");
   fprintf(stderr, "Command: PC_SHARP    peak-calling (for sharp mode)\n");
   fprintf(stderr, "         PC_BROAD    peak-calling (for broad mode)\n");
-  fprintf(stderr, "         PC_E        peak-calling (enrichment ratio)\n");
+  fprintf(stderr, "         PC_ENRICH   peak-calling (enrichment ratio)\n");
   exit(0);
 }
 

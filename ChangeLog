@@ -1,6 +1,7 @@
-2017-3-XX Ryuichiro Nakato <rnakato@iam.u-tokyo.ac.jp>
+2017-11-14 Ryuichiro Nakato <rnakato@iam.u-tokyo.ac.jp>
 	Version 3.2.7
 	- change filename of binarray.xls to <binsize>.binarray.xls
+	- bug fix in drompa_peakcall PC_E command
 
 2017-3-22 Ryuichiro Nakato <rnakato@iam.u-tokyo.ac.jp>
 	Version 3.2.6

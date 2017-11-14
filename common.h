@@ -9,7 +9,7 @@
 #include <time.h>
 #endif
 
-#define VERSION "3.2.6"
+#define VERSION "3.2.7"
 #define BINSIZE_DEFAULT 100
 #define THRE_LOW_MAPPABILITY 0.3
 
