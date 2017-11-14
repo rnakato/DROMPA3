@@ -90,7 +90,7 @@ int judge_significant(DrParam *p, double p_enr, double p_inter, double ratio_i, 
   int on=0;
   if(Input_argv){ // ChIP and Input
     if(p->ftype==FTYPE_PEAKCALL_E){
-      if(p_enr > p->pthre_enrich && iptag > p->IPmaxthre) on++;
+      if(p_enr > p->enrichthre && iptag > p->IPmaxthre) on++;
     }else{
       if(p_enr > p->pthre_enrich && p_inter > p->pthre_internal && ratio_i > p->enrichthre && iptag > p->IPmaxthre) on++;
     }
@@ -128,7 +128,6 @@ static void open_bs(struct bs *bs, int chr, int i, double tag, double ratio, dou
   return;
 }
 
-/* X-drop off? */
 static void define_peakregion(DrParam *p, Peak **peak_ref, double iptag, int i, int *ext, int chr, double ratio, double p_enr, double p_inter, char *Input_argv, char *ignore_array){
   int ext_max = 1; //100/p->binsize;  // fragment length - read length
   Peak *peak = *peak_ref;
