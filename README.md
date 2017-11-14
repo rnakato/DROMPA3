@@ -26,8 +26,7 @@ for CentOS:
 #### 2.2. Install cpdf
  DROMPA uses Coherent PDF (http://community.coherentpdf.com/) for merging pdf files.
  
-     wget http://github.com/coherentgraphics/cpdf-binaries/archive/master.zip
-     unzip master.zip
+     git clone https://github.com/coherentgraphics/cpdf-binaries.git
     
 #### 2.3. Install DROMPA
     git clone https://github.com/rnakato/DROMPA3.git
@@ -39,7 +38,7 @@ If you get an installation error, make sure that all required libraries are inst
 #### 2.4. Add the PATH environment variable
 For example, if you downloaded DROMPA and cpdf into the $HOME/my_chipseq_exp directory, type:
 
-    export PATH = $PATH:$HOME/my_chipseq_exp/DROMPA3:$HOME/my_chipseq_exp/cpdf-binaries-master/Linux-Intel-**bit
+    export PATH = $PATH:$HOME/my_chipseq_exp/DROMPA3:$HOME/my_chipseq_exp/cpdf-binaries/Linux-Intel-64bit/
 
 
 # 3. Usage
