@@ -1,7 +1,5 @@
 # DROMPA3 README
 
-Please direct bug reports and questions about usage to rnakato@iam.u-tokyo.ac.jp.
-
 # 1. Overview
 DROMPA (DRaw and Observe Multiple enrichment Profiles and Annotation) is a program for user-friendly and flexible ChIP-seq pipelining. DROMPA can be used for quality check, PCRbias filtering, normalization, peak calling, visualization and other multiple analyses of ChIP-seq data. DROMPA is specially designed so that it is easy to handle, and for users without a strong bioinformatics background.
 
@@ -42,7 +40,7 @@ For example, if you downloaded DROMPA and cpdf into the $HOME/my_chipseq_exp dir
 
 
 # 3. Usage
- See Manual.pdf for detail.
+ See Manual.pdf for detail. Please direct bug reports and questions about usage to rnakato@iam.u-tokyo.ac.jp.
 
 # 4. Reference
 1. Nakato R., Shirahige K. Recent advances in ChIP-seq analysis: from quality management to whole-genome annotation, Briefings in Bioinformatics, 2016.
