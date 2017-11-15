@@ -15,7 +15,7 @@ DROMPA is written in C and requires the following programs and libraries:
 #### 2.1. Install required libraries
 for Ubuntu:
 
-     sudo apt-get install git gcc libgtk2.0-dev libgsl-dev samtools r-base
+     sudo apt install git gcc libgtk2.0-dev libgsl-dev samtools r-base
  
 for CentOS:
 
@@ -24,10 +24,10 @@ for CentOS:
 #### 2.2. Install cpdf
  DROMPA uses Coherent PDF (http://community.coherentpdf.com/) for merging pdf files.
  
-     git clone https://github.com/coherentgraphics/cpdf-binaries.git
+     git clone https://github.com/coherentgraphics/cpdf-binaries
     
 #### 2.3. Install DROMPA
-    git clone https://github.com/rnakato/DROMPA3.git
+    git clone https://github.com/rnakato/DROMPA3
     cd DROMPA3
     make
 
