@@ -205,6 +205,7 @@ void dd_compare_intensity(DrParam *p, DDParam *d, RefGenome *g, SamplePair *samp
     for(i=0; i<2; i++){
       if(sample[i].copyC==-1) dr_delete_wigdata(sample[i].ChIP);
     }
+    printf("\n");
   }
   printf("done.\n");
   fclose(OUT);
@@ -259,6 +260,7 @@ void dd_multici(DrParam *p, DDParam *d, RefGenome *g, SamplePair *sample)
     for (i=0; i<p->samplenum; i++) {
       if (sample[i].copyC==-1) dr_delete_wigdata(sample[i].ChIP);
     }
+    printf("\n");
   }
   
   printf("done.\n");
