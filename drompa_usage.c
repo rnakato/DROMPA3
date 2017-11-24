@@ -8,7 +8,7 @@
 #include "readfile.h"
 #include "macro.h"
 
-char str_ftype[][16]={"PC_SHARP", "PC_BROAD", "PC_ENRICH", "GV", "PD", "FRIP", "CI", "CG", "GOVERLOOK", "PROFILE", "HEATMAP", "TR"};
+char str_ftype[][17]={"PC_SHARP", "PC_BROAD", "PC_ENRICH", "GV", "PD", "FRIP", "CI", "MULTICI", "CG", "GOVERLOOK", "PROFILE", "HEATMAP", "TR"};
 
 static void print_gt_and_output(){
   fprintf(stderr, "       <output>: Name of output files\n");

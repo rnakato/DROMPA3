@@ -75,7 +75,8 @@ void dd_counttags(DrParam *p, DDParam *d, RefGenome *g, SamplePair *sample){
   return;
 }
 
-void dd_compare_genebody(DrParam *p, DDParam *d, RefGenome *g, SamplePair *sample){
+void dd_compare_genebody(DrParam *p, DDParam *d, RefGenome *g, SamplePair *sample)
+{
   int i,j,k,l,s,e, chr, len;
   double IPtag[p->samplenum], exontag[p->samplenum], introntag[p->samplenum];
   char *filename = alloc_str_new(p->headname, 20);
@@ -148,13 +149,15 @@ void dd_compare_genebody(DrParam *p, DDParam *d, RefGenome *g, SamplePair *sampl
 
     MYFREE(gene);
   }
+  printf("done.\n");
   fclose(OUT);
   MYFREE(filename);
   return;
 }
 
-void dd_compare_intensity(DrParam *p, DDParam *d, RefGenome *g, SamplePair *sample){
-  int i,j,s,e, chr;
+void dd_compare_intensity(DrParam *p, DDParam *d, RefGenome *g, SamplePair *sample)
+{
+  int i,j,s,e,n,chr;
   double IPtag1=0, IPtag2=0,A=0,M=0, max, min, pval_enr;
   char *filename = alloc_str_new(p->headname, 20);
   sprintf(filename, "%s.xls", p->headname);
@@ -166,9 +169,16 @@ void dd_compare_intensity(DrParam *p, DDParam *d, RefGenome *g, SamplePair *samp
 
   for(chr=1; chr<g->chrnum; chr++){
     if(!p->includeYM && (!strcmp(g->chr[chr].name, "chrY") || !strcmp(g->chr[chr].name, "chrM") || !strcmp(g->chr[chr].name, "chrMT"))) continue;
-    printf("\n%s\n", g->chr[chr].name);
-    for(i=0; i<2; i++){
-      printf("sample%d: reading wigfile...\n", i+1);
+
+    printf("%s..", g->chr[chr].name);
+    int nbedsites=0;
+    for (j=0; j<d->bednum; j++) nbedsites += d->bed[j]->chr[chr].num;
+    if (!nbedsites) {
+      printf("(no site)\n");
+      continue;
+    }
+    for (i=0; i<2; i++) {
+      printf("load sample%d..", i+1);
       if(sample[i].copyC==-1) dr_read_wigdata(p, &(sample[i]), sample[i].ChIP, g, chr);
     }
     for(j=0; j<d->bednum; j++){
@@ -176,11 +186,14 @@ void dd_compare_intensity(DrParam *p, DDParam *d, RefGenome *g, SamplePair *samp
       for(i=0; i<bed->num; i++){
 	s = bed->bed[i].s / sample[0].binsize;
 	e = bed->bed[i].e / sample[0].binsize;
+	n = e - s + 1;
 	IPtag1=0; IPtag2=0;
 	for(; s<=e; s++){
 	  IPtag1 += WIGARRAY2VALUE(sample[0].ChIP->data[s]);
 	  IPtag2 += WIGARRAY2VALUE(sample[1].ChIP->data[s]);
 	}
+	IPtag1 /= n;
+	IPtag2 /= n;
 	A = log2((IPtag1 +1)*(IPtag2+1))/2;
 	M = log2(IPtag1 +1) - log2(IPtag2+1);
 	max = max(IPtag1, IPtag2);
@@ -193,6 +206,62 @@ void dd_compare_intensity(DrParam *p, DDParam *d, RefGenome *g, SamplePair *samp
       if(sample[i].copyC==-1) dr_delete_wigdata(sample[i].ChIP);
     }
   }
+  printf("done.\n");
+  fclose(OUT);
+  MYFREE(filename);
+  return;
+}
+
+void dd_multici(DrParam *p, DDParam *d, RefGenome *g, SamplePair *sample)
+{
+  int i,j,k,l,s,e,n,chr;
+  char *filename = alloc_str_new(p->headname, 20);
+  sprintf(filename, "%s.xls", p->headname);
+  remove_file(filename);
+  BedChr *bed=NULL;
+
+  FILE *OUT = my_fopen(filename, FILE_MODE_WRITE);
+
+  fprintf(OUT, "chromosome\tstart\tend\tpeak width");
+  for (i=0; i<p->samplenum; i++) fprintf(OUT, "\t%s", sample[i].linename);
+  fprintf(OUT, "\n");
+
+  for (chr=1; chr<g->chrnum; chr++) {
+    if (!p->includeYM && (!strcmp(g->chr[chr].name, "chrY") || !strcmp(g->chr[chr].name, "chrM") || !strcmp(g->chr[chr].name, "chrMT"))) continue;
+    printf("%s..", g->chr[chr].name);
+    int nbedsites=0;
+    for (j=0; j<d->bednum; j++) nbedsites += d->bed[j]->chr[chr].num;
+    if (!nbedsites) {
+      printf("(no site)\n");
+      continue;
+    }
+    for (i=0; i<p->samplenum; i++) {
+      printf("load sample%d..", i+1);
+      if(sample[i].copyC==-1) dr_read_wigdata(p, &(sample[i]), sample[i].ChIP, g, chr);
+    }
+    for (j=0; j<d->bednum; j++) {
+      bed = &(d->bed[j]->chr[chr]);
+      for (i=0; i<bed->num; i++) {
+	//	printf("%d %d\n", i, bed->num);
+	s = bed->bed[i].s / sample[0].binsize;
+	e = bed->bed[i].e / sample[0].binsize;
+	n = e - s + 1;
+	//	printf("s%d e%d n%d\n", s, e, n);
+	fprintf(OUT, "%s\t%d\t%d\t%d", g->chr[chr].name, bed->bed[i].s, bed->bed[i].e, bed->bed[i].e-bed->bed[i].s);
+	double tag=0;
+	for (k=0; k<p->samplenum; k++) {
+	  for (l=s; l<=e; l++) tag += WIGARRAY2VALUE(sample[k].ChIP->data[l]);
+	  fprintf(OUT, "\t%.2f", tag/n);
+	}
+	fprintf(OUT, "\n");
+      }
+    }
+    for (i=0; i<p->samplenum; i++) {
+      if (sample[i].copyC==-1) dr_delete_wigdata(sample[i].ChIP);
+    }
+  }
+  
+  printf("done.\n");
   fclose(OUT);
   MYFREE(filename);
   return;

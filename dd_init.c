@@ -164,7 +164,8 @@ void dd_argv_init(int argc, char **argv, DrParam *p, DDParam *d, SamplePair **sa
   return;
 }
 
-static void check_argv1(DrParam *p, DDParam *d, char *argv, SampleParam *sp){
+static void check_argv1(DrParam *p, DDParam *d, char *argv, SampleParam *sp)
+{
   if(!strcmp(argv, "-h") || !strcmp(argv, "--help")) print_usage_base();
   if(!strcmp(argv, "--version")) print_version();
   else if(!strcmp(argv, "PC_SHARP")){
@@ -203,6 +204,7 @@ static void check_argv1(DrParam *p, DDParam *d, char *argv, SampleParam *sp){
     d->rmchr = 1;
   }else if(!strcmp(argv, "FRIP"))     p->ftype = FTYPE_FRIP;
   else if(!strcmp(argv, "CI"))        p->ftype = FTYPE_COMPARE_INTENSITY;
+  else if(!strcmp(argv, "MULTICI"))   p->ftype = FTYPE_MULTICI;
   else if(!strcmp(argv, "CG"))        p->ftype = FTYPE_COMPARE_GENEBODY;
   else if(!strcmp(argv, "GOVERLOOK")) p->ftype = FTYPE_GOVERLOOK;
   else if(!strcmp(argv, "PROFILE"))   p->ftype = FTYPE_PROFILE;
@@ -245,7 +247,7 @@ static void check_ddparam(DrParam *p, DDParam *d, SamplePair **sample, StructIni
   if(g->genome->len > THRE_GENOMELEN4WG) d->large_genome = true;
 
   if((p->ftype==FTYPE_COMPARE_GENEBODY || p->ftype == FTYPE_TR) && !d->gene.argv) PRINT_ERROR("error: %s requires -gene option.\n", str_ftype[p->ftype]);
-  if((p->ftype==FTYPE_FRIP || p->ftype==FTYPE_COMPARE_INTENSITY) && !d->bednum)   PRINT_ERROR("error: %s requires -bed option.\n", str_ftype[p->ftype]);
+  if((p->ftype==FTYPE_FRIP || p->ftype==FTYPE_COMPARE_INTENSITY || p->ftype==FTYPE_MULTICI) && !d->bednum) PRINT_ERROR("error: %s requires -bed option.\n", str_ftype[p->ftype]);
   if(p->ftype==FTYPE_GOVERLOOK && !range(d->bednum, 1, 3)) PRINT_ERROR("error: please specify -bed option (up to 3.)\n");
   if(p->ftype==FTYPE_PROFILE || p->ftype==FTYPE_HEATMAP){
     if(!range(d->ptype, 1, PTYPENUM-1))        PRINT_ERROR("error: Invalid input ptype: %d.\n",       d->ptype);
@@ -506,6 +508,7 @@ static void print_usage_base(){
   fprintf(stderr, "         PD          peak density\n");
   fprintf(stderr, "         FRIP        accumulate read counts in bed regions specified\n");
   fprintf(stderr, "         CI          compare peak-intensity between two samples\n");
+  fprintf(stderr, "         MULTICI     output ChIP-reads in specified bed sites\n");
   fprintf(stderr, "         CG          output ChIP-reads in each gene body\n");
   fprintf(stderr, "         GOVERLOOK   genome-wide overlook of peak positions\n");
   fprintf(stderr, "         PROFILE     make R script of averaged read density\n");

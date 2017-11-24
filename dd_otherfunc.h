@@ -9,6 +9,7 @@
 
 void dd_counttags(DrParam *p, DDParam *d, RefGenome *g, SamplePair *sample);
 void dd_compare_intensity(DrParam *p, DDParam *d, RefGenome *g, SamplePair *sample);
+void dd_multici(DrParam *p, DDParam *d, RefGenome *g, SamplePair *sample);
 void dd_compare_genebody(DrParam *p, DDParam *d, RefGenome *g, SamplePair *sample);
 void dd_travelling_ratio(DrParam *p, DDParam *d, RefGenome *g, SamplePair *sample);
 #endif /* _DD_OTHERFUNC_H_ */

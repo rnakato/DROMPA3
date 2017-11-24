@@ -67,24 +67,30 @@ int main(int argc, char **argv){
   return 0;
 }
 
-static void drompafunc(DrParam *p, DDParam *d, SamplePair *sample, RefGenome *g){
-  if(p->ftype == FTYPE_GOVERLOOK) genome_overlook(p, d, g);
-  else if(p->ftype==FTYPE_PROFILE){
+static void drompafunc(DrParam *p, DDParam *d, SamplePair *sample, RefGenome *g)
+{
+  if (p->ftype == FTYPE_GOVERLOOK) genome_overlook(p, d, g);
+  else if (p->ftype==FTYPE_PROFILE) {
     d->filename_profile = alloc_str_new(p->headname, 10);
     sprintf(d->filename_profile, "%s.R", p->headname);
     remove_file(d->filename_profile);
-  }else if(p->ftype==FTYPE_HEATMAP){
+  } else if (p->ftype==FTYPE_HEATMAP) {
     draw_heatmap(p, d, sample, g);
     return;
-  }else if(p->ftype==FTYPE_FRIP){
+  } else if (p->ftype==FTYPE_FRIP) {
     dd_counttags(p, d, g, sample);
     return;
-  }else if(p->ftype==FTYPE_COMPARE_INTENSITY){
+  } else if (p->ftype==FTYPE_COMPARE_INTENSITY) {
     dd_compare_intensity(p, d, g, sample);
-  }else if(p->ftype==FTYPE_COMPARE_GENEBODY){
+    return;
+  } else if (p->ftype==FTYPE_MULTICI) {
+    dd_multici(p, d, g, sample);
+    return;
+  } else if (p->ftype==FTYPE_COMPARE_GENEBODY) {
     dd_compare_genebody(p, d, g, sample);
+    return;
   }
-  if(p->ftype==FTYPE_TR){
+  if(p->ftype==FTYPE_TR) {
     dd_travelling_ratio(p, d, g, sample);
     return;
   }

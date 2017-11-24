@@ -31,6 +31,7 @@ typedef enum{
   FTYPE_PD,
   FTYPE_FRIP,
   FTYPE_COMPARE_INTENSITY,
+  FTYPE_MULTICI,
   FTYPE_COMPARE_GENEBODY,
   FTYPE_GOVERLOOK,
   FTYPE_PROFILE,
@@ -134,6 +135,6 @@ typedef struct{
 
 } SamplePair;
 
-extern char str_ftype[][16];
+extern char str_ftype[][17];
 
 #endif /* _DROMPA_GV_H_ */
