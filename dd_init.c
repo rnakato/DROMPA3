@@ -399,8 +399,10 @@ static void init_dump(DrParam *p, DDParam *d, RefGenome *g, SamplePair *sample){
   printf("   Input format: %s\n", str_wigfiletype[p->itype]);
   if(p->smoothing) printf("   smoothing width: %d bp\n", p->smoothing);
   if(p->mpfile) printf("Mappability file: %s\n", p->mpfile);
-  printf("   ChIP/Input normalization: %s\n", str_norm[p->ntype]);
-  if(p->ftype==FTYPE_PEAKCALL_SHARP || p->ftype==FTYPE_PEAKCALL_BROAD || p->ftype==FTYPE_PEAKCALL_E){
+  if(p->ftype==FTYPE_PEAKCALL_SHARP || p->ftype==FTYPE_PEAKCALL_BROAD || p->ftype==FTYPE_PEAKCALL_E || p->ftype==FTYPE_PROFILE || p->ftype==FTYPE_HEATMAP) {
+    printf("   ChIP/Input normalization: %s\n", str_norm[p->ntype]);
+  }
+  if(p->ftype==FTYPE_PEAKCALL_SHARP || p->ftype==FTYPE_PEAKCALL_BROAD || p->ftype==FTYPE_PEAKCALL_E) {
     printf("   Peak intensity threshold: %.2f\n", p->IPmaxthre);
     printf("   Enrichment threshold: %.2f\n", p->enrichthre);
     printf("   p-value threshold (internal, -log10): %.2e\n", p->pthre_internal);
@@ -412,7 +414,7 @@ static void init_dump(DrParam *p, DDParam *d, RefGenome *g, SamplePair *sample){
     printf("   profile type: %s\n", str_ptype[d->ptype]);
     printf("   profile normalization: %s\n", str_ntype[d->ntype]);
   }
-  if(p->ftype != FTYPE_GOVERLOOK){
+  if(p->ftype != FTYPE_GOVERLOOK) {
     printf("\nSamples\n");
     for(i=0; i<p->samplenum_1st; i++){
       printf("   ChIP%d: %s\tname: %s\tbinsize:%d\n", i+1, sample[i].ChIP->argv, sample[i].linename, sample[i].binsize);
