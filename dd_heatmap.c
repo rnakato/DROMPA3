@@ -144,7 +144,8 @@ static void sort_eachbedfile(DDParam *d, HMarray *p){
   return;
 }
 
-void draw_heatmap(DrParam *p, DDParam *d, SamplePair *sample, RefGenome *g){
+void draw_heatmap(DrParam *p, DDParam *d, SamplePair *sample, RefGenome *g)
+{
   gint i, num;
   gchar filename[128];
   char *format;
@@ -154,9 +155,10 @@ void draw_heatmap(DrParam *p, DDParam *d, SamplePair *sample, RefGenome *g){
 
   // global variant
   if(d->ptype != GENE100){
-    dot = 4;
     binwidth  = d->cwbin*2;
     sort_posi = d->cwbin;
+    dot = 4 * 50.0/binwidth;
+    LOG("%f, %d\n",dot, binwidth);
   }else{
     dot = 80/(gdouble)GENEBLOCKNUM;
     binwidth  = GENEBLOCKNUM*3;
@@ -195,6 +197,8 @@ void draw_heatmap(DrParam *p, DDParam *d, SamplePair *sample, RefGenome *g){
   gdouble width_sheet = width_draw + OFFSET_X *2;
   gdouble height_draw = num * lat;
   gdouble height_sheet = max(100, height_draw + OFFSET_Y *2);
+
+  LOG("Page size: %f, %f, %f, %f, %f, %d\n", width_draw, width_sheet, height_draw, height_sheet, wd4sample, p->samplenum);
   
   // drawing
   cairo_surface_t *surface;
