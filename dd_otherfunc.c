@@ -249,8 +249,8 @@ void dd_multici(DrParam *p, DDParam *d, RefGenome *g, SamplePair *sample)
 	n = e - s + 1;
 	//	printf("s%d e%d n%d\n", s, e, n);
 	fprintf(OUT, "%s\t%d\t%d\t%d", g->chr[chr].name, bed->bed[i].s, bed->bed[i].e, bed->bed[i].e-bed->bed[i].s);
-	double tag=0;
 	for (k=0; k<p->samplenum; k++) {
+	  double tag=0;
 	  for (l=s; l<=e; l++) tag += WIGARRAY2VALUE(sample[k].ChIP->data[l]);
 	  fprintf(OUT, "\t%.2f", tag/n);
 	}
