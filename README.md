@@ -22,7 +22,7 @@ for CentOS:
      sudo yum -y install zlib-devel gsl-devel gtk2-devel
 
 #### 2.2. Install cpdf
- DROMPA uses Coherent PDF (http://community.coherentpdf.com/) for merging pdf files.
+ DROMPA uses [Coherent PDF](http://community.coherentpdf.com/) for merging pdf files.
  
      git clone https://github.com/coherentgraphics/cpdf-binaries
     
@@ -40,9 +40,11 @@ For example, if you downloaded DROMPA and cpdf into the $HOME/my_chipseq_exp dir
 
 
 # 3. Usage
- See Manual.pdf for detail. Please direct bug reports and questions about usage to rnakato@iam.u-tokyo.ac.jp.
+ See [Manual.pdf](https://github.com/rnakato/DROMPA3/blob/master/Manual.pdf) for detail. Please direct bug reports and questions about usage to rnakato@iam.u-tokyo.ac.jp.
 
-# 4. Reference
-1. Nakato R., Shirahige K. Recent advances in ChIP-seq analysis: from quality management to whole-genome annotation, Briefings in Bioinformatics, 2016.
+# 4. Citation
+1. Nakato, R. and Shirahige K., Statistical Analysis and Quality Assessment of ChIP-seq Data with DROMPA, pp. 631–643, Springer New York, New York, NY, 2018.
 
-2. Nakato, R., Itoh T. and Shirahige K.: DROMPA: easy-to-handle peak calling and visualization software for the computational analysis and validation of ChIP-seq data, Genes to Cells, vol.18, issue 7, 2013.
+2. Nakato R., Shirahige K., Recent advances in ChIP-seq analysis: from quality management to whole-genome annotation, Briefings in Bioinformatics, 2016.
+
+3. Nakato, R., Itoh T. and Shirahige K., DROMPA: easy-to-handle peak calling and visualization software for the computational analysis and validation of ChIP-seq data, Genes to Cells, vol.18, issue 7, 2013.
