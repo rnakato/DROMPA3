@@ -78,7 +78,7 @@ static void drompafunc(DrParam *p, DDParam *d, SamplePair *sample, RefGenome *g)
     draw_heatmap(p, d, sample, g);
     return;
   } else if (p->ftype==FTYPE_FRIP) {
-    dd_counttags(p, d, g, sample);
+    dd_calcfrip(p, d, g, sample);
     return;
   } else if (p->ftype==FTYPE_COMPARE_INTENSITY) {
     dd_compare_intensity(p, d, g, sample);

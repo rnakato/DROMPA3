@@ -23,12 +23,12 @@ typedef struct{
   double TR;
 } StPIndex;
 
-void dd_counttags(DrParam *p, DDParam *d, RefGenome *g, SamplePair *sample){
+void dd_calcfrip(DrParam *p, DDParam *d, RefGenome *g, SamplePair *sample){
   int i,j,k,s,e,chr;
   double sum, counttag_sum[p->samplenum];
   for(k=0; k<p->samplenum; k++) counttag_sum[k]=0;
   char *filename = alloc_str_new(p->headname, 20);
-  sprintf(filename, "%s.xls", p->headname);
+  sprintf(filename, "%s.csv", p->headname);
   remove_file(filename);
 
   FILE *OUT = my_fopen(filename, FILE_MODE_WRITE);
@@ -47,15 +47,12 @@ void dd_counttags(DrParam *p, DDParam *d, RefGenome *g, SamplePair *sample){
     }
     bed = &(d->bed[0]->chr[chr]);
     for(i=0; i<bed->num; i++){
-      //      fprintf(OUT, "%s\t%d\t%d\t", g->chr[chr].name, bed->bed[i].s, bed->bed[i].e);
       for(k=0; k<p->samplenum; k++){
 	s = bed->bed[i].s / sample[k].binsize;
 	e = bed->bed[i].e / sample[k].binsize;
 	sum=0;
 	for(j=s; j<=e; j++) sum += WIGARRAY2VALUE(sample[k].ChIP->data[j]);
 	counttag_sum[k] += sum;
-	//	fprintf(OUT, "%.1f", sum);
-	//if(k==p->samplenum-1) fprintf(OUT, "\n"); else fprintf(OUT, "\t");
       }
     }
     for(i=0; i<p->samplenum; i++){
@@ -80,7 +77,7 @@ void dd_compare_genebody(DrParam *p, DDParam *d, RefGenome *g, SamplePair *sampl
   int i,j,k,l,s,e, chr, len;
   double IPtag[p->samplenum], exontag[p->samplenum], introntag[p->samplenum];
   char *filename = alloc_str_new(p->headname, 20);
-  sprintf(filename, "%s.xls", p->headname);
+  sprintf(filename, "%s.csv", p->headname);
   remove_file(filename);
   FILE *OUT = my_fopen(filename, FILE_MODE_WRITE);
   Gene *gene;
@@ -157,10 +154,10 @@ void dd_compare_genebody(DrParam *p, DDParam *d, RefGenome *g, SamplePair *sampl
 
 void dd_compare_intensity(DrParam *p, DDParam *d, RefGenome *g, SamplePair *sample)
 {
-  int i,j,s,e,n,chr;
+  int i,j,s,e,chr;
   double IPtag1=0, IPtag2=0,A=0,M=0, max, min, pval_enr;
   char *filename = alloc_str_new(p->headname, 20);
-  sprintf(filename, "%s.xls", p->headname);
+  sprintf(filename, "%s.csv", p->headname);
   remove_file(filename);
   BedChr *bed=NULL;
 
@@ -186,14 +183,11 @@ void dd_compare_intensity(DrParam *p, DDParam *d, RefGenome *g, SamplePair *samp
       for(i=0; i<bed->num; i++){
 	s = bed->bed[i].s / sample[0].binsize;
 	e = bed->bed[i].e / sample[0].binsize;
-	n = e - s + 1;
 	IPtag1=0; IPtag2=0;
 	for(; s<=e; s++){
 	  IPtag1 += WIGARRAY2VALUE(sample[0].ChIP->data[s]);
 	  IPtag2 += WIGARRAY2VALUE(sample[1].ChIP->data[s]);
 	}
-	IPtag1 /= n;
-	IPtag2 /= n;
 	A = log2((IPtag1 +1)*(IPtag2+1))/2;
 	M = log2(IPtag1 +1) - log2(IPtag2+1);
 	max = max(IPtag1, IPtag2);
@@ -215,9 +209,9 @@ void dd_compare_intensity(DrParam *p, DDParam *d, RefGenome *g, SamplePair *samp
 
 void dd_multici(DrParam *p, DDParam *d, RefGenome *g, SamplePair *sample)
 {
-  int i,j,k,l,s,e,n,chr;
+  int i,j,k,l,s,e,chr;
   char *filename = alloc_str_new(p->headname, 20);
-  sprintf(filename, "%s.xls", p->headname);
+  sprintf(filename, "%s.csv", p->headname);
   remove_file(filename);
   BedChr *bed=NULL;
 
@@ -243,16 +237,17 @@ void dd_multici(DrParam *p, DDParam *d, RefGenome *g, SamplePair *sample)
     for (j=0; j<d->bednum; j++) {
       bed = &(d->bed[j]->chr[chr]);
       for (i=0; i<bed->num; i++) {
-	//	printf("%d %d\n", i, bed->num);
 	s = bed->bed[i].s / sample[0].binsize;
 	e = bed->bed[i].e / sample[0].binsize;
-	n = e - s + 1;
-	//	printf("s%d e%d n%d\n", s, e, n);
 	fprintf(OUT, "%s\t%d\t%d\t%d", g->chr[chr].name, bed->bed[i].s, bed->bed[i].e, bed->bed[i].e-bed->bed[i].s);
 	for (k=0; k<p->samplenum; k++) {
 	  double tag=0;
-	  for (l=s; l<=e; l++) tag += WIGARRAY2VALUE(sample[k].ChIP->data[l]);
-	  fprintf(OUT, "\t%.2f", tag/n);
+	  for (l=s; l<=e; l++) {
+	    tag += WIGARRAY2VALUE(sample[k].ChIP->data[l]);
+	    //	    printf("\t%.2f", WIGARRAY2VALUE(sample[k].ChIP->data[l]));
+	  }
+	  //	  printf("\t%.2f", tag);
+	  fprintf(OUT, "\t%.2f", tag);
 	}
 	fprintf(OUT, "\n");
       }
@@ -274,7 +269,7 @@ static void draw_TRgraph(DrParam *p, SamplePair *sample, int hist[][NUM4HIST], i
   int value[p->samplenum];
   for(j=0; j<p->samplenum; j++) value[j]=0;
   char *filename = alloc_str_new(p->headname, 20);
-  sprintf(filename, "%s.fig.xls", p->headname);
+  sprintf(filename, "%s.fig.csv", p->headname);
   remove_file(filename);
 
   FILE *OUT = my_fopen(filename, FILE_MODE_WRITE);
@@ -305,7 +300,7 @@ void dd_travelling_ratio(DrParam *p, DDParam *d, RefGenome *g, SamplePair *sampl
   int on;
   int binsize = sample[0].binsize;
   char *filename = alloc_str_new(p->headname, 20);
-  sprintf(filename, "%s.xls", p->headname);
+  sprintf(filename, "%s.csv", p->headname);
   remove_file(filename);
   StPIndex pi[p->samplenum];
   

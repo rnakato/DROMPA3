@@ -1,8 +1,8 @@
 2017-11-24 Ryuichiro Nakato <rnakato@iam.u-tokyo.ac.jp>
 	Version 3.3.0
-	- add new command MULTICI that outputs averaged ChIP intensities of the specified bed sites
-	- modify CI command to output averaged ChIP intensities from summed ones
+	- add new command MULTICI that outputs accumulated ChIP intensities of the specified bed sites
 	- modify HEATMAP command to handle large -cw
+	- change postfixes of CI, FRIP, TR and CG commands from .xls to .csv
 
 2017-11-14 Ryuichiro Nakato <rnakato@iam.u-tokyo.ac.jp>
 	Version 3.2.7
