@@ -41,8 +41,8 @@ static void print_mpbl(){
 
 static void print_usage_threshold(){
   fprintf(stderr, "\n   threshold:\n");
-  fprintf(stderr, "       -pthre_enrich   <double>: p-value threshold for ChIP internal (Poisson, default < %.1e)\n", PTHRE_INTERNAL_DEFAULT);
-  fprintf(stderr, "       -pthre_internal <double>: p-value threshold for ChIP/Input enrichment (binomial, default < %.1e)\n", PTHRE_ENRICH_DEFAULT);
+  fprintf(stderr, "       -pthre_internal <double>: p-value threshold for ChIP internal (Poisson, default < %.1e)\n", PTHRE_INTERNAL_DEFAULT);
+  fprintf(stderr, "       -pthre_enrich   <double>: p-value threshold for ChIP/Input enrichment (binomial, default < %.1e)\n", PTHRE_ENRICH_DEFAULT);
   fprintf(stderr, "       -ethre <double>: IP/Input enrichment threshold (default: %d)\n", ENRICHTHRE_DEFAULT);
   fprintf(stderr, "       -ipm <double>: read intensity threshold of peak summit (default: 0)\n");
 }
