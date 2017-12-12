@@ -59,9 +59,9 @@ void print_usage_dp(){
   fprintf(stderr, "       -width4lmd <int> : width for calculating local lambda (default: %d bp)\n", WIDTH4LAMBDA_DEFAULT);
   print_usage_io();
   fprintf(stderr, "       -outputwig <int> : output bin data\n");
-  fprintf(stderr, "            0; ChIP/Input ratio\n");
-  fprintf(stderr, "            1; output ChIP-internal p-value\n");
-  fprintf(stderr, "            2; ChIP/Input enrichment p-value\n");
+  fprintf(stderr, "            1; ChIP/Input ratio\n");
+  fprintf(stderr, "            2; output ChIP-internal p-value\n");
+  fprintf(stderr, "            3; ChIP/Input enrichment p-value\n");
   fprintf(stderr, "       -owtype <int>: output format (default: 0)\n");
   fprintf(stderr, "           0: binary (.bin) \n");
   fprintf(stderr, "           1: compressed wig (.wig.gz) \n");
