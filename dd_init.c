@@ -257,8 +257,7 @@ static void check_ddparam(DrParam *p, DDParam *d, SamplePair **sample, StructIni
     if(!range(d->ntype, 0, 1))                 PRINT_ERROR("error: Invalid input ntype: %d.\n",       d->ntype);
   }
   if(!range(d->visualize_ratio, 0, 2))         PRINT_ERROR("error: Invalid input showratio: %d.\n",   d->visualize_ratio);
-
-
+  
   if(p->ftype == FTYPE_GV || p->ftype == FTYPE_PD){
     d->drawregion_argv=NULL;
     d->genefile_argv=NULL;
@@ -332,6 +331,11 @@ static void check_ddparam(DrParam *p, DDParam *d, SamplePair **sample, StructIni
     }
     check_sample_copy(p, sample);
     for(i=0; i<p->samplenum; i++){
+
+      if(d->visualize_ratio || d->visualize_p_enrich) {
+	if((*sample)[i].Input->argv == NULL) PRINT_ERROR("\nerror: Input sample is required for '-showratio' or '-showpenrich'.\n\n");
+      }
+
       if((*sample)[i].peak_argv){
 	isfile((*sample)[i].peak_argv);
 	(*sample)[i].peak = read_peakfile((*sample)[i].peak_argv, g);
