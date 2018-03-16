@@ -18,7 +18,7 @@
 #include "pw_estimate.h"
 #include "pw_ccp.h"
 
-static void add_read_red_to_genome(Mapfile *mapfile, RefGenome *g);
+static void add_read_red_to_genome(Mapfile *mapfile, RefGenome *g, bool);
 static void calc_depth(PwParam *p, Mapfile *mapfile, RefGenome *g);
 static void output_wigstats(PwParam *p, Mapfile *mapfile, RefGenome *g);
 static void output_stats(PwParam *p, Mapfile *mapfile, RefGenome *g);
@@ -55,8 +55,8 @@ int main(int argc, char *argv[]){
 #endif
 
   /* PCR bias filtering and ignore enrichregions */
-  check_redundant_reads(p, mapfile, g);
-  add_read_red_to_genome(mapfile, g);
+  if(p->pcrfilter) check_redundant_reads(p, mapfile, g);
+  add_read_red_to_genome(mapfile, g, p->pcrfilter);
 
   if(p->ccp) pw_ccp(p, mapfile, g->chrmax, (int)g->chr[g->chrmax].len);
 
@@ -145,11 +145,14 @@ static void output_wigstats(PwParam *p, Mapfile *mapfile, RefGenome *g){
   return;
 }
 
-static void add_read_red_to_genome(Mapfile *mapfile, RefGenome *refgenome){
+static void add_read_red_to_genome(Mapfile *mapfile, RefGenome *refgenome, bool pcrfilter){
   int chr;
   Strand strand;
   for(chr=1; chr<refgenome->chrnum; chr++){
     for(strand=0; strand<STRANDNUM; strand++){
+
+      if(!pcrfilter) mapfile->chr[chr].seq[strand].n_read_nonred = mapfile->chr[chr].seq[strand].n_read_infile;
+      
       mapfile->chr[chr].both.n_read_nonred += mapfile->chr[chr].seq[strand].n_read_nonred;
       mapfile->chr[chr].both.n_read_red    += mapfile->chr[chr].seq[strand].n_read_red;
       mapfile->genome->seq[strand].n_read_nonred += mapfile->chr[chr].seq[strand].n_read_nonred;
@@ -222,9 +225,11 @@ static void output_stats(PwParam *p, Mapfile *mapfile, RefGenome *g){
   /* complexity */
   insComma(mapfile->cs_raw.nt_nonred, strtemp1);
   insComma(mapfile->cs_raw.nt_all, strtemp2);
-  if(mapfile->cs_raw.tv) fprintf(OUT, "Library complexity: (%.3f) (%s / %s)\n", mapfile->cs_raw.complexity, strtemp1, strtemp2);
-  else fprintf(OUT, "Library complexity: %.3f (%s / %s)\n", mapfile->cs_raw.complexity, strtemp1, strtemp2);
-  //fprintf(OUT, "Library complexity after filtered: %.3f (%d / %d) (flag: %d)\n", mapfile->cs_nonred.complexity, mapfile->cs_nonred.nt_nonred, mapfile->cs_nonred.nt_all, mapfile->cs_nonred.tv);
+
+  if(p->pcrfilter) {
+    if(mapfile->cs_raw.tv) fprintf(OUT, "Library complexity: (%.3f) (%s / %s)\n", mapfile->cs_raw.complexity, strtemp1, strtemp2);
+    else fprintf(OUT, "Library complexity: %.3f (%s / %s)\n", mapfile->cs_raw.complexity, strtemp1, strtemp2);
+  }
   if(p->genomefile) fprintf(OUT, "GC summit: %d\n", mapfile->maxGC);
   fprintf(OUT, "Poisson: lambda = %f\n", mapfile->wstats.genome->ave);
   fprintf(OUT, "Negative binomial: p=%f, n=%f, p0=%f\n", mapfile->wstats.genome->nb_p, mapfile->wstats.genome->nb_n, mapfile->wstats.genome->nb_p0);

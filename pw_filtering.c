@@ -25,6 +25,7 @@ static int primes(int max);
 void check_redundant_reads(PwParam *p, Mapfile *mapfile, RefGenome *g){
   int chr, threshold;
   Strand strand;
+
   if(p->thre_filter) threshold = p->thre_filter;
   else{
     threshold = max(1, (int)(mapfile->genome->both.n_readname *10/(double)g->genome->len_mpbl));
