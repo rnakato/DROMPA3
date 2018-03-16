@@ -100,6 +100,7 @@ void pw_argv_init(int argc, char *argv[], PwParam *p, RefGenome *g){
     {"-mpbin",    ARGUMENT_TYPE_STRING,   &p->mpbinaryfile,  NULL},
     {"-f",        ARGUMENT_TYPE_STRING,   &ftype,            NULL},
     {"-of",       ARGUMENT_TYPE_INTEGAR,  &p->wtype,         NULL},
+    {"-showzero", ARGUMENT_TYPE_FLAG_ON,  &p->showzero,    NULL},
     {"-rcenter",  ARGUMENT_TYPE_INTEGAR,  &p->usereadcenter, NULL},
     {"-bed",      ARGUMENT_TYPE_STRING,   &p->bedfilename,   NULL},
     {"-num4cmp",  ARGUMENT_TYPE_INTEGAR,  &p->num4cmp,       NULL},

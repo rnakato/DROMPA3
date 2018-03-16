@@ -228,7 +228,7 @@ static void makewig_chr(PwParam *p, Mapfile *mapfile, RefGenome *g, int chr){
 #endif
 
   /* output data */
-  output_bindata(p->output_dir, p->output_prefix, g, wigarray, p->gtfile, p->binsize, p->binnum_chr[chr], chr, p->wtype);
+  output_bindata(p->output_dir, p->output_prefix, g, wigarray, p->gtfile, p->binsize, p->binnum_chr[chr], chr, p->wtype, p->showzero);
 
   MYFREE(wigarray);
   return;

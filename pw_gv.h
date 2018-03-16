@@ -47,6 +47,7 @@ typedef struct{
   Readtype rtype;
   PWfile_Type wtype; 
   Normtype ntype;
+  int showzero;
 
   int binsize;
   int *binnum_chr, binnum_genome;

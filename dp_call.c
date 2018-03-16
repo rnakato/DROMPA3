@@ -63,7 +63,7 @@ void dp_call(DrParam *p, SamplePair *sample, RefGenome *g, int chr){
     if(p->outputwig==OWTYPE_RATIO)         sprintf(prefix, "%s.ratio",    p->headname);
     else if(p->outputwig==OWTYPE_P_INTER)  sprintf(prefix, "%s.p_inter",  p->headname);
     else if(p->outputwig==OWTYPE_P_ENRICH) sprintf(prefix, "%s.p_enrich", p->headname);
-    output_bindata(p->output_dir, prefix, g, wigarray, p->gtfile, sample->binsize, sample->binnum[chr], chr, p->wtype);
+    output_bindata(p->output_dir, prefix, g, wigarray, p->gtfile, sample->binsize, sample->binnum[chr], chr, p->wtype, p->showzero);
     MYFREE(prefix);
     MYFREE(wigarray);
   }

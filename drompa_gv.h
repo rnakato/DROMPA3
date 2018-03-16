@@ -72,6 +72,8 @@ typedef struct{
   bool includeYM;
   int outputwig;
   PWfile_Type wtype;
+  int showzero;
+
   char *output_dir;
 
   double IPmaxthre;

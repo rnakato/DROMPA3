@@ -83,6 +83,7 @@ void dp_argv_init(int argc, char **argv, DrParam *p, SamplePair **sample, RefGen
     {"-norm",     ARGUMENT_TYPE_INTEGAR,  &p->ntype,            NULL},
     {"-outputwig",ARGUMENT_TYPE_INTEGAR,  &p->outputwig,        NULL},
     {"-owtype",   ARGUMENT_TYPE_INTEGAR,  &p->wtype,            NULL},
+    {"-showzero", ARGUMENT_TYPE_FLAG_ON,  &p->showzero,         NULL},
     {"-odir",     ARGUMENT_TYPE_STRING,   &p->output_dir,       NULL},
     {"-ignore",   ARGUMENT_TYPE_STRING_MULTI, &(str_bed), &(p->n_igregion)},
     {NULL,        ARGUMENT_TYPE_NONE,     NULL,                 NULL},

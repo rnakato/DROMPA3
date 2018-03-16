@@ -10,7 +10,7 @@
 #include "macro.h"
 #include "compress.h"
 
-void output_bindata(char *dir, char *prefix, RefGenome *g, TYPE_WIGARRAY *array, char *gtfile, int binsize, int binnum, int chr, PWfile_Type wtype){
+void output_bindata(char *dir, char *prefix, RefGenome *g, TYPE_WIGARRAY *array, char *gtfile, int binsize, int binnum, int chr, PWfile_Type wtype, int showzero){
   char *output_prefix = alloc_str_new(dir, strlen(prefix) + 1024);
   if(wtype==TYPE_BEDGRAPH || wtype==TYPE_BIGWIG) sprintf(output_prefix, "%s/%s.%d", dir, prefix, binsize);
   else sprintf(output_prefix, "%s/%s_%s.%d", dir, prefix, g->chr[chr].name, binsize);
@@ -22,12 +22,12 @@ void output_bindata(char *dir, char *prefix, RefGenome *g, TYPE_WIGARRAY *array,
   }
   else if(wtype==TYPE_BEDGRAPH || wtype==TYPE_BIGWIG){
     sprintf(outputfilename, "%s.bedGraph", output_prefix);
-    make_bedGraph(g, array, outputfilename, output_prefix, binsize, binnum, chr);
+    make_bedGraph(g, array, outputfilename, output_prefix, binsize, binnum, chr, showzero);
     if(chr == g->chrnum-1 && wtype==TYPE_BIGWIG) convert_bedGraph_to_bigWig(outputfilename, output_prefix, gtfile);
   }
   else if(wtype==TYPE_COMPRESSWIG || wtype==TYPE_UNCOMPRESSWIG){
     sprintf(outputfilename, "%s.wig", output_prefix);
-    make_wig(g, array, outputfilename, prefix, binsize, binnum, chr, wtype);
+    make_wig(g, array, outputfilename, prefix, binsize, binnum, chr, wtype, showzero);
   }
 
   MYFREE(output_prefix);
@@ -45,13 +45,13 @@ void make_binary(TYPE_WIGARRAY *array, char *outputfile, int binnum){
   return;
 }
 
-void make_bedGraph(RefGenome *g, TYPE_WIGARRAY *array, char *outputfile, char *prefix, int binsize, int binnum, int chr){
+void make_bedGraph(RefGenome *g, TYPE_WIGARRAY *array, char *outputfile, char *prefix, int binsize, int binnum, int chr, int showzero){
   int i,e;
   if(chr==1) remove_file(outputfile);
   FILE *OUT = my_fopen(outputfile, FILE_MODE_A);
   for(i=0; i<binnum; i++){
     if(i==binnum -1) e = g->chr[chr].len-1; else e = (i+1)*binsize;
-    if(array[i]) fprintf(OUT, "%s %d %d %.3f\n", g->chr[chr].name, i*binsize, e, WIGARRAY2VALUE(array[i]));
+    if(showzero || array[i]) fprintf(OUT, "%s %d %d %.3f\n", g->chr[chr].name, i*binsize, e, WIGARRAY2VALUE(array[i]));
   }
   fclose(OUT);
 
@@ -93,7 +93,7 @@ void convert_bedGraph_to_bigWig(char *outputfile, char *output_prefix, char *gtf
   return;
 }
 
-void make_wig(RefGenome *g, TYPE_WIGARRAY *array, char *outputfile, char *name, int binsize, int binnum, int chr, PWfile_Type wtype){
+void make_wig(RefGenome *g, TYPE_WIGARRAY *array, char *outputfile, char *name, int binsize, int binnum, int chr, PWfile_Type wtype, int showzero){
   int i;
   FILE *OUT = my_fopen(outputfile, FILE_MODE_WRITE);
 
@@ -106,7 +106,7 @@ void make_wig(RefGenome *g, TYPE_WIGARRAY *array, char *outputfile, char *name, 
 
   /* data line */
   for(i=0; i<binnum; i++){
-    if(array[i]) fprintf(OUT, "%d\t%.3f\n", i*binsize +1, WIGARRAY2VALUE(array[i]));
+    if(showzero || array[i]) fprintf(OUT, "%d\t%.3f\n", i*binsize +1, WIGARRAY2VALUE(array[i]));
   }
   fclose(OUT);
 
