@@ -200,7 +200,7 @@ static void init_dump(PwParam *p){
   printf("Read number for library complexity: %.1f M\n", p->num4cmp/(double)NUM_1M);
   if(p->pcrfilter && p->thre_filter) printf("PCR bias threshold: >%d\n", p->thre_filter);
   if(p->bedfilename) printf("Enriched regions file: %s (%d sites)\n", p->bedfilename, p->enrichfile->num);
-  printf("Cross-correlation profile: %s\n", str_bool[p->ccp]);
+  //  printf("Cross-correlation profile: %s\n", str_bool[p->ccp]);
   
   printf("\nTotal read normalization: %s", str_normtype[p->ntype]);
   if(p->ntype==NORMTYPE_GENOME_READ || p->ntype==NORMTYPE_CHROM_READ){
