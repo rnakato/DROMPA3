@@ -28,15 +28,21 @@ double binomial_test(double n1_ref, double n2_ref, double ratio){
   if((n1 < n2) || (!n1 && !n2)) return 0;
   
   pvalue = gsl_cdf_binomial_Q(n1, p, n1+n2);
-  if(pvalue) pvalue = -log10(pvalue);
+  if(!pvalue) pvalue = 1e-314;
+  pvalue = -log10(pvalue);
   return pvalue;
 }
 
 double zero_inflated_binomial_test(double k, double p, double n){
   double r, pval;
+  // static double pmin=1;
   if(!k) pval =0;
-  else pval = gsl_cdf_negative_binomial_Q(k, p, n);
-  //  printf("k=%f, p=%f, n=%f, pval=%f\n",k, p, n, pval);
+  else {
+    pval = gsl_cdf_negative_binomial_Q(k, p, n);
+    if(!pval) pval = 1e-314;
+    //    else if(pmin > pval) pmin = pval;
+    //printf("k=%f, p=%f, n=%f, pval=%.3e, pmin=%.3e\n",k, p, n, pval, pmin);
+  }
   if(!pval) r = 0; else r = -log10(pval);
   return r;
 }
