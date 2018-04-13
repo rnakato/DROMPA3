@@ -38,7 +38,7 @@ For example, if you downloaded DROMPA and cpdf into the $HOME/my_chipseq_exp dir
 
     export PATH = $PATH:$HOME/my_chipseq_exp/DROMPA3:$HOME/my_chipseq_exp/cpdf-binaries/Linux-Intel-64bit/
 
-### 2.5 Docker image
+#### 2.5 Docker image
 
 DROMPA and SSP are also probatively available on Docker Hub.
 
