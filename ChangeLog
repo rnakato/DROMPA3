@@ -1,4 +1,8 @@
 2018-04-08 Ryuichiro Nakato <rnakato@iam.u-tokyo.ac.jp>
+	Version 3.4.2
+	- CG: add "around TSS" column
+
+2018-04-08 Ryuichiro Nakato <rnakato@iam.u-tokyo.ac.jp>
 	Version 3.4.1
 	- bug fix of double overflow in p-value calculation
 

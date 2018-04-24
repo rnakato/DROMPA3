@@ -75,7 +75,7 @@ void dd_calcfrip(DrParam *p, DDParam *d, RefGenome *g, SamplePair *sample){
 void dd_compare_genebody(DrParam *p, DDParam *d, RefGenome *g, SamplePair *sample)
 {
   int i,j,k,l,s,e, chr, len;
-  double IPtag[p->samplenum], exontag[p->samplenum], introntag[p->samplenum];
+  double TSS[p->samplenum], IPtag[p->samplenum], exontag[p->samplenum], introntag[p->samplenum];
   char *filename = alloc_str_new(p->headname, 20);
   sprintf(filename, "%s.csv", p->headname);
   remove_file(filename);
@@ -84,7 +84,7 @@ void dd_compare_genebody(DrParam *p, DDParam *d, RefGenome *g, SamplePair *sampl
 
   fprintf(OUT, "name\tchromosome\tstart\tend\tlength\t");
   for(i=0; i<p->samplenum; i++){
-    fprintf(OUT, "%s\tper kbp\texon\tintron\t intron/exon", sample[i].linename);
+    fprintf(OUT, "%s\tper kbp\texon\tintron\t intron/exon\taround TSS 2.5kbp", sample[i].linename);
     if(i==p->samplenum-1) fprintf(OUT, "\n"); else fprintf(OUT, "\t");
   }
   for(chr=1; chr<g->chrnum; chr++){
@@ -100,15 +100,19 @@ void dd_compare_genebody(DrParam *p, DDParam *d, RefGenome *g, SamplePair *sampl
 
     for(i=0; i<d->gene.num; i++){
       for(j=0; j<p->samplenum; j++){
+	TSS[j]=0;
 	IPtag[j]=0;
 	exontag[j]=0;
 	introntag[j]=0;
       }
-      /* gene body */
       s = gene[i].start / sample[0].binsize;
       e = gene[i].end   / sample[0].binsize;
       len = gene[i].end - gene[i].start;
+      int tsswidth = 2500 / sample[0].binsize;
       for(k=0; k<p->samplenum; k++){
+	/* TSS */
+	for(j=-tsswidth; j<tsswidth; j++) TSS[k] += WIGARRAY2VALUE(sample[k].ChIP->data[s+j]);
+	/* gene body */
 	for(j=s; j<=e; j++) IPtag[k] += WIGARRAY2VALUE(sample[k].ChIP->data[j]);
       }
       /* exon, intron */
@@ -135,7 +139,7 @@ void dd_compare_genebody(DrParam *p, DDParam *d, RefGenome *g, SamplePair *sampl
       for(j=0; j<p->samplenum; j++){
 	fprintf(OUT, "%.2f\t%.2f", IPtag[j], IPtag[j]/len*NUM_1K);
 	if(d->gene.gene[i].exonnum){
-	  fprintf(OUT, "\t%.2f\t%.2f\t%.2f", exontag[j], introntag[j], exontag[j] ? introntag[j]/exontag[j]: 0);
+	  fprintf(OUT, "\t%.2f\t%.2f\t%.2f\t%.2f", exontag[j], introntag[j], exontag[j] ? introntag[j]/exontag[j]: 0, TSS[j]);
 	}else fprintf(OUT, "\t\t\t");
 	if(j==p->samplenum-1) fprintf(OUT, "\n"); else fprintf(OUT, "\t");
       }
