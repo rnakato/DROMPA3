@@ -395,14 +395,11 @@ static void parse_tagAlign(PwParam *p, Mapfile *mapfile, RefGenome *g, char *inp
     IN = my_fopen(inputfile, FILE_MODE_READ);
   }
 
-  
-  while(1){
-    if(zipped){
-      c = gzgets(gzIN, str, STR_LEN);
-    }else{
-      c = fgets(str, STR_LEN, IN);
-    }
+  while(1) {
+    if (zipped) c = gzgets(gzIN, str, STR_LEN);
+    else        c = fgets(str, STR_LEN, IN);
     if(!c) break;
+
     if(str[0]=='\n') continue;
     chomp(str);
     nclm = ParseLine(str, clm);

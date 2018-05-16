@@ -1,0 +1,5 @@
+*.o
+drompa_draw
+parse2wig
+drompa_peakcall
+
