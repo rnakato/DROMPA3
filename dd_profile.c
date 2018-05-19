@@ -279,7 +279,10 @@ void show_profile(DrParam *p, DDParam *d, SamplePair *sample){
   if(d->showse){
     for(i=0; i<samplenum; i++){
       for(j=0; j<num; j++){ 
-	if(d->stype == READDIST) sample[i].profile.SEarray[j] = calc_SE(sample[i].profile.SE[j], d->ntotal_profile);
+	if(d->stype == READDIST) {
+	  if(!d->ntype) sample[i].profile.SEarray[j] = calc_SE(sample[i].profile.SE[j], d->ntotal_profile);
+	  else sample[i].profile.SEarray[j] = calc_SE(sample[i].profile.SE[j], d->ntotal_profile) * s / sample[i].profile.IPsum;
+	}
 	else                     sample[i].profile.SEarray[j] = calc_SE_ratio(sample[i].profile.SE[j], d->ntotal_profile);
       }
     }

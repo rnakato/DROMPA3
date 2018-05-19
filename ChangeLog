@@ -1,3 +1,7 @@
+2018-05-19 Ryuichiro Nakato <rnakato@iam.u-tokyo.ac.jp>
+	Version 3.4.3
+	- PROFILE: bug fix of CI visualization when supplying "-ntype 1"
+
 2018-04-08 Ryuichiro Nakato <rnakato@iam.u-tokyo.ac.jp>
 	Version 3.4.2
 	- CG: add "around TSS" column
