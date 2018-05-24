@@ -1,3 +1,7 @@
+2018-05-24 Ryuichiro Nakato <rnakato@iam.u-tokyo.ac.jp>
+	Version 3.5.0
+	- PROFILE & HEATMAP: Change defalt value of smoothing to 0
+
 2018-05-19 Ryuichiro Nakato <rnakato@iam.u-tokyo.ac.jp>
 	Version 3.4.3
 	- PROFILE: bug fix of CI visualization when supplying "-ntype 1"

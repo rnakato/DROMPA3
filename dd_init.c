@@ -166,6 +166,7 @@ void dd_argv_init(int argc, char **argv, DrParam *p, DDParam *d, SamplePair **sa
 
 static void check_argv1(DrParam *p, DDParam *d, char *argv, SampleParam *sp)
 {
+  p->smoothing = 0;
   if(!strcmp(argv, "-h") || !strcmp(argv, "--help")) print_usage_base();
   if(!strcmp(argv, "--version")) print_version();
   else if(!strcmp(argv, "PC_SHARP")){
@@ -207,10 +208,13 @@ static void check_argv1(DrParam *p, DDParam *d, char *argv, SampleParam *sp)
   else if(!strcmp(argv, "MULTICI"))   p->ftype = FTYPE_MULTICI;
   else if(!strcmp(argv, "CG"))        p->ftype = FTYPE_COMPARE_GENEBODY;
   else if(!strcmp(argv, "GOVERLOOK")) p->ftype = FTYPE_GOVERLOOK;
-  else if(!strcmp(argv, "PROFILE"))   p->ftype = FTYPE_PROFILE;
-  else if(!strcmp(argv, "HEATMAP"))   p->ftype = FTYPE_HEATMAP;
-  else if(!strcmp(argv, "TR"))        p->ftype = FTYPE_TR;
-  else{
+  else if(!strcmp(argv, "PROFILE")) {
+      p->ftype = FTYPE_PROFILE;
+  }else if(!strcmp(argv, "HEATMAP")) {
+      p->ftype = FTYPE_HEATMAP;
+  }else if(!strcmp(argv, "TR")) {
+       p->ftype = FTYPE_TR;
+  }else{
     fprintf(stderr, "Please specify command.\n\n");
     print_usage_base();
   }
