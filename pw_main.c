@@ -54,6 +54,11 @@ int main(int argc, char *argv[]){
   print_time(t2,t3);
 #endif
 
+  if(!mapfile->genome->both.n_read_infile) {
+    fprintf(stderr, "ERROR: there is no read in input file.\n");
+    exit(0);
+  }
+  
   /* PCR bias filtering and ignore enrichregions */
   if(p->pcrfilter) check_redundant_reads(p, mapfile, g);
   add_read_red_to_genome(mapfile, g, p->pcrfilter);

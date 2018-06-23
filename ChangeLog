@@ -1,6 +1,6 @@
-2018-05-24 Ryuichiro Nakato <rnakato@iam.u-tokyo.ac.jp>
-	Version 3.5.0
-	- PROFILE & HEATMAP: Change defalt value of smoothing to 0
+2018-06-23 Ryuichiro Nakato <rnakato@iam.u-tokyo.ac.jp>
+	Version 3.5.1
+	- bug fix of the segmentation fault when the input file has no or very small mapped reads
 
 2018-05-19 Ryuichiro Nakato <rnakato@iam.u-tokyo.ac.jp>
 	Version 3.4.3

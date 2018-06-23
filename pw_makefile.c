@@ -45,6 +45,8 @@ static TYPE_WIGARRAY calc_qnt(TYPE_WIGARRAY *array, int binnum, double per){
   TYPE_WIGARRAY qnt = sortarray[(int)(num*per)];
   MYFREE(sortarray);
 
+  if(qnt<=1000) qnt=2000;
+  
   return qnt;
 }
 
@@ -102,6 +104,9 @@ static void add_wigstats_bg(Mapfile *p, TYPE_WIGARRAY *array, int chr, int binnu
     v = WIGARRAY2VALUE(val);
     if(v >= p->wstats.n_darray - 1) p->wstats.chr[chr].darray_bg[p->wstats.n_darray]++;
     else p->wstats.chr[chr].darray_bg[v]++;
+
+    //    printf("%d, %d\n", val,  p->wstats.num95);
+
     if(val >= p->wstats.num95) continue;
 
     ave += v;
