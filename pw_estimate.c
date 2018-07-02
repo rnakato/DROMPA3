@@ -176,7 +176,7 @@ static double f_zinb_reg(const gsl_vector *v, void *params){
 
 static double f_zinb_const(const gsl_vector *v, void *params){
   int i;
-  double p, n, r, fxy=0, p0;
+  double p, n, r=0, fxy=0, p0;
   double *par = (double *)params;
   p = gsl_vector_get(v, 0);
   if(p<=0) p=0.01;
@@ -188,25 +188,13 @@ static double f_zinb_const(const gsl_vector *v, void *params){
   LOG("zinb_const p=%f, n=%f, p0=%f\n", p, n, p0);
   
   for(i=0; i<thre; i++){
-    /*    if(!i) r = -log(p0 + (1 - p0) * gsl_ran_negative_binomial_pdf(0, p, n));
-	  else   r = -log(     (1 - p0) * gsl_ran_negative_binomial_pdf(i, p, n));*/
+    double rtemp = r;
     if(!i) r = p0 + (1 - p0) * gsl_ran_negative_binomial_pdf(0, p, n);
     else   r =      (1 - p0) * gsl_ran_negative_binomial_pdf(i, p, n);
+
+    if(isinf(r) || isnan(r)) r = rtemp;
     //    printf("%d: %f - %f\n", i, par[i] , r);
     fxy += (par[i] - r)*(par[i] - r);
   }
   return fxy;
 }
-
-/*static double f_nb(const gsl_vector *v, void *params){
-  int i;
-  double p, n, r, fxy=0;
-  double *par = (double *)params;
-  p = gsl_vector_get(v, 0);
-  n = gsl_vector_get(v, 1);
-  for(i=0; i<N_ARRAY; i++){
-    r = -log(gsl_ran_negative_binomial_pdf(i, p, n));
-    fxy += (par[i] - r)*(par[i] - r);
-  }
-  return fxy;
-  }*/
