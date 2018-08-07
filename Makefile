@@ -17,7 +17,7 @@ OBJS_DD = dd_main.o dd_init.o dd_readannotation.o dd_stroke.o dd_profile.o dd_he
 HEADS_DD = dd_init.h dd_readannotation.h dd_gv.h dd_stroke.h dd_profile.h dd_heatmap.h dd_otherfunc.h $(HEADS_DR)
 
 CFLAGS += -Wall -W -O3 $(FLAG)
-LIBS += -lm -lz -lgsl -lgslcblas
+LIBS += -lm -lz -lgsl -lgslcblas 
 
 ifdef READSV
 DEBUG=1

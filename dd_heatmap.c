@@ -230,12 +230,18 @@ static void draw_page(DrParam *p, DDParam *d, cairo_t *cr, SamplePair *sample, g
   cairo_set_source_rgb(cr, CLR_WHITE);
   cairo_paint(cr);
 
+  LOG("draw ylabel\n");
+  
   // ylabel
   stroke_ylabel(d, cr, num);
-
+  
+  LOG("draw ylabel done\n");
+  
   gdouble x = OFFSET_X;
   gint on=0;
   for(i=0; i<p->samplenum; i++){
+    LOG("sample%d\n", i);
+  
     draw_eachsample(d, cr, sample, hmarray, i, num, sample[i].linename, x, on);
 
     if(!on && strlen(sample[i].linename) > 30) on=1;
@@ -507,7 +513,7 @@ static void show_indicatior(DDParam *d, cairo_t *cr, SamplePair *sample, gdouble
 static void stroke_ylabel(DDParam *d, cairo_t *cr, gint num){
   gint i;
   gdouble height; 
-  char str[128];
+  char str[1280];
   gint x = OFFSET_X - 10;
   gint y = -OFFSET_Y - FONTSIZE * strlen(str)/2;
   cairo_set_source_rgba(cr, CLR_BLACK, 1);
@@ -531,6 +537,7 @@ static void stroke_ylabel(DDParam *d, cairo_t *cr, gint num){
     cairo_show_text(cr, str);
     cairo_stroke(cr);
   }
+  
   cairo_rotate(cr, M_PI / 2);
   return;
 }

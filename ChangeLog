@@ -1,3 +1,7 @@
+2018-08-07 Ryuichiro Nakato <rnakato@iam.u-tokyo.ac.jp>
+	Version 3.5.2
+	- bug fix: buffer overflow in HEATMAP command
+
 2018-06-23 Ryuichiro Nakato <rnakato@iam.u-tokyo.ac.jp>
 	Version 3.5.1
 	- bug fix of the segmentation fault when the input file has no or very small mapped reads
