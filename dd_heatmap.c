@@ -189,9 +189,7 @@ void draw_heatmap(DrParam *p, DDParam *d, SamplePair *sample, RefGenome *g)
   }
   if(!d->hmsort) num = sitenum;
   else           num = sitenum_nonzero;
-  //  printf("num=%d, %d %d\n",num,sitenum, sitenum_nonzero);
   getlat(d, num);
-  //  for(i=0; i<num; i++) printf("%d, %f %d\n", i, hmarray[d->hmsort-1].line[i].array[sort_posi], hmarray[d->hmsort].line[i].id);
   
   gdouble width_draw = wd4sample * p->samplenum + MERGIN_BETWEEN_SAMPLE * (p->samplenum-1);
   gdouble width_sheet = width_draw + OFFSET_X *2;
@@ -308,6 +306,7 @@ static void get_aroundpeak(DDParam *d, SamplePair *sample, HMarray *hmarray, gin
   gint bid;
   gint i,wigposi,num=0;
   Peak *peak=NULL;
+
   for(bid=0; bid<d->bednum; bid++){
     peak = d->peak[bid];
     LOG("%s bid%d num%d\n",__FUNCTION__,bid,peak->num);
