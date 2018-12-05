@@ -109,7 +109,6 @@ static void calc_qvalue_BH(Peak **peak_ref, char *Input_argv){
   return;
 }
 
-/* 正しいbed形式で出力できるオプションを作る */
 static void OutputPeaks(DrParam *p, SamplePair *sample, RefGenome *g){
   int i, s, e, maxposi;
   struct bs *bs = NULL;
@@ -124,7 +123,7 @@ static void OutputPeaks(DrParam *p, SamplePair *sample, RefGenome *g){
   FILE *OUT_BED = my_fopen(filename_bed, FILE_MODE_WRITE);
 
   fprintf(OUT, "chromosome\tstart\tend\tpeak summit\tpeak width\tmax IP\t-log10(pvalue (IP internal))\t");
-  if(sample->Input->argv) fprintf(OUT, "-log10(pvalue IP/Input)\t");
+  if(sample->Input->argv) fprintf(OUT, "IP/Input enrichment\t-log10(pvalue IP/Input)\t");
   fprintf(OUT, "FDR\n");
 
   int id4bed=1;
@@ -134,7 +133,7 @@ static void OutputPeaks(DrParam *p, SamplePair *sample, RefGenome *g){
       e = (bs->end +1) * sample->binsize -1;
       maxposi = bs->maxposi * sample->binsize + sample->binsize /2;
       fprintf(OUT, "%s\t%d\t%d\t%d\t%d\t%.1f\t%.2f\t", g->chr[bs->chr].name, s, e, maxposi, e-s, bs->maxIP, bs->p_inter);
-      if(sample->Input->argv) fprintf(OUT, "%.2f\t%.5f\n", bs->p_enr, bs->qvalue);
+      if(sample->Input->argv) fprintf(OUT, "%.2f\t%.2f\t%.5f\n", bs->enrich, bs->p_enr, bs->qvalue);
       else fprintf(OUT, "%.5f\n", bs->qvalue);
       fprintf(OUT_BED, "%s\t%d\t%d\t%s_%d\t", g->chr[bs->chr].name, s, e, p->headname, id4bed++);
       if(sample->Input->argv) fprintf(OUT_BED, "%.2f\n", bs->p_enr);
