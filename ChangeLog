@@ -1,3 +1,7 @@
+2019-02-07 Ryuichiro Nakato <rnakato@iam.u-tokyo.ac.jp>
+	Version 3.7.0
+	- Peak calling: change the criteria of all thresholds from "more than threshold (>)" to "more than or equal to threshold (>=)" to accept the peak regions that do not contain any Input reads
+
 2018-12-05 Ryuichiro Nakato <rnakato@iam.u-tokyo.ac.jp>
 	Version 3.6.0
 	- Peak calling: add the new column "IP/Input enrichment" in a xls file

@@ -90,12 +90,12 @@ int judge_significant(DrParam *p, double p_enr, double p_inter, double ratio_i, 
   int on=0;
   if(Input_argv){ // ChIP and Input
     if(p->ftype==FTYPE_PEAKCALL_E){
-      if(ratio_i > p->enrichthre && iptag > p->IPmaxthre) on++;
+      if(ratio_i >= p->enrichthre && iptag >= p->IPmaxthre) on++;
     }else{
-      if(p_enr > p->pthre_enrich && p_inter > p->pthre_internal && ratio_i > p->enrichthre && iptag > p->IPmaxthre) on++;
+      if(p_enr >= p->pthre_enrich && p_inter >= p->pthre_internal && ratio_i >= p->enrichthre && iptag >= p->IPmaxthre) on++;
     }
   }else{          // ChIP only
-    if(p_inter > p->pthre_internal && iptag > p->IPmaxthre) on++;
+    if(p_inter >= p->pthre_internal && iptag >= p->IPmaxthre) on++;
   }
   return on;
 }
