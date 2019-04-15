@@ -24,7 +24,7 @@ static void print_usage(){
   fprintf(stderr, "Options:\n");
   fprintf(stderr, "       -f {SAM|BAM|BOWTIE|TAGALIGN}: format of input file (default:SAM) \n");
   fprintf(stderr, "           specify '-f BAM' for CRAM format\n");
-  fprintf(stderr, "           TAGALIGN could be gzip'ed (extension: tagAlign.gz)\n");
+  fprintf(stderr, "           TAGALIGN can be gzip'ed (extension: tagAlign.gz)\n");
 
   fprintf(stderr, "       -odir: output directory name (default: 'parse2wigdir') \n");
   fprintf(stderr, "       -binsize: bin size (default: %d bp) \n", BINSIZE_DEFAULT);
