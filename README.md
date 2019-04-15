@@ -9,7 +9,7 @@ DROMPA is written in C and requires the following programs and libraries:
 * [GTK library](http://www.gtk.org/)
 * [GNU Scientific Library](http://www.gnu.org/software/gsl/)
 * [zlib](http://www.zlib.net/)
-* [SAMtools](http://samtools.sourceforge.net/) (for BAM formatted input)
+* [SAMtools](http://samtools.sourceforge.net/) (for BAM/CRAM formatted input)
 * [R](http://www.r-project.org/) (for PROFILE command)
 
 #### 2.1. Install required libraries
@@ -49,7 +49,11 @@ To obtain a docker image for DROMPA and SSP, type:
 # 3. Usage
  See [Manual.pdf](https://github.com/rnakato/DROMPA3/blob/master/Manual.pdf) for detail. Please direct bug reports and questions about usage to rnakato@iam.u-tokyo.ac.jp.
 
-# 4. Citation
+# 4. FAQ
+* If you get an error "invalid chr name: XXX" when using parse2wig, the chromosome name XXX contained in the input file is absent in genometable file you specified by `-gt`. Please check the genometable file.
+  
+
+# 5. Citation
 1. Nakato, R. and Shirahige K., Statistical Analysis and Quality Assessment of ChIP-seq Data with DROMPA, pp. 631–643, Springer New York, New York, NY, 2018.
 
 2. Nakato R., Shirahige K., Recent advances in ChIP-seq analysis: from quality management to whole-genome annotation, Briefings in Bioinformatics, 2016.
