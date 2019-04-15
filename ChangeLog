@@ -1,6 +1,7 @@
 2019-04-15 Ryuichiro Nakato <rnakato@iam.u-tokyo.ac.jp>
 	Version 3.7.1
 	- Parse2wig: accect CRAM format for input (use "-f BAM" option)
+	- script/makegenometable.pl: accept scaffold in Ensembl genome
 
 2019-02-07 Ryuichiro Nakato <rnakato@iam.u-tokyo.ac.jp>
 	Version 3.7.0
