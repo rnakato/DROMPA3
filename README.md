@@ -51,7 +51,7 @@ To obtain a docker image for DROMPA and SSP, type:
 
 # 4. Troubleshooting
 * If you get an error "invalid chr name: XXX" when using parse2wig, the chromosome name XXX contained in the input file is absent in genometable file you specified by `-gt`. Please check the genometable file.
-  
+* If it is necessary to output ChIP/Input enrichment distribution (e.g. for yeast), please use `-outputwig` option in `drompa_peakcall`, which can generate the wig files of ChIP/Input enrichment and p-values.
 
 # 5. Citation
 1. Nakato, R. and Shirahige K., Statistical Analysis and Quality Assessment of ChIP-seq Data with DROMPA, pp. 631–643, Springer New York, New York, NY, 2018.
