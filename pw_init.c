@@ -76,7 +76,7 @@ static void print_version(){
 
 void pw_argv_init(int argc, char *argv[], PwParam *p, RefGenome *g){
   if(argc<=1) print_usage();
-  
+
   char *ftype=NULL, *ntype=NULL;
   const Argument args[]={
     {"--version", ARGUMENT_TYPE_FUNCTION, print_version,     NULL},
@@ -181,12 +181,12 @@ static void check_pwparam(PwParam *p, RefGenome *g, char *ftype, char *ntype){
 }
 
 static void init_dump(PwParam *p){
-  char str_Inputfiletype[][10]={"SAM", "BAM", "BOWTIE", "TAGALIGN"};
+  char str_Inputfiletype[][10]={"SAM", "BAM/CRAM", "BOWTIE", "TAGALIGN"};
   char str_end[][16]={"SINGLE_END", "PAIRED_END"};
   char str_bool[][10]={"OFF", "ON"};
   char str_wigfiletype[][20]={"BINARY", "COMPRESSED WIG", "WIG", "BEDGRAPH", "BIGWIG"};
   char str_normtype[][20]={"NONE", "GENOME_READ", "GENOME_DEPTH", "CHROM_READ", "CHROM_DEPTH"};
-  
+
   printf("\n======================================\n");
   printf("parse2wig version %s\n\n", VERSION);
   printf("Input file: %s\n", p->inputfile);
@@ -202,7 +202,7 @@ static void init_dump(PwParam *p){
   if(p->pcrfilter && p->thre_filter) printf("PCR bias threshold: >%d\n", p->thre_filter);
   if(p->bedfilename) printf("Enriched regions file: %s (%d sites)\n", p->bedfilename, p->enrichfile->num);
   //  printf("Cross-correlation profile: %s\n", str_bool[p->ccp]);
-  
+
   printf("\nTotal read normalization: %s", str_normtype[p->ntype]);
   if(p->ntype==NORMTYPE_GENOME_READ || p->ntype==NORMTYPE_CHROM_READ){
     printf("\tnormed read: %.1f M for genome\n", p->num4rpm/(double)NUM_1M);
