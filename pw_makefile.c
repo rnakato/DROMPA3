@@ -81,7 +81,6 @@ void makewig(PwParam *p, Mapfile *mapfile, RefGenome *g){
   mapfile->wstats.genome->darray_all = (int *)my_calloc(mapfile->wstats.n_darray +1, sizeof(int), "wstats.genome->darray_all");
   mapfile->wstats.genome->darray_bg  = (int *)my_calloc(mapfile->wstats.n_darray +1, sizeof(int), "wstats.genome->darray_bg");
   for(chr=1; chr<g->chrnum; chr++){
-    printf("darray = %d\n",mapfile->wstats.n_darray);
     mapfile->wstats.chr[chr].darray_all = (int *)my_calloc(mapfile->wstats.n_darray +1, sizeof(int), "wstats.chr[chr]->darray_all");
     mapfile->wstats.chr[chr].darray_bg  = (int *)my_calloc(mapfile->wstats.n_darray +1, sizeof(int), "wstats.chr[chr]->darray_bg");
   }
@@ -98,10 +97,12 @@ static void add_wigstats_bg(Mapfile *p, TYPE_WIGARRAY *array, int chr, int binnu
 
   for(i=0; i<binnum; i++){
     val = array[i];
+    printf("val=%d\n",val);
     if(!val){
       p->wstats.chr[chr].darray_bg[0]++;
       continue;
     }
+    printf("val=%d\n",val);
     v = WIGARRAY2VALUE(val);
     if(v >= p->wstats.n_darray - 1) p->wstats.chr[chr].darray_bg[p->wstats.n_darray]++;
     else p->wstats.chr[chr].darray_bg[v]++;
@@ -117,7 +118,7 @@ static void add_wigstats_bg(Mapfile *p, TYPE_WIGARRAY *array, int chr, int binnu
   }
 
   p->wstats.genome->ave += ave;
-  ave /= num;
+  if(num) ave /= num; else ave = 0;
 
   /* 分散の計算 */
   double var=0;
@@ -126,9 +127,10 @@ static void add_wigstats_bg(Mapfile *p, TYPE_WIGARRAY *array, int chr, int binnu
     v = WIGARRAY2VALUE(array[i]);
     var += (v - ave)*(v - ave);
   }
-  var /= num -1;
+  if(num>1) var /= num -1; else var = 0;
 
-  double mu = ave/var;
+  double mu;
+  if (var) mu = ave/var; else mu = 0;
   if(mu>=1) mu = 0.9;
   if(mu<=0) mu = 0.1;
   double n = ave * mu /(1 - mu);
@@ -187,7 +189,6 @@ static void makewig_chr(PwParam *p, Mapfile *mapfile, RefGenome *g, int chr){
   if(p->mpfile){
     mpfilename = alloc_str_new(p->mpfile, 100);
     sprintf(mpfilename, "%s_%s_bin%d.txt", p->mpfile, g->chr[chr].name, p->binsize);
-    LOG("mpfile: %s\n", mpfilename);
     mparray = read_mosaics_binfile(mpfilename, binnum, p->binsize);
   }else{
     mparray = (TYPE_WIGARRAY *)my_calloc(binnum, sizeof(TYPE_WIGARRAY), "mparray");
@@ -200,18 +201,17 @@ static void makewig_chr(PwParam *p, Mapfile *mapfile, RefGenome *g, int chr){
   TYPE_WIGARRAY *bgarray = (TYPE_WIGARRAY *)my_calloc(binnum, sizeof(TYPE_WIGARRAY), "bgarray");
 
   for(i=0; i<binnum; i++){
-    if(WIGARRAY2VALUE(wigarray[i]) <= mapfile->wstats.thre && mparray[i] >= mpthretemp) bgarray[num++] = wigarray[i];
-  }
+    if(WIGARRAY2VALUE(wigarray[i]) <= mapfile->wstats.thre && mparray[i] >= mpthretemp) {
+      bgarray[num++] = wigarray[i];
+    }
+}
   mapfile->wstats.genome->num += mapfile->wstats.chr[chr].num = num;
   if(!num) fprintf(stderr,"Warning: no mappable window in chr%d. Check mappability files.\n",chr);
-
-  //  printf("chr=%d,binnum=%d, num=%d\n",chr,binnum,num);
 
   /* make wigarray stats */
   add_wigstats_bg(mapfile, bgarray, chr, num);
   MYFREE(bgarray);
   add_wigstats_all(mapfile, wigarray, chr, binnum);
-
   //  if(chr==1) pw_estimate_zinb_opt(mapfile, wigarray, mparray, chr, binnum);
 
   /*  mpbl normalization */
@@ -277,6 +277,8 @@ static TYPE_WIGARRAY *make_wigarray(PwParam *p, Mapfile *mapfile, RefGenome *g, 
   TYPE_WIGARRAY *wigarray = (TYPE_WIGARRAY *)my_calloc(p->binnum_chr[chr], sizeof(TYPE_WIGARRAY), "wigarray");
   Strand strand;
 
+  printf("p->binnum_chr[chr] = %d\n", p->binnum_chr[chr]);
+
   for(strand=0; strand<STRANDNUM; strand++){
     readnum = mapfile->chr[chr].seq[strand].n_read_infile;
     for(i=0; i<readnum; i++){
@@ -284,7 +286,10 @@ static TYPE_WIGARRAY *make_wigarray(PwParam *p, Mapfile *mapfile, RefGenome *g, 
       define_s_e(p, mapfile, g, &s, &e, &w, chr, strand, i);  /* define start and end position and weight of a fragment */
       sbin = s/p->binsize;
       ebin = e/p->binsize;
-      for(j=sbin; j<=ebin; j++) wigarray[j] += VALUE2WIGARRAY(w);
+      for(j=sbin; j<=ebin; j++) {
+	wigarray[j] += VALUE2WIGARRAY(w);
+	if (wigarray[j] < 0) wigarray[j] = 2147483640;
+	}
     }
   }
 
