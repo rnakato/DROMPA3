@@ -46,7 +46,7 @@ static TYPE_WIGARRAY calc_qnt(TYPE_WIGARRAY *array, int binnum, double per){
   MYFREE(sortarray);
 
   if(qnt<=1000) qnt=2000;
-  
+
   return qnt;
 }
 
@@ -81,6 +81,7 @@ void makewig(PwParam *p, Mapfile *mapfile, RefGenome *g){
   mapfile->wstats.genome->darray_all = (int *)my_calloc(mapfile->wstats.n_darray +1, sizeof(int), "wstats.genome->darray_all");
   mapfile->wstats.genome->darray_bg  = (int *)my_calloc(mapfile->wstats.n_darray +1, sizeof(int), "wstats.genome->darray_bg");
   for(chr=1; chr<g->chrnum; chr++){
+    printf("darray = %d\n",mapfile->wstats.n_darray);
     mapfile->wstats.chr[chr].darray_all = (int *)my_calloc(mapfile->wstats.n_darray +1, sizeof(int), "wstats.chr[chr]->darray_all");
     mapfile->wstats.chr[chr].darray_bg  = (int *)my_calloc(mapfile->wstats.n_darray +1, sizeof(int), "wstats.chr[chr]->darray_bg");
   }
@@ -129,7 +130,7 @@ static void add_wigstats_bg(Mapfile *p, TYPE_WIGARRAY *array, int chr, int binnu
 
   double mu = ave/var;
   if(mu>=1) mu = 0.9;
-  if(mu<=0) mu = 0.1; 
+  if(mu<=0) mu = 0.1;
   double n = ave * mu /(1 - mu);
   LOG("ave=%f, var=%f, p=%f, n=%f, num=%d\n", ave, var, mu, n, num);
 
@@ -197,7 +198,7 @@ static void makewig_chr(PwParam *p, Mapfile *mapfile, RefGenome *g, int chr){
   int num=0;
   TYPE_WIGARRAY mpthretemp = VALUE2WIGARRAY(p->mpthre);
   TYPE_WIGARRAY *bgarray = (TYPE_WIGARRAY *)my_calloc(binnum, sizeof(TYPE_WIGARRAY), "bgarray");
-  
+
   for(i=0; i<binnum; i++){
     if(WIGARRAY2VALUE(wigarray[i]) <= mapfile->wstats.thre && mparray[i] >= mpthretemp) bgarray[num++] = wigarray[i];
   }
@@ -205,12 +206,12 @@ static void makewig_chr(PwParam *p, Mapfile *mapfile, RefGenome *g, int chr){
   if(!num) fprintf(stderr,"Warning: no mappable window in chr%d. Check mappability files.\n",chr);
 
   //  printf("chr=%d,binnum=%d, num=%d\n",chr,binnum,num);
-  
+
   /* make wigarray stats */
   add_wigstats_bg(mapfile, bgarray, chr, num);
   MYFREE(bgarray);
   add_wigstats_all(mapfile, wigarray, chr, binnum);
-  
+
   //  if(chr==1) pw_estimate_zinb_opt(mapfile, wigarray, mparray, chr, binnum);
 
   /*  mpbl normalization */
@@ -224,7 +225,7 @@ static void makewig_chr(PwParam *p, Mapfile *mapfile, RefGenome *g, int chr){
 
   MYFREE(mparray);
   if(p->mpfile) MYFREE(mpfilename);
-  
+
   /* total read normalization */
   normalize_wigarray_to_rpkm(p, mapfile, &wigarray, g, chr);
 
@@ -244,12 +245,12 @@ static void define_s_e(PwParam *p, Mapfile *mapfile, RefGenome *g, int *s, int *
 
   *w = INT2WEIGHT(mapfile->readarray[chr][strand].weight[i]);
   if(*w <0) fprintf(stderr, "Warning: weight of read[%s][strand%s] is %f.\n",g->chr[chr].name, str_strand[strand], *w);
-  
+
   if(p->usereadcenter){    /* consider only center region of fragments */
     *s = (*s + *e - p->usereadcenter)/2;
     *e = (*s + *e + p->usereadcenter)/2;
   }
-  if(*e >= g->chr[chr].len){  // end posion > chrlen. (*s < 0) is omitted. 
+  if(*e >= g->chr[chr].len){  // end posion > chrlen. (*s < 0) is omitted.
   }
   *s = max(0, *s);
   *e = min(*e, g->chr[chr].len -1);
@@ -343,7 +344,7 @@ static void normalize_wigarray_to_rpkm(PwParam *p, Mapfile *mapfile, TYPE_WIGARR
   }else{
     mapfile->genome->both.n_read_rpkm += mapfile->chr[chr].both.n_read_rpkm;
   }
-  
+
   return;
 }
 
@@ -357,7 +358,7 @@ void calc_FRiP(PwParam *p, Mapfile *mapfile, RefGenome *g){
   char *array = NULL;
 
   /* count reads */
-  for(chr=1; chr<g->chrnum; chr++){  
+  for(chr=1; chr<g->chrnum; chr++){
     array = makearray_inbed(&(p->enrichfile->chr[chr]), (int)g->chr[chr].len);
     if(!array) continue;
 
@@ -394,7 +395,7 @@ void calc_FRiP(PwParam *p, Mapfile *mapfile, RefGenome *g){
   if(p->pcrfilter) nread = mapfile->genome->both.n_read_nonred;
   else             nread = mapfile->genome->both.n_read_infile;
   mapfile->genome->FRiP  = mapfile->genome->n_read_inbed / (double)nread;
-  
+
   return;
 }
 
