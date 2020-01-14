@@ -97,12 +97,10 @@ static void add_wigstats_bg(Mapfile *p, TYPE_WIGARRAY *array, int chr, int binnu
 
   for(i=0; i<binnum; i++){
     val = array[i];
-    printf("val=%d\n",val);
     if(!val){
       p->wstats.chr[chr].darray_bg[0]++;
       continue;
     }
-    printf("val=%d\n",val);
     v = WIGARRAY2VALUE(val);
     if(v >= p->wstats.n_darray - 1) p->wstats.chr[chr].darray_bg[p->wstats.n_darray]++;
     else p->wstats.chr[chr].darray_bg[v]++;
@@ -276,8 +274,6 @@ static TYPE_WIGARRAY *make_wigarray(PwParam *p, Mapfile *mapfile, RefGenome *g, 
   double w;
   TYPE_WIGARRAY *wigarray = (TYPE_WIGARRAY *)my_calloc(p->binnum_chr[chr], sizeof(TYPE_WIGARRAY), "wigarray");
   Strand strand;
-
-  printf("p->binnum_chr[chr] = %d\n", p->binnum_chr[chr]);
 
   for(strand=0; strand<STRANDNUM; strand++){
     readnum = mapfile->chr[chr].seq[strand].n_read_infile;
