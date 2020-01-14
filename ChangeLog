@@ -1,3 +1,7 @@
+2020-01-14 Ryuichiro Nakato <rnakato@iam.u-tokyo.ac.jp>
+	Version 3.7.2
+        - Parse2wig: bug fix in pw_makefile.c (wigarray overflow)
+
 2019-04-15 Ryuichiro Nakato <rnakato@iam.u-tokyo.ac.jp>
 	Version 3.7.1
 	- Parse2wig: accect CRAM format for input (use "-f BAM" option)
@@ -100,4 +104,3 @@
 	Version 2.6.4
 	- Readd 'script' directory (it was mistakenly deleted)
 	- Fix the problem that the compliation error occurs in 32-bit OS.
-
