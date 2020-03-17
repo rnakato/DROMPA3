@@ -13,11 +13,11 @@ DROMPA is written in C and requires the following programs and libraries:
 * [R](http://www.r-project.org/) (for PROFILE command)
 
 #### 2.1. Install required libraries
-for Ubuntu:
+On Ubuntu:
 
      sudo apt install git gcc libgtk2.0-dev libgsl-dev samtools r-base
  
-for CentOS:
+On CentOS:
 
      sudo yum -y install zlib-devel gsl-devel gtk2-devel
 
@@ -34,9 +34,10 @@ for CentOS:
 If you get an installation error, make sure that all required libraries are installed.
 
 #### 2.4. Add the PATH environment variable
-For example, if you downloaded DROMPA and cpdf into the $HOME/my_chipseq_exp directory, type:
+Permanently set the path to the DROMPA download directory by updating your **~/.bashrc** file.
+For example, if you downloaded DROMPA into the **$HOME** directory, add the following lines to **~/.bashrc**:
 
-    export PATH = $PATH:$HOME/my_chipseq_exp/DROMPA3:$HOME/my_chipseq_exp/cpdf-binaries/Linux-Intel-64bit/
+    export PATH = $PATH:$HOME/DROMPA3:$HOME/cpdf-binaries/Linux-Intel-64bit/
 
 #### 2.5 Docker image
 
