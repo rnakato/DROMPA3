@@ -15,11 +15,16 @@ DROMPA is written in C and requires the following programs and libraries:
 #### 2.1. Install required libraries
 On Ubuntu:
 
-     sudo apt install git gcc libgtk2.0-dev libgsl-dev samtools r-base
+     sudo apt install git gcc libgtk2.0-dev libgsl-dev samtools
  
 On CentOS:
 
      sudo yum -y install zlib-devel gsl-devel gtk2-devel
+
+On Mac:
+
+     brew tap brewsci/bio
+     brew install gsl gtk cairo pkgconfig samtools
 
 #### 2.2. Install cpdf
  DROMPA uses [Coherent PDF](http://community.coherentpdf.com/) for merging pdf files.
