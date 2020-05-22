@@ -15,7 +15,7 @@
 	Version 3.6.0
 	- Peak calling: add the new column "IP/Input enrichment" in a xls file
 
-018-08-07 Ryuichiro Nakato <rnakato@iam.u-tokyo.ac.jp>
+2018-08-07 Ryuichiro Nakato <rnakato@iam.u-tokyo.ac.jp>
 	Version 3.5.2
 	- bug fix: buffer overflow in HEATMAP command
 
