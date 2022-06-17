@@ -53,7 +53,7 @@ To obtain a docker image for DROMPA and SSP, type:
     docker pull rnakato/ssp_drompa
 
 # 3. Usage
- See [Manual.pdf](https://github.com/rnakato/DROMPA3/blob/master/Manual.pdf) for detail. Please direct bug reports and questions about usage to rnakato@iam.u-tokyo.ac.jp.
+ See [Manual.pdf](https://github.com/rnakato/DROMPA3/blob/master/Manual.pdf) for detail. Please direct bug reports and questions about usage to rnakato@iqb.u-tokyo.ac.jp.
 
 # 4. Troubleshooting
 * If you get an error "invalid chr name: XXX" when using parse2wig, the chromosome name XXX contained in the input file is absent in genometable file you specified by `-gt`. Please check the genometable file.
